@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0d0d">
+<title>Fasting Pro</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#0d0d0d;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow-x:hidden;}
+.app-shell{max-width:430px;margin:0 auto;min-height:100vh;position:relative;overflow:hidden;padding-bottom:30px;}
+.fire-bg{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:260px;z-index:0;overflow:hidden;pointer-events:none;}
+.fire-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,100,0,0.25),transparent 70%);}
+.fire-sphere-wrap{position:absolute;top:30px;left:50%;transform:translateX(-50%);width:140px;height:140px;z-index:1;}
+.fire-sphere{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffeb3b,#ff9800,#ff5722,#b71c1c,#3e0000);box-shadow:0 0 40px rgba(255,87,34,0.6),0 0 80px rgba(255,152,0,0.3),inset -10px -10px 30px rgba(0,0,0,0.5);animation:spinSphere 8s linear infinite;position:relative;}
+.fire-sphere::before{content:"";position:absolute;inset:10%;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(255,255,255,0.4),transparent 60%);filter:blur(4px);}
+@keyframes spinSphere{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+.flame-particles{position:absolute;inset:-20px;pointer-events:none;}
+.flame-particles span{position:absolute;width:6px;height:6px;background:#ff9800;border-radius:50%;opacity:0;animation:rise 2s infinite;}
+.flame-particles span:nth-child(1){left:20%;bottom:0;animation-delay:0s;}
+.flame-particles span:nth-child(2){left:50%;bottom:0;animation-delay:0.4s;}
+.flame-particles span:nth-child(3){left:80%;bottom:0;animation-delay:0.8s;}
+.flame-particles span:nth-child(4){left:35%;bottom:0;animation-delay:1.2s;}
+.flame-particles span:nth-child(5){left:65%;bottom:0;animation-delay:1.6s;}
+@keyframes rise{0%{transform:translateY(0) scale(1);opacity:0.8;}100%{transform:translateY(-60px) scale(0);opacity:0;}}
+.content{z-index:2;position:relative;padding:0 18px 30px;}
+.header-text{text-align:center;padding-top:170px;margin-bottom:16px;}
+.header-text h1{font-size:28px;font-weight:800;margin:0;letter-spacing:2px;background:linear-gradient(180deg,#fff,#ff9800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.header-text p{margin:4px 0 0;font-size:12px;color:#ffab40;letter-spacing:3px;text-transform:uppercase;}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 14px;margin-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:8px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1a;color:#888;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.tab.active{background:#ff5722;color:#fff;border-color:#ff5722;box-shadow:0 0 12px rgba(255,87,34,0.3);}
+.panel{display:none;animation:fadeIn 0.3s;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.card{background:#141414;border:1px solid #222;border-radius:16px;padding:16px;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:700;color:#ff9800;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:6px;}
+.timer-big{font-size:40px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;color:#fff;margin:8px 0;}
+.timer-sub{text-align:center;font-size:12px;color:#888;margin-bottom:8px;}
+.progress-wrap{width:100%;height:6px;background:#222;border-radius:3px;margin:12px 0;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ff5722,#ff9800);border-radius:3px;transition:width 0.5s;box-shadow:0 0 8px rgba(255,87,34,0.4);}
+.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.input-grid input,.input-grid select{width:100%;background:#0a0a0a;border:1px solid #333;border-radius:10px;padding:11px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;-webkit-appearance:none;appearance:none;}
+.input-grid input:focus,.input-grid select:focus{border-color:#ff5722;}
+.input-full input,.input-full select{width:100%;background:#0a0a0a;border:1px solid #333;border-radius:10px;padding:11px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;margin-bottom:8px;-webkit-appearance:none;appearance:none;}
+.input-full input:focus,.input-full select:focus{border-color:#ff5722;}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:8px;-webkit-appearance:none;appearance:none;}
+.btn-fire{background:#ff5722;color:#fff;box-shadow:0 4px 16px rgba(255,87,34,0.3);}
+.btn-fire:active{background:#ff784e;transform:scale(0.98);}
+.btn-dark{background:#222;color:#fff;}
+.btn-dark:active{background:#333;transform:scale(0.98);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #222;font-size:14px;}
+.stat-row:last-child{border-bottom:none;}
+.stat-label{color:#888;}
+.stat-value{color:#ff9800;font-weight:700;}
+.stat-value-blue{color:#29b6f6;font-weight:700;}
+.stat-value-green{color:#66bb6a;font-weight:700;}
+.yoga-card{background:#1a1a1a;border-radius:12px;padding:14px;margin-bottom:10px;border-left:3px solid #ff5722;}
+.yoga-name{font-weight:700;font-size:15px;margin-bottom:6px;}
+.yoga-desc{font-size:13px;color:#aaa;line-height:1.6;}
+.yoga-tag{display:inline-block;padding:3px 10px;border-radius:4px;background:#ff572222;color:#ff9800;font-size:11px;margin-top:8px;font-weight:600;}
+.step-ring{width:130px;height:130px;margin:0 auto;position:relative;}
+.step-ring svg{transform:rotate(-90deg);}
+.step-ring .track{fill:none;stroke:#222;stroke-width:8;}
+.step-ring .progress{fill:none;stroke:url(#fireGrad);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 0.5s;}
+.step-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.step-num{font-size:30px;font-weight:800;color:#fff;}
+.step-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;}
+.water-cups{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.water-cup{width:42px;height:50px;border:2px solid #333;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:20px;background:#0a0a0a;}
+.water-cup.filled{background:#ff5722;border-color:#ff5722;box-shadow:0 0 10px rgba(255,87,34,0.3);}
+.water-cup:active{transform:scale(0.92);}
+.log-list{max-height:160px;overflow-y:auto;}
+.log-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #222;font-size:13px;}
+.log-item:last-child{border-bottom:none;}
+.log-time{color:#888;}
+.log-status{color:#ff9800;font-weight:700;}
+.phase-pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0;}
+.phase-pill{padding:5px 11px;border-radius:12px;font-size:10px;font-weight:700;background:#1a1a1a;color:#555;border:1px solid #333;}
+.phase-pill.active{background:#ff572222;color:#ff9800;border-color:#ff572244;}
+.fire-glow{box-shadow:0 0 20px rgba(255,87,34,0.15);}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px;}
+.hidden{display:none !important;}
+.info-box{background:#0a0a0a;border-radius:10px;padding:12px;font-size:12px;color:#999;line-height:1.7;border:1px solid #222;}
+.info-box b{color:#ff9800;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <linearGradient id="fireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="app-shell">
+  <div class="fire-bg">
+    <div class="fire-sphere-wrap">
+      <div class="fire-sphere">
+        <div class="flame-particles">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="header-text">
+      <h1>FASTING PRO</h1>
+      <p>Nhịn ăn khoa học</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(0)">⏱ Timer</div>
+      <div class="tab" onclick="switchTab(1)">🔥 Chỉ Số</div>
+      <div class="tab" onclick="switchTab(2)">🧘 Yoga</div>
+      <div class="tab" onclick="switchTab(3)">👣 Bước</div>
+      <div class="tab" onclick="switchTab(4)">📜 Lịch Sử</div>
+    </div>
+
+    <div class="panel active" id="tab0">
+      <div class="card fire-glow">
+        <div class="timer-big" id="mainTimer">00:00:00</div>
+        <div class="timer-sub" id="timerSub">Chưa bắt đầu nhịn ăn</div>
+        <div class="progress-wrap"><div class="progress-fill" id="timerProgress" style="width:0%"></div></div>
+        <div class="phase-pills">
+          <div class="phase-pill" id="ph0">Đường huyết ↓</div>
+          <div class="phase-pill" id="ph1">Đốt mỡ</div>
+          <div class="phase-pill" id="ph2">Ketosis</div>
+          <div class="phase-pill" id="ph3">Tự thực bào</div>
+          <div class="phase-pill" id="ph4">Tăng HGH</div>
+        </div>
+      </div>
+
+      <div class="card" id="setupCard">
+        <div class="card-title">⚙️ Cài đặt nhịn ăn</div>
+        <div class="input-grid">
+          <input type="date" id="startDate">
+          <input type="time" id="startTime">
+        </div>
+        <div class="input-full">
+          <select id="presetGoal">
+            <option value="">-- Chọn mục tiêu --</option>
+            <option value="16">16 giờ (16:8)</option>
+            <option value="18">18 giờ (18:6)</option>
+            <option value="20">20 giờ (20:4)</option>
+            <option value="24">24 giờ (OMAD)</option>
+            <option value="36">36 giờ</option>
+            <option value="48">48 giờ</option>
+            <option value="72">72 giờ</option>
+            <option value="custom">Tùy chỉnh</option>
+          </select>
+          <input type="number" id="customGoal" class="hidden" placeholder="Nhập số giờ (1-168)" min="1" max="168">
+        </div>
+        <button class="btn btn-fire" id="btnStart" onclick="startFast()">🔥 BẮT ĐẦU NHỊN ĂN</button>
+      </div>
+
+      <div class="card hidden" id="activeCard">
+        <div class="card-title">🔥 Đang nhịn ăn</div>
+        <div class="stat-row"><span class="stat-label">Bắt đầu</span><span class="stat-value" id="dispStart">--</span></div>
+        <div class="stat-row"><span class="stat-label">Kết thúc dự kiến</span><span class="stat-value" id="dispEnd">--</span></div>
+        <div class="stat-row"><span class="stat-label">Mục tiêu</span><span class="stat-value" id="dispTarget">--</span></div>
+        <div class="stat-row"><span class="stat-label">Đã nhịn</span><span class="stat-value-blue" id="dispElapsed">--</span></div>
+        <div style="margin-top:12px;font-size:12px;color:#888;text-align:center;">💧 Nước uống (250ml/cốc)</div>
+        <div class="water-cups" id="waterCups">
+          <div class="water-cup" onclick="toggleCup(0)">💧</div>
+          <div class="water-cup" onclick="toggleCup(1)">💧</div>
+          <div class="water-cup" onclick="toggleCup(2)">💧</div>
+          <div class="water-cup" onclick="toggleCup(3)">💧</div>
+          <div class="water-cup" onclick="toggleCup(4)">💧</div>
+          <div class="water-cup" onclick="toggleCup(5)">💧</div>
+          <div class="water-cup" onclick="toggleCup(6)">💧</div>
+          <div class="water-cup" onclick="toggleCup(7)">💧</div>
+        </div>
+        <button class="btn btn-dark" onclick="stopFast()">⏹ Dừng nhịn ăn</button>
+      </div>
+    </div>
+
+    <div class="panel" id="tab1">
+      <div class="card">
+        <div class="card-title">🧬 Thông tin cơ thể</div>
+        <div class="input-grid">
+          <select id="gender"><option value="male">Nam</option><option value="female">Nữ</option></select>
+          <input type="number" id="age" placeholder="Tuổi" min="10" max="120">
+        </div>
+        <div class="input-grid">
+          <input type="number" id="weight" placeholder="Cân nặng (kg)" min="20" max="300" step="0.1">
+          <input type="number" id="height" placeholder="Chiều cao (cm)" min="50" max="250" step="0.1">
+        </div>
+        <div class="input-full">
+          <select id="activity">
+            <option value="1.2">Ít vận động</option>
+            <option value="1.375">Nhẹ (1-3 ngày/tuần)</option>
+            <option value="1.55">Vừa (3-5 ngày/tuần)</option>
+            <option value="1.725">Nặng (6-7 ngày/tuần)</option>
+            <option value="1.9">Rất nặng</option>
+          </select>
+        </div>
+        <button class="btn btn-fire" onclick="calcBody()">📊 Tính chỉ số</button>
+      </div>
+
+      <div class="card hidden" id="resultCard">
+        <div class="card-title">📊 Chỉ số khoa học</div>
+        <div class="stat-row"><span class="stat-label">BMR (nghỉ ngơi)</span><span class="stat-value" id="resBmr">--</span></div>
+        <div class="stat-row"><span class="stat-label">TDEE (hàng ngày)</span><span class="stat-value" id="resTdee">--</span></div>
+        <div class="stat-row"><span class="stat-label">Calo/giờ nhịn</span><span class="stat-value-blue" id="resCalH">--</span></div>
+        <div class="stat-row"><span class="stat-label">Calo đã đốt (nhịn)</span><span class="stat-value" id="resCalBurn">--</span></div>
+        <div class="stat-row"><span class="stat-label">Nước mất (cơ bản)</span><span class="stat-value-blue" id="resWater">--</span></div>
+        <div class="stat-row"><span class="stat-label">Nước cần bù</span><span class="stat-value-green" id="resWaterNeed">--</span></div>
+        <div class="stat-row"><span class="stat-label">Mỡ đã đốt (ước tính)</span><span class="stat-value" id="resFat">--</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📖 Công thức tính toán</div>
+        <div class="info-box">
+          <b>BMR</b> (Mifflin-St Jeor): 10×cân + 6.25×cao - 5×tuổi ± 5<br>
+          <b>TDEE</b> = BMR × hệ số vận động<br>
+          <b>Calo đốt/giờ</b> = BMR ÷ 24<br>
+          <b>Nước mất</b> ≈ 100ml/giờ (cơ bản) + 50ml/giờ (vận động)<br>
+          <b>Mỡ đốt</b> ≈ calo ÷ 7700 (kg mỡ/gcalo)<br>
+          <b>Calo bước</b> ≈ bước × 0.04 × cân ÷ 70
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="tab2">
+      <div class="card">
+        <div class="card-title">🧘 Yoga khi nhịn ăn</div>
+        <div class="yoga-card">
+          <div class="yoga-name">1. Tadasana (Thế cây)</div>
+          <div class="yoga-desc">Đứng thẳng, hai chân sát nhau, hai tay chắp lên đầu. Giữ 30-60 giây. Giúp cân bằng, kích thích tiêu hóa nhẹ nhàng khi bụng đói.</div>
+          <span class="yoga-tag">Cơ bản • 30-60s</span>
+        </div>
+        <div class="yoga-card">
+          <div class="yoga-name">2. Vrikshasana (Thế cây đứng)</div>
+          <div class="yoga-desc">Đứng một chân, chân kia đặt vào đùi trong. Hai tay chắp trước ngực. Tập trung, cân bằng, không gây áp lực lên bụng.</div>
+          <span class="yoga-tag">Cân bằng • 30-60s/chân</span>
+        </div>
+        <div class="yoga-card">
+          <div class="yoga-name">3. Paschimottanasana (Ngồi gập người)</div>
+          <div class="yoga-desc">Ngồi duỗi chân, gập người về phía trước. Kích thích gan, thận, tuyến tụy. Tránh khi đau lưng hoặc chuột rút do nhịn lâu.</div>
+          <span class="yoga-tag">Gan • 30-60s</span>
+        </div>
+        <div class="yoga-card">
+          <div class="yoga-name">4. Bhujangasana (Rắn hổ mang)</div>
+          <div class="yoga-desc">Nằm sấp, hai tay đẩy ngực lên. Mở rộng ngực, tăng oxy. Tránh khi chóng mặt do hạ đường huyết.</div>
+          <span class="yoga-tag">Ngực • 15-30s</span>
+        </div>
+        <div class="yoga-card">
+          <div class="yoga-name">5. Balasana (Thế trẻ em)</div>
+          <div class="yoga-desc">Quỳ, ngồi lên gót chân, gập người về phía trước. Thư giãn hoàn toàn, giảm căng thẳng, an ủi cơn đói.</div>
+          <span class="yoga-tag">Thư giãn • 60-120s</span>
+        </div>
+        <div class="yoga-card">
+          <div class="yoga-name">6. Savasana + Hít thở 4-7-8</div>
+          <div class="yoga-desc">Nằm ngửa, thư giãn toàn thân. Hít vào 4 giây, giữ 7 giây, thở ra 8 giây. Giảm cortisol, kiểm soát cảm giác đói hiệu quả.</div>
+          <span class="yoga-tag">Thiền • 3-5 phút</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="tab3">
+      <div class="card">
+        <div class="card-title">👣 Bước chân & Calo</div>
+        <div class="step-ring">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle class="track" cx="65" cy="65" r="57"/>
+            <circle class="progress" id="stepCircle" cx="65" cy="65" r="57" stroke-dasharray="358.14" stroke-dashoffset="358.14"/>
+          </svg>
+          <div class="step-text">
+            <div class="step-num" id="stepNum">0</div>
+            <div class="step-label">bước</div>
+          </div>
+        </div>
+        <div class="input-full" style="margin-top:14px;">
+          <input type="number" id="stepInput" placeholder="Nhập số bước (hoặc để app tự đếm trên iPhone)">
+        </div>
+        <button class="btn btn-fire" onclick="updateSteps()">📱 Cập nhật bước</button>
+        <div style="margin-top:10px;font-size:12px;color:#888;text-align:center;">
+          Mục tiêu: <span id="stepGoal">10,000</span> bước
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔥 Calo từ bước chân</div>
+        <div class="stat-row"><span class="stat-label">Bước hiện tại</span><span class="stat-value" id="stepCount">0</span></div>
+        <div class="stat-row"><span class="stat-label">Khoảng cách</span><span class="stat-value-blue" id="stepKm">0 km</span></div>
+        <div class="stat-row"><span class="stat-label">Calo đốt (bước)</span><span class="stat-value" id="stepCal">0 kcal</span></div>
+        <div class="stat-row"><span class="stat-label">Tổng calo đốt</span><span class="stat-value-green" id="totalCal">0 kcal</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📱 Mô phỏng iPhone CoreMotion</div>
+        <div class="info-box">
+          Trên iPhone thực, app sẽ dùng <b>CoreMotion.CMPedometer</b> để đếm bước real-time.<br><br>
+          <b>Công thức:</b><br>
+          Calo = bước × 0.04 × cân nặng(kg) ÷ 70<br>
+          Khoảng cách ≈ bước × 0.000762 km<br><br>
+          <i>Trong HTML demo, bạn nhập số bước thủ công. Trên Xcode Swift, dùng <code>CMPedometer.queryPedometerData(from:to:withHandler:)</code> để lấy dữ liệu thực.</i>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="tab4">
+      <div class="card">
+        <div class="card-title">📜 Lịch sử nhịn ăn</div>
+        <div class="log-list" id="logList">
+          <div style="text-align:center;color:#555;font-size:13px;padding:12px;">Chưa có lịch sử</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏆 Thống kê tổng hợp</div>
+        <div class="stat-row"><span class="stat-label">Tổng lần nhịn</span><span class="stat-value" id="statCount">0</span></div>
+        <div class="stat-row"><span class="stat-label">Tổng giờ nhịn</span><span class="stat-value-blue" id="statHours">0 giờ</span></div>
+        <div class="stat-row"><span class="stat-label">Trung bình/lần</span><span class="stat-value-green" id="statAvg">0 giờ</span></div>
+        <div class="stat-row"><span class="stat-label">Tổng calo đốt</span><span class="stat-value" id="statCal">0 kcal</span></div>
+      </div>
+      <button class="btn btn-dark" onclick="clearAll()">🗑 Xóa toàn bộ dữ liệu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let timerInterval=null, startTs=null, targetMs=0;
+  let cups=[false,false,false,false,false,false,false,false];
+  let steps=0, weightKg=70;
+  const CIRC=358.14;
+  const STORAGE_KEY="fastingPro_v1";
+
+  const now=new Date();
+  document.getElementById('startDate').value=now.toISOString().split('T')[0];
+  document.getElementById('startTime').value=now.toTimeString().slice(0,5);
+
+  document.getElementById('presetGoal').addEventListener('change',function(){
+    const c=document.getElementById('customGoal');
+    if(this.value==='custom'){c.classList.remove('hidden');}else{c.classList.add('hidden');}
+  });
+
+  function switchTab(n){
+    document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+    document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+  }
+  window.switchTab=switchTab;
+
+  function loadState(){
+    try{
+      const s=localStorage.getItem(STORAGE_KEY);
+      if(s){
+        const d=JSON.parse(s);
+        if(d.active && d.startTs && d.targetMs){
+          startTs=d.startTs; targetMs=d.targetMs; cups=d.cups||cups; steps=d.steps||0; weightKg=d.weightKg||70;
+          if(d.gender) document.getElementById('gender').value=d.gender;
+          if(d.age) document.getElementById('age').value=d.age;
+          if(d.weight) document.getElementById('weight').value=d.weight;
+          if(d.height) document.getElementById('height').value=d.height;
+          if(d.activity) document.getElementById('activity').value=d.activity;
+          showActive(); startLoop();
+        }
+        if(d.steps){steps=d.steps; updateStepUI();}
+        renderLogs(d.logs||[]);
+        updateStats(d.logs||[]);
+      }
+    }catch(e){console.error(e);}
+  }
+
+  function saveState(){
+    const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+    s.active=!!timerInterval; s.startTs=startTs; s.targetMs=targetMs; s.cups=cups; s.steps=steps; s.weightKg=weightKg;
+    s.gender=document.getElementById('gender').value;
+    s.age=document.getElementById('age').value;
+    s.weight=document.getElementById('weight').value;
+    s.height=document.getElementById('height').value;
+    s.activity=document.getElementById('activity').value;
+    s.logs=s.logs||[];
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(s));
+  }
+
+  function showActive(){
+    document.getElementById('setupCard').classList.add('hidden');
+    document.getElementById('activeCard').classList.remove('hidden');
+    const st=new Date(startTs), en=new Date(startTs+targetMs);
+    document.getElementById('dispStart').textContent=st.toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('dispEnd').textContent=en.toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('dispTarget').textContent=(targetMs/3600000).toFixed(1)+' giờ';
+    updateCups();
+  }
+
+  function startLoop(){
+    if(timerInterval) clearInterval(timerInterval);
+    tick(); timerInterval=setInterval(tick,1000);
+  }
+
+  function tick(){
+    const elapsed=Date.now()-startTs;
+    const remain=targetMs-elapsed;
+    const pct=Math.min(elapsed/targetMs,1);
+    document.getElementById('timerProgress').style.width=(pct*100)+'%';
+    document.getElementById('dispElapsed').textContent=(elapsed/3600000).toFixed(2)+' giờ';
+
+    const eh=elapsed/3600000;
+    document.querySelectorAll('.phase-pill').forEach(p=>p.classList.remove('active'));
+    if(eh>=48) document.getElementById('ph4').classList.add('active');
+    else if(eh>=24) document.getElementById('ph3').classList.add('active');
+    else if(eh>=12) document.getElementById('ph2').classList.add('active');
+    else if(eh>=6) document.getElementById('ph1').classList.add('active');
+    else document.getElementById('ph0').classList.add('active');
+
+    if(remain<=0){
+      document.getElementById('mainTimer').textContent='HOÀN THÀNH!';
+      document.getElementById('timerSub').textContent='Đã đạt mục tiêu nhịn ăn';
+      document.getElementById('timerSub').style.color='#ff9800';
+      return;
+    }
+    const h=Math.floor(remain/3600000), m=Math.floor((remain%3600000)/60000), s=Math.floor((remain%60000)/1000);
+    document.getElementById('mainTimer').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    document.getElementById('timerSub').textContent='Còn lại để đạt mục tiêu';
+    document.getElementById('timerSub').style.color='#888';
+  }
+
+  window.startFast=function(){
+    const d=document.getElementById('startDate').value, t=document.getElementById('startTime').value;
+    const p=document.getElementById('presetGoal').value, c=document.getElementById('customGoal').value;
+    if(!d||!t){alert('Vui lòng chọn ngày & giờ bắt đầu'); return;}
+    let h=0;
+    if(p==='custom') h=parseFloat(c); else if(p) h=parseFloat(p);
+    if(!h||h<=0){alert('Vui lòng chọn thời gian nhịn ăn hợp lệ'); return;}
+    const sd=new Date(d+'T'+t);
+    startTs=sd.getTime(); targetMs=h*3600000;
+    if(startTs>Date.now()+60000){alert('Thời gian bắt đầu không thể ở tương lai'); return;}
+    showActive(); startLoop(); saveState();
+  };
+
+  window.stopFast=function(){
+    if(!confirm('Bạn có chắc muốn kết thúc nhịn ăn?')) return;
+    const dur=Date.now()-startTs;
+    const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+    s.logs=s.logs||[];
+    s.logs.push({start:startTs,end:Date.now(),durMs:dur,targetMs:targetMs,water:cups.filter(Boolean).length,steps:steps});
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(s));
+    if(timerInterval) clearInterval(timerInterval); timerInterval=null; startTs=null; targetMs=0; cups=[false,false,false,false,false,false,false,false]; steps=0;
+    document.getElementById('setupCard').classList.remove('hidden');
+    document.getElementById('activeCard').classList.add('hidden');
+    document.getElementById('mainTimer').textContent='00:00:00';
+    document.getElementById('timerSub').textContent='Chưa bắt đầu nhịn ăn';
+    document.getElementById('timerSub').style.color='#888';
+    document.getElementById('timerProgress').style.width='0%';
+    document.querySelectorAll('.phase-pill').forEach(p=>p.classList.remove('active'));
+    updateCups(); updateStepUI(); renderLogs(s.logs); updateStats(s.logs);
+  };
+
+  window.toggleCup=function(i){
+    cups[i]=!cups[i]; updateCups(); saveState();
+  };
+  function updateCups(){
+    document.querySelectorAll('.water-cup').forEach((c,i)=>{if(cups[i]) c.classList.add('filled'); else c.classList.remove('filled');});
+  }
+
+  window.calcBody=function(){
+    const g=document.getElementById('gender').value;
+    const a=parseFloat(document.getElementById('age').value);
+    const w=parseFloat(document.getElementById('weight').value);
+    const h=parseFloat(document.getElementById('height').value);
+    const act=parseFloat(document.getElementById('activity').value);
+    if(!a||!w||!h){alert('Vui lòng nhập đầy đủ thông tin'); return;}
+    weightKg=w;
+    let bmr=10*w+6.25*h-5*a;
+    bmr+=(g==='male'?5:-161);
+    const tdee=bmr*act;
+    const calH=bmr/24;
+    const elapsedH=startTs?(Date.now()-startTs)/3600000:0;
+    const calBurn=calH*elapsedH;
+    const waterLoss=(100+(act>1.2?50:0))*elapsedH;
+    const waterNeed=waterLoss*1.5;
+    const fatBurn=calBurn/7700;
+    document.getElementById('resBmr').textContent=bmr.toFixed(0)+' kcal/ngày';
+    document.getElementById('resTdee').textContent=tdee.toFixed(0)+' kcal/ngày';
+    document.getElementById('resCalH').textContent=calH.toFixed(1)+' kcal';
+    document.getElementById('resCalBurn').textContent=calBurn.toFixed(0)+' kcal';
+    document.getElementById('resWater').textContent=waterLoss.toFixed(0)+' ml';
+    document.getElementById('resWaterNeed').textContent=waterNeed.toFixed(0)+' ml';
+    document.getElementById('resFat').textContent=fatBurn.toFixed(3)+' kg';
+    document.getElementById('resultCard').classList.remove('hidden');
+    saveState();
+  };
+
+  window.updateSteps=function(){
+    const inp=parseInt(document.getElementById('stepInput').value)||0;
+    steps=inp; updateStepUI(); saveState();
+  };
+  function updateStepUI(){
+    document.getElementById('stepNum').textContent=steps.toLocaleString();
+    document.getElementById('stepCount').textContent=steps.toLocaleString();
+    const km=(steps*0.000762).toFixed(2);
+    document.getElementById('stepKm').textContent=km+' km';
+    const cal=(steps*0.04*weightKg/70).toFixed(0);
+    document.getElementById('stepCal').textContent=cal+' kcal';
+    const elapsedH=startTs?(Date.now()-startTs)/3600000:0;
+    const bmr=weightKg*24;
+    const total=(bmr/24*elapsedH)+parseFloat(cal);
+    document.getElementById('totalCal').textContent=total.toFixed(0)+' kcal';
+    const goal=10000;
+    const pct=Math.min(steps/goal,1);
+    document.getElementById('stepCircle').style.strokeDashoffset=CIRC*(1-pct);
+  }
+
+  function renderLogs(logs){
+    const box=document.getElementById('logList');
+    if(!logs||logs.length===0){box.innerHTML='<div style="text-align:center;color:#555;font-size:13px;padding:12px;">Chưa có lịch sử</div>'; return;}
+    box.innerHTML=logs.slice().reverse().map(l=>{
+      const st=new Date(l.start).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      const h=(l.durMs/3600000).toFixed(1);
+      const t=(l.targetMs/3600000).toFixed(0);
+      return '<div class="log-item"><span class="log-time">'+st+'</span><span class="log-status">'+h+'/'+t+'h 💧'+l.water+'</span></div>';
+    }).join('');
+  }
+
+  function updateStats(logs){
+    const cnt=logs.length;
+    const totalH=logs.reduce((a,l)=>a+(l.durMs/3600000),0);
+    const avg=cnt?totalH/cnt:0;
+    const totalCal=logs.reduce((a,l)=>{
+      const eh=l.durMs/3600000;
+      const bmr=weightKg*24;
+      return a+(bmr/24*eh)+(l.steps?l.steps*0.04*weightKg/70:0);
+    },0);
+    document.getElementById('statCount').textContent=cnt;
+    document.getElementById('statHours').textContent=totalH.toFixed(1)+' giờ';
+    document.getElementById('statAvg').textContent=avg.toFixed(1)+' giờ';
+    document.getElementById('statCal').textContent=totalCal.toFixed(0)+' kcal';
+  }
+
+  window.clearAll=function(){
+    if(!confirm('Xóa toàn bộ dữ liệu? Không thể hoàn tác.')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  };
+
+  loadState();
+})();
+</script>
+</body>
+</html>
