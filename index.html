@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#6C5CE7">
+<title>Kids Learning Fun — Numbers, ABC & Fruits</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+  html,body { height:100%; overflow:hidden; }
+  body {
+    font-family: -apple-system, 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    display:flex; flex-direction:column;
+  }
+  /* ===== Header ===== */
+  header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px;
+    color:#fff;
+  }
+  header h1 { font-size: clamp(18px, 3vw, 26px); text-shadow: 0 2px 6px rgba(0,0,0,.25); }
+  #basketBtn {
+    background: rgba(255,255,255,.22); border:none; border-radius: 30px;
+    padding: 8px 16px; font-size: clamp(16px,2.5vw,20px); color:#fff; cursor:pointer;
+    display:flex; align-items:center; gap:8px; backdrop-filter: blur(6px);
+  }
+  #basketBtn:active { transform: scale(.94); }
+  /* ===== Screens ===== */
+  main { flex:1; position:relative; overflow:hidden; }
+  .screen {
+    position:absolute; inset:0; display:none; flex-direction:column;
+    align-items:center; justify-content:center; padding: 12px; gap: 14px;
+    animation: fadeIn .35s ease;
+  }
+  .screen.active { display:flex; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+  /* ===== Menu cards ===== */
+  .menu-grid {
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px; width:100%; max-width: 860px;
+  }
+  .menu-card {
+    border:none; border-radius: 28px; padding: 30px 18px; cursor:pointer;
+    color:#fff; display:flex; flex-direction:column; align-items:center; gap:10px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    transition: transform .15s;
+  }
+  .menu-card:active { transform: scale(.95); }
+  .menu-card .emoji { font-size: clamp(48px, 8vw, 76px); }
+  .menu-card .label { font-size: clamp(20px, 3.4vw, 28px); font-weight:800; }
+  .menu-card .sub { font-size: clamp(13px, 2vw, 16px); opacity:.9; }
+  .c-numbers { background: linear-gradient(160deg,#ff6b6b,#ee5253); }
+  .c-letters { background: linear-gradient(160deg,#48dbfb,#0abde3); }
+  .c-fruits  { background: linear-gradient(160deg,#1dd1a1,#10ac84); }
+  .c-animals { background: linear-gradient(160deg,#ff9f43,#ff6b6b); }
+  .c-land    { background: linear-gradient(160deg,#e17055,#d63031); }
+  .c-sea     { background: linear-gradient(160deg,#0984e3,#6c5ce7); }
+  .c-sky     { background: linear-gradient(160deg,#81ecec,#00cec9); }
+  /* ===== Back bar ===== */
+  .topbar { display:flex; align-items:center; gap:12px; width:100%; max-width:860px; }
+  .btn-back {
+    background: rgba(255,255,255,.25); border:none; color:#fff; border-radius:16px;
+    font-size: clamp(18px,3vw,24px); padding:8px 16px; cursor:pointer;
+  }
+  .mode-switch { display:flex; gap:8px; margin-left:auto; }
+  .mode-btn {
+    border:none; border-radius:16px; padding:8px 18px; cursor:pointer;
+    font-size: clamp(15px,2.4vw,19px); font-weight:700; color:#6C5CE7; background:rgba(255,255,255,.7);
+  }
+  .mode-btn.on { background:#fff; box-shadow:0 4px 12px rgba(0,0,0,.2); transform:scale(1.05); }
+  /* ===== Learn card ===== */
+  .learn-card {
+    background:#fff; border-radius:32px; width:min(88vw, 460px);
+    padding: 26px 18px; display:flex; flex-direction:column; align-items:center; gap:8px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.3); cursor:pointer;
+    animation: pop .3s ease;
+  }
+  @keyframes pop { 0%{transform:scale(.85);} 60%{transform:scale(1.04);} 100%{transform:scale(1);} }
+  .learn-card .big {
+    font-size: clamp(90px, 22vw, 170px); font-weight:900; line-height:1;
+    background: linear-gradient(160deg,#6C5CE7,#e84393);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .learn-card .word { font-size: clamp(22px,4vw,32px); color:#555; font-weight:700; }
+  .learn-card .hint { font-size: clamp(15px,2.4vw,19px); color:#999; }
+  .learn-card .femoji { font-size: clamp(80px,18vw,140px); }
+  .nav-row { display:flex; gap:14px; align-items:center; }
+  .nav-btn {
+    border:none; border-radius:50%; width: clamp(54px,9vw,68px); height: clamp(54px,9vw,68px);
+    font-size: clamp(22px,4vw,30px); background:#fff; color:#6C5CE7; cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,0,0,.25);
+  }
+  .nav-btn:active { transform:scale(.9); }
+  .counter { color:#fff; font-size: clamp(16px,2.6vw,20px); font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,.3); }
+  /* ===== Quiz ===== */
+  .quiz-q {
+    background:rgba(255,255,255,.92); border-radius:24px; padding:14px 26px;
+    font-size: clamp(20px,3.6vw,30px); font-weight:800; color:#444;
+    display:flex; align-items:center; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,.2);
+  }
+  .quiz-q button { border:none; background:#6C5CE7; color:#fff; border-radius:50%; width:46px; height:46px; font-size:22px; cursor:pointer; }
+  .options { display:grid; grid-template-columns:1fr 1fr; gap:16px; width:min(92vw,560px); }
+  .opt {
+    border:none; border-radius:26px; padding: clamp(18px,4vw,32px); cursor:pointer;
+    font-size: clamp(34px,7vw,58px); font-weight:900; color:#fff;
+    box-shadow:0 8px 18px rgba(0,0,0,.25); transition: transform .12s;
+  }
+  .opt:active { transform:scale(.94); }
+  .opt.o0{ background:linear-gradient(160deg,#ff9f43,#ee5253);}
+  .opt.o1{ background:linear-gradient(160deg,#48dbfb,#0984e3);}
+  .opt.o2{ background:linear-gradient(160deg,#1dd1a1,#10ac84);}
+  .opt.o3{ background:linear-gradient(160deg,#f368e0,#be2edd);}
+  .opt.wrong { animation: shake .4s; opacity:.55; pointer-events:none; }
+  @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-10px);} 75%{transform:translateX(10px);} }
+  .score { color:#fff; font-size: clamp(17px,2.8vw,22px); font-weight:800; text-shadow:0 1px 4px rgba(0,0,0,.3); }
+  /* ===== Reward overlay ===== */
+  #reward {
+    position:fixed; inset:0; background:rgba(30,20,60,.82); z-index:50;
+    display:none; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    backdrop-filter: blur(4px);
+  }
+  #reward.show { display:flex; }
+  #rewardFruit { font-size: clamp(120px, 30vw, 220px); animation: bounce .8s infinite alternate; filter: drop-shadow(0 12px 24px rgba(0,0,0,.5)); }
+  @keyframes bounce { from{transform:translateY(0) scale(1);} to{transform:translateY(-26px) scale(1.08);} }
+  #rewardText { color:#ffd32a; font-size: clamp(26px,5vw,42px); font-weight:900; text-shadow:0 3px 10px rgba(0,0,0,.5); }
+  #rewardFruitName { color:#fff; font-size: clamp(22px,4vw,34px); font-weight:800; }
+  #rewardTap { color:rgba(255,255,255,.75); font-size: clamp(15px,2.4vw,19px); margin-top:18px; animation: blink 1.2s infinite; }
+  @keyframes blink { 50%{opacity:.3;} }
+  .confetti { position:fixed; top:-20px; z-index:49; font-size:26px; animation: fall linear forwards; pointer-events:none; }
+  @keyframes fall { to{ transform: translateY(110vh) rotate(720deg); opacity:.7; } }
+  /* ===== Basket ===== */
+  .basket-grid {
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
+    gap:12px; width:min(92vw,760px); max-height: 62vh; overflow-y:auto; padding:6px;
+  }
+  .b-item {
+    background:rgba(255,255,255,.92); border-radius:20px; padding:14px 8px;
+    display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;
+  }
+  .b-item .e{ font-size:44px; } .b-item .n{ font-size:15px; font-weight:800; color:#444; }
+  .b-item .c{ font-size:13px; color:#888; }
+  .empty { color:#fff; font-size:20px; text-align:center; text-shadow:0 1px 4px rgba(0,0,0,.3); }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎈 Kids Learning Fun</h1>
+  <button id="basketBtn">🧺 <span id="basketCount">0</span></button>
+</header>
+<main>
+  <!-- HOME -->
+  <section id="scr-home" class="screen active">
+    <div class="menu-grid">
+      <button class="menu-card c-numbers" onclick="openLearn('numbers')">
+        <span class="emoji">🔢</span><span class="label">Numbers</span><span class="sub">Learn 1 to 100</span>
+      </button>
+      <button class="menu-card c-letters" onclick="openLearn('letters')">
+        <span class="emoji">🔤</span><span class="label">ABC Letters</span><span class="sub">Learn A to Z</span>
+      </button>
+      <button class="menu-card c-fruits" onclick="openLearn('fruits')">
+        <span class="emoji">🍎</span><span class="label">Fruits</span><span class="sub">Yummy fruits!</span>
+      </button>
+      <button class="menu-card c-animals" onclick="openAnimalsMenu()">
+        <span class="emoji">🦁</span><span class="label">Animals</span><span class="sub">Land, Sea & Sky</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ANIMALS SUB-MENU -->
+  <section id="scr-animals" class="screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goHome()">⬅️</button>
+    </div>
+    <div class="menu-grid">
+      <button class="menu-card c-land" onclick="openLearn('land')">
+        <span class="emoji">🦁</span><span class="label">Land Animals</span><span class="sub">Lion, Elephant, Tiger…</span>
+      </button>
+      <button class="menu-card c-sea" onclick="openLearn('sea')">
+        <span class="emoji">🐬</span><span class="label">Sea Animals</span><span class="sub">Dolphin, Whale, Shark…</span>
+      </button>
+      <button class="menu-card c-sky" onclick="openLearn('sky')">
+        <span class="emoji">🦅</span><span class="label">Sky Animals</span><span class="sub">Eagle, Owl, Butterfly…</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- LEARN -->
+  <section id="scr-learn" class="screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goHome()">⬅️</button>
+      <div class="mode-switch">
+        <button class="mode-btn on" id="mLearn" onclick="setMode('learn')">📖 Learn</button>
+        <button class="mode-btn" id="mQuiz" onclick="setMode('quiz')">🎯 Quiz</button>
+      </div>
+    </div>
+    <div class="learn-card" id="learnCard" onclick="speakCurrent()">
+      <div id="learnVisual" class="big">1</div>
+      <div id="learnWord" class="word">One</div>
+      <div class="hint">👆 Tap to hear it!</div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="nav(-1)">◀️</button>
+      <span class="counter" id="learnCounter">1 / 100</span>
+      <button class="nav-btn" onclick="nav(1)">▶️</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="scr-quiz" class="screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goHome()">⬅️</button>
+      <div class="mode-switch">
+        <button class="mode-btn" id="mLearn2" onclick="setMode('learn')">📖 Learn</button>
+        <button class="mode-btn on" id="mQuiz2" onclick="setMode('quiz')">🎯 Quiz</button>
+      </div>
+    </div>
+    <div class="quiz-q"><span id="quizText">Find the number 5</span><button onclick="speakQuestion()">🔊</button></div>
+    <div class="options" id="options"></div>
+    <div class="score" id="scoreLine">⭐ Score: 0 &nbsp;|&nbsp; 🧺 Fruits: 0</div>
+  </section>
+
+  <!-- BASKET -->
+  <section id="scr-basket" class="screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goHome()">⬅️</button>
+    </div>
+    <div class="quiz-q">🧺 My Fruit Basket</div>
+    <div class="basket-grid" id="basketGrid"></div>
+  </section>
+</main>
+
+<!-- REWARD -->
+<div id="reward" onclick="closeReward()">
+  <div id="rewardFruit">🍎</div>
+  <div id="rewardText">Great job!</div>
+  <div id="rewardFruitName">You got an Apple!</div>
+  <div id="rewardTap">👆 Tap anywhere to continue</div>
+</div>
+<script>
+/* ================= DATA ================= */
+const ONES=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+const TENS=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+function numWord(n){ if(n<20)return ONES[n]; if(n<100){const t=Math.floor(n/10),o=n%10;return TENS[t]+(o?"-"+ONES[o]:"");} return "One Hundred"; }
+
+const LETTERS="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const LETTER_WORDS={A:"Apple 🍎",B:"Ball ⚽",C:"Cat 🐱",D:"Dog 🐶",E:"Elephant 🐘",F:"Fish 🐟",G:"Grapes 🍇",H:"House 🏠",I:"Ice cream 🍦",J:"Juice 🧃",K:"Kite 🪁",L:"Lion 🦁",M:"Monkey 🐵",N:"Nose 👃",O:"Orange 🍊",P:"Penguin 🐧",Q:"Queen 👑",R:"Rainbow 🌈",S:"Sun ☀️",T:"Tiger 🐯",U:"Umbrella ☂️",V:"Violin 🎻",W:"Watermelon 🍉",X:"Xylophone 🎵",Y:"Yo-yo 🪀",Z:"Zebra 🦓"};
+
+const FRUITS=[
+ {n:"Apple",e:"🍎"},{n:"Banana",e:"🍌"},{n:"Orange",e:"🍊"},{n:"Grapes",e:"🍇"},
+ {n:"Strawberry",e:"🍓"},{n:"Watermelon",e:"🍉"},{n:"Pineapple",e:"🍍"},{n:"Mango",e:"🥭"},
+ {n:"Peach",e:"🍑"},{n:"Pear",e:"🍐"},{n:"Cherry",e:"🍒"},{n:"Lemon",e:"🍋"},
+ {n:"Kiwi",e:"🥝"},{n:"Blueberry",e:"🫐"},{n:"Coconut",e:"🥥"},{n:"Melon",e:"🍈"},
+ {n:"Avocado",e:"🥑"},{n:"Tomato",e:"🍅"},{n:"Dragon Fruit",e:"🐉"},{n:"Star Fruit",e:"⭐"}
+];
+
+const ANIMALS={
+ land:[
+  {n:"Lion",e:"🦁"},{n:"Elephant",e:"🐘"},{n:"Tiger",e:"🐯"},{n:"Giraffe",e:"🦒"},
+  {n:"Monkey",e:"🐵"},{n:"Zebra",e:"🦓"},{n:"Bear",e:"🐻"},{n:"Panda",e:"🐼"},
+  {n:"Horse",e:"🐴"},{n:"Rabbit",e:"🐰"},{n:"Dog",e:"🐶"},{n:"Cat",e:"🐱"},
+  {n:"Cow",e:"🐮"},{n:"Pig",e:"🐷"},{n:"Fox",e:"🦊"},{n:"Wolf",e:"🐺"},
+  {n:"Deer",e:"🦌"},{n:"Kangaroo",e:"🦘"},{n:"Turtle",e:"🐢"},{n:"Snake",e:"🐍"}
+ ],
+ sea:[
+  {n:"Dolphin",e:"🐬"},{n:"Whale",e:"🐋"},{n:"Shark",e:"🦈"},{n:"Octopus",e:"🐙"},
+  {n:"Fish",e:"🐟"},{n:"Tropical Fish",e:"🐠"},{n:"Crab",e:"🦀"},{n:"Shrimp",e:"🦐"},
+  {n:"Squid",e:"🦑"},{n:"Seal",e:"🦭"},{n:"Penguin",e:"🐧"},{n:"Starfish",e:"⭐"},
+  {n:"Jellyfish",e:"🪼"},{n:"Lobster",e:"🦞"},{n:"Seahorse",e:"🐴"},{n:"Clam",e:"🦪"}
+ ],
+ sky:[
+  {n:"Eagle",e:"🦅"},{n:"Owl",e:"🦉"},{n:"Parrot",e:"🦜"},{n:"Butterfly",e:"🦋"},
+  {n:"Bee",e:"🐝"},{n:"Duck",e:"🦆"},{n:"Swan",e:"🦢"},{n:"Flamingo",e:"🦩"},
+  {n:"Peacock",e:"🦚"},{n:"Chicken",e:"🐔"},{n:"Rooster",e:"🐓"},{n:"Bird",e:"🐦"},
+  {n:"Baby Chick",e:"🐤"},{n:"Bat",e:"🦇"},{n:"Dragonfly",e:"🪰"},{n:"Ladybug",e:"🐞"}
+ ]
+};
+const HABITAT_SAY={land:"lives on land",sea:"lives in the sea",sky:"flies in the sky"};
+
+const PRAISE=["Great job!","Awesome!","Well done!","You are amazing!","Fantastic!","Super star!","Wonderful!","You did it!","Brilliant!","High five!"];
+const TRY_AGAIN=["Try again!","Almost! You can do it!","Oops! One more try!","Keep going, try again!"];
+
+/* ================= STATE ================= */
+let subject="numbers";   // numbers | letters | fruits
+let mode="learn";        // learn | quiz
+let idx=0, score=0;
+let basket=JSON.parse(localStorage.getItem("kidsBasket")||"{}");
+let quiz=null;
+try{ score=parseInt(localStorage.getItem("kidsScore")||"0"); }catch(e){}
+
+/* ================= SPEECH (English, iPad Safari) ================= */
+let voice=null;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices().filter(v=>v.lang && v.lang.toLowerCase().startsWith("en"));
+  voice = vs.find(v=>/samantha|ava|zoe|allison|susan|karen|moira|google us english/i.test(v.name))
+       || vs.find(v=>v.lang==="en-US") || vs[0] || null;
+}
+speechSynthesis.onvoiceschanged=pickVoice; pickVoice();
+function speak(text, rate){
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  if(voice) u.voice=voice;
+  u.lang="en-US"; u.rate=rate||0.85; u.pitch=1.15;
+  speechSynthesis.speak(u);
+}
+
+/* ================= NAVIGATION ================= */
+const screens={home:"scr-home",animals:"scr-animals",learn:"scr-learn",quiz:"scr-quiz",basket:"scr-basket"};
+function show(name){ Object.values(screens).forEach(id=>document.getElementById(id).classList.remove("active")); document.getElementById(screens[name]).classList.add("active"); }
+function goHome(){ speechSynthesis.cancel(); show("home"); }
+function openAnimalsMenu(){ show("animals"); speak("Animals! Do you want land animals, sea animals, or sky animals?"); }
+function openLearn(s){
+  subject=s; idx=0; setMode("learn");
+  const greet={numbers:"Numbers! Let's count!",letters:"The alphabet! A B C!",fruits:"Fruits! Yummy yummy!",land:"Land animals! Roar!",sea:"Sea animals! Let's dive in!",sky:"Sky animals! Let's fly high!"};
+  speak(greet[s]||"Let's learn!");
+}
+function setMode(m){
+  mode=m;
+  ["mLearn","mLearn2"].forEach(id=>document.getElementById(id).classList.toggle("on",m==="learn"));
+  ["mQuiz","mQuiz2"].forEach(id=>document.getElementById(id).classList.toggle("on",m==="quiz"));
+  if(m==="learn"){ show("learn"); renderLearn(); } else { show("quiz"); newQuestion(); }
+}
+
+/* ================= LEARN ================= */
+function items(){
+  if(subject==="numbers") return Array.from({length:100},(_,i)=>({big:String(i+1),word:numWord(i+1),say:numWord(i+1)}));
+  if(subject==="letters") return LETTERS.map(l=>({big:l+" "+l.toLowerCase(),word:LETTER_WORDS[l],say:l+". "+l+" is for "+LETTER_WORDS[l].replace(/[^a-zA-Z ]/g,"").trim()}));
+  if(ANIMALS[subject]) return ANIMALS[subject].map(a=>({big:a.e,word:a.n,say:a.n+". The "+a.n+" "+HABITAT_SAY[subject]+"!",fruit:true}));
+  return FRUITS.map(f=>({big:f.e,word:f.n,say:f.n+". This is a "+f.n+". Yummy!",fruit:true}));
+}
+function renderLearn(){
+  const it=items()[idx];
+  const v=document.getElementById("learnVisual");
+  if(it.fruit){ v.className="femoji"; } else { v.className="big"; }
+  v.textContent=it.big;
+  document.getElementById("learnWord").textContent=it.word;
+  document.getElementById("learnCounter").textContent=(idx+1)+" / "+items().length;
+}
+function speakCurrent(){ const it=items()[idx]; speak(it.say); }
+function nav(d){ const n=items().length; idx=(idx+d+n)%n; renderLearn(); speakCurrent(); }
+
+/* ================= QUIZ ================= */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function newQuestion(){
+  let q;
+  if(subject==="numbers"){
+    const ans=1+Math.floor(Math.random()*100);
+    const set=new Set([ans]);
+    while(set.size<4){ let d=ans+Math.floor(Math.random()*21)-10; if(d>=1&&d<=100) set.add(d); }
+    while(set.size<4){ set.add(1+Math.floor(Math.random()*100)); }
+    q={prompt:"Find the number "+ans, say:"Can you find the number "+numWord(ans)+"?", answer:String(ans), opts:shuffle([...set].map(String)), emojis:false};
+  } else if(subject==="letters"){
+    const ans=LETTERS[Math.floor(Math.random()*26)];
+    const set=new Set([ans]);
+    while(set.size<4){ set.add(LETTERS[Math.floor(Math.random()*26)]); }
+    q={prompt:"Find the letter "+ans, say:"Where is the letter "+ans+"?", answer:ans, opts:shuffle([...set]), emojis:false};
+  } else {
+    const pool = ANIMALS[subject] || FRUITS;
+    const isAnimal = !!ANIMALS[subject];
+    const ans=pool[Math.floor(Math.random()*pool.length)];
+    const set=new Set([ans.n]); const map={[ans.n]:ans.e};
+    while(set.size<4){ const f=pool[Math.floor(Math.random()*pool.length)]; set.add(f.n); map[f.n]=f.e; }
+    const sayQ = isAnimal
+      ? "Can you find the "+ans.n+"? The "+ans.n+" "+HABITAT_SAY[subject]+"!"
+      : "Yum yum! Can you find the "+ans.n+"?";
+    q={prompt:"Find the "+ans.n+"!", say:sayQ, answer:ans.n, opts:shuffle([...set].map(n=>map[n])), rawMap:map, emojis:true};
+  }
+  quiz=q;
+  document.getElementById("quizText").textContent=q.prompt;
+  const box=document.getElementById("options"); box.innerHTML="";
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.className="opt o"+i;
+    b.textContent=q.emojis?o:o;
+    b.style.fontSize=q.emojis?"clamp(44px,10vw,84px)":"";
+    b.onclick=()=>answer(b,o,q);
+    box.appendChild(b);
+  });
+  updateScore();
+  setTimeout(()=>speak(q.say),300);
+}
+function speakQuestion(){ if(quiz) speak(quiz.say); }
+function updateScore(){
+  const total=Object.values(basket).reduce((a,b)=>a+b,0);
+  document.getElementById("scoreLine").innerHTML="⭐ Score: "+score+" &nbsp;|&nbsp; 🧺 Fruits: "+total;
+  document.getElementById("basketCount").textContent=total;
+}
+function answer(btn, opt, q){
+  const val=q.emojis?q.rawMap? Object.keys(q.rawMap).find(k=>q.rawMap[k]===opt):opt.replace(/^\S+\s/,""):opt;
+  const correct = q.emojis ? (opt===q.rawMap[q.answer]) : (opt===q.answer);
+  if(correct){
+    score++; localStorage.setItem("kidsScore",score);
+    const fruit=FRUITS[Math.floor(Math.random()*FRUITS.length)];
+    basket[fruit.n]=(basket[fruit.n]||0)+1;
+    localStorage.setItem("kidsBasket",JSON.stringify(basket));
+    showReward(fruit);
+  } else {
+    btn.classList.add("wrong");
+    speak(TRY_AGAIN[Math.floor(Math.random()*TRY_AGAIN.length)],1);
+  }
+}
+
+/* ================= REWARD ================= */
+function showReward(fruit){
+  const p=PRAISE[Math.floor(Math.random()*PRAISE.length)];
+  document.getElementById("rewardFruit").textContent=fruit.e;
+  document.getElementById("rewardText").textContent=p;
+  document.getElementById("rewardFruitName").textContent="You got a "+fruit.n+"!";
+  document.getElementById("reward").classList.add("show");
+  confetti();
+  speak(p+" You got a "+fruit.n+"! "+fruit.n+"!");
+}
+function closeReward(){
+  document.getElementById("reward").classList.remove("show");
+  speechSynthesis.cancel();
+  updateScore();
+  newQuestion();
+}
+function confetti(){
+  const em=["🎉","⭐","🎊","✨","🌟","💛","🧡","💜"];
+  for(let i=0;i<26;i++){
+    const s=document.createElement("span");
+    s.className="confetti"; s.textContent=em[Math.floor(Math.random()*em.length)];
+    s.style.left=Math.random()*100+"vw";
+    s.style.animationDuration=(1.6+Math.random()*1.6)+"s";
+    s.style.fontSize=(18+Math.random()*26)+"px";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),3400);
+  }
+}
+
+/* ================= BASKET ================= */
+document.getElementById("basketBtn").onclick=()=>{
+  const g=document.getElementById("basketGrid"); g.innerHTML="";
+  const keys=Object.keys(basket);
+  if(!keys.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">No fruits yet!<br>Play the quiz to win yummy fruits! 🍓</div>'; }
+  keys.forEach(k=>{
+    const f=FRUITS.find(x=>x.n===k)||{e:"🍇",n:k};
+    const d=document.createElement("div"); d.className="b-item";
+    d.innerHTML='<span class="e">'+f.e+'</span><span class="n">'+k+'</span><span class="c">x '+basket[k]+'</span>';
+    d.onclick=()=>speak(k+"! You have "+basket[k]+" "+k+(basket[k]>1?"s":"")+"!");
+    g.appendChild(d);
+  });
+  show("basket");
+  speak("Look at all your yummy fruits!");
+};
+
+/* unlock audio on iPad */
+document.body.addEventListener("touchstart",function unlock(){ speechSynthesis.getVoices(); document.body.removeEventListener("touchstart",unlock); },{once:true});
+updateScore();
+</script>
+</body>
+</html>
