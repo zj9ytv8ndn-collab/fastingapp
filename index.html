@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
+<title>Fasting Dragon</title>
+<style id="dynamic-style">
+:root {
+  --bg:#0a0a0f; --bg2:#12121a; --card:rgba(255,255,255,0.06);
+  --text:#f0f0f5; --text2:#a0a0b0; --accent:#00d4aa; --accent2:#00b894;
+  --danger:#ff4757; --warn:#ffa502; --glass:rgba(255,255,255,0.08);
+  --radius:20px; --radius-sm:14px; --fs:16px; --fw:400; --lh:1.5;
+}
+</style>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--font,-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif);
+  background:var(--bg);color:var(--text);min-height:100vh;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  font-size:var(--fs);font-weight:var(--fw);line-height:var(--lh);
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 80px) env(safe-area-inset-left);
+}
+
+/* === THEMES === */
+body.theme-ocean{--accent:#00d4ff;--accent2:#0099cc}
+body.theme-purple{--accent:#a855f7;--accent2:#7c3aed}
+body.theme-forest{--accent:#22c55e;--accent2:#16a34a}
+body.theme-sunset{--accent:#fb923c;--accent2:#ea580c}
+body.theme-rose{--accent:#f472b6;--accent2:#db2777}
+body.theme-gold{--accent:#fbbf24;--accent2:#d97706;--text:#f5f5f0}
+
+/* === PARTICLES === */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.particle{position:absolute;border-radius:50%;background:var(--accent);opacity:.12;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}20%{opacity:.12}80%{opacity:.12}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+
+/* === LAYOUT === */
+.app{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:16px;padding-bottom:100px}
+
+/* === MEDICAL BANNER === */
+.medical-banner{
+  background:linear-gradient(135deg,rgba(255,71,87,.15),rgba(255,165,2,.1));
+  border:1px solid rgba(255,71,87,.3);border-radius:var(--radius-sm);
+  padding:14px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;
+  backdrop-filter:blur(10px)
+}
+.medical-banner svg{flex-shrink:0;margin-top:2px}
+.medical-banner p{font-size:calc(var(--fs)*.85);line-height:1.5;color:#ffaaa0}
+.medical-banner strong{color:#ff6b7a}
+
+/* === HEADER === */
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.header h1{font-size:calc(var(--fs)*2);font-weight:800;letter-spacing:-.5px}
+.header h1 span{color:var(--accent)}
+.lang-toggle{
+  padding:8px 14px;border-radius:20px;background:var(--glass);border:1px solid rgba(255,255,255,.1);
+  color:var(--text);font-size:calc(var(--fs)*.85);font-weight:600;cursor:pointer;backdrop-filter:blur(10px)
+}
+
+/* === STATS BAR === */
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat-box{
+  background:var(--glass);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-sm);
+  padding:14px 8px;text-align:center;backdrop-filter:blur(10px)
+}
+.stat-box .stat-num{font-size:calc(var(--fs)*1.4);font-weight:700;color:var(--accent)}
+.stat-box .stat-label{font-size:calc(var(--fs)*.75);color:var(--text2);margin-top:2px}
+
+/* === STREAK === */
+.streak-badge{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:var(--radius-sm);
+  padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;color:#000
+}
+.streak-badge .streak-left{display:flex;align-items:center;gap:10px}
+.streak-badge .streak-icon{font-size:28px}
+.streak-badge .streak-text{font-size:calc(var(--fs)*1.1);font-weight:700}
+.streak-badge .streak-sub{font-size:calc(var(--fs)*.8);opacity:.7}
+.streak-badge .streak-num{font-size:calc(var(--fs)*1.8);font-weight:800}
+
+/* === TIMER CARD === */
+.timer-card{
+  background:linear-gradient(145deg,var(--glass),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
+  padding:36px 24px;text-align:center;margin-bottom:16px;
+  backdrop-filter:blur(20px);position:relative;overflow:hidden
+}
+.timer-card::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.06;animation:pulseGlow 4s ease-in-out infinite
+}
+@keyframes pulseGlow{0%,100%{transform:scale(.8);opacity:.04}50%{transform:scale(1.2);opacity:.08}}
+.status-label{font-size:calc(var(--fs)*1.05);text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:8px;font-weight:600}
+.timer-display{font-size:calc(var(--fs)*4.5);font-weight:200;font-variant-numeric:tabular-nums;letter-spacing:-1px;line-height:1.1;margin:8px 0;background:linear-gradient(180deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.timer-labels{display:flex;justify-content:center;gap:32px;margin-top:4px}
+.timer-labels span{font-size:calc(var(--fs)*.9);color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+.progress-ring-container{position:relative;width:260px;height:260px;margin:24px auto}
+.progress-ring-bg{fill:none;stroke:rgba(255,255,255,.04);stroke-width:14}
+.progress-ring-track{fill:none;stroke:rgba(255,255,255,.03);stroke-width:14;stroke-linecap:round}
+.progress-ring-fill{fill:none;stroke:url(#gradRing);stroke-width:14;stroke-linecap:round;stroke-dasharray:691;stroke-dashoffset:691;transition:stroke-dashoffset 1s linear;filter:drop-shadow(0 0 12px var(--accent))}
+.progress-ring-outer{fill:none;stroke:url(#gradOuter);stroke-width:3;stroke-linecap:round;stroke-dasharray:848;stroke-dashoffset:848;opacity:.6;transition:stroke-dashoffset 1s linear}
+.progress-ring-glow{fill:none;stroke:var(--accent);stroke-width:14;stroke-linecap:round;stroke-dasharray:691;stroke-dashoffset:691;opacity:.25;transition:stroke-dashoffset 1s linear;filter:blur(12px)}
+.progress-ring-inner{fill:none;stroke:rgba(255,255,255,.02);stroke-width:1}
+.progress-text{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);font-size:calc(var(--fs)*3.6);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-1px;background:linear-gradient(180deg,#fff 30%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px rgba(255,255,255,.2))}
+.progress-sub{position:absolute;top:60%;left:50%;transform:translate(-50%,-50%);font-size:calc(var(--fs)*1);color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:4px;text-shadow:0 0 10px var(--accent)}
+.progress-pct{position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);font-size:calc(var(--fs)*.9);color:var(--text2);font-weight:600;letter-spacing:1px}
+.ring-ticks{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.ring-tick{position:absolute;width:2px;height:8px;border-radius:1px;top:8px;left:50%;transform-origin:50% 122px;margin-left:-1px}
+.ring-sparkles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.ring-sparkle{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;opacity:0;animation:sparkle 2s ease-in-out infinite}
+@keyframes sparkle{0%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0)}}
+.countdown-meal{font-size:calc(var(--fs)*.95);color:var(--text2);margin-top:8px}
+.countdown-meal span{color:var(--accent);font-weight:600}
+
+/* === PLAN === */
+.plan-section{margin-bottom:16px}
+.plan-section h3{font-size:calc(var(--fs)*1.1);color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.plan-btn{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:18px 12px;text-align:center;color:var(--text);cursor:pointer;transition:all .3s;backdrop-filter:blur(10px)}
+.plan-btn.active{border-color:var(--accent);background:rgba(0,0,0,.3)}
+.plan-btn .plan-name{font-size:calc(var(--fs)*1.2);font-weight:700;display:block}
+.plan-btn .plan-desc{font-size:calc(var(--fs)*.88);color:var(--text2);margin-top:2px}
+.plan-btn.active .plan-name{color:var(--accent)}
+
+/* === CUSTOM FAST === */
+.custom-fast{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;backdrop-filter:blur(10px)}
+.custom-fast h4{font-size:calc(var(--fs)*1);color:var(--text2);margin-bottom:10px}
+.custom-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.custom-inputs label{font-size:calc(var(--fs)*.85);color:var(--text2);display:block;margin-bottom:4px}
+.custom-inputs input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.3);color:var(--text);font-size:calc(var(--fs)*1.1);text-align:center}
+.custom-inputs input:focus{outline:none;border-color:var(--accent)}
+.btn-custom{width:100%;margin-top:10px;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#000;font-size:calc(var(--fs)*1.05);font-weight:700;cursor:pointer}
+
+/* === BUTTONS === */
+.action-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.btn{padding:20px;border-radius:var(--radius-sm);border:none;font-size:calc(var(--fs)*1.25);font-weight:700;cursor:pointer;transition:all .3s;text-transform:uppercase;letter-spacing:1px;backdrop-filter:blur(10px)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{background:var(--glass);border:1px solid rgba(255,255,255,.1);color:var(--text)}
+.btn-danger{background:linear-gradient(135deg,#ff4757,#cc0000);color:#fff}
+.btn-extend{grid-column:span 2;background:linear-gradient(135deg,var(--warn),#ff7b00);color:#000}
+.btn-share{grid-column:span 2;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+
+/* === PHASES === */
+.phase-list{display:flex;flex-direction:column;gap:8px}
+.phase-item{background:var(--glass);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-sm);padding:16px 18px;display:flex;align-items:center;gap:12px;backdrop-filter:blur(10px);transition:all .3s}
+.phase-item.active{border-color:var(--accent);background:rgba(0,0,0,.25)}
+.phase-item.locked{opacity:.4}
+.phase-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.phase-item.active .phase-icon{background:var(--accent);color:#000;box-shadow:0 0 12px var(--accent)}
+.phase-item:not(.active) .phase-icon{background:rgba(255,255,255,.06)}
+.phase-info h4{font-size:calc(var(--fs)*1.05);font-weight:600}
+.phase-info p{font-size:calc(var(--fs)*.95);color:var(--text2);margin-top:1px}
+.phase-time{margin-left:auto;font-size:calc(var(--fs)*.95);color:var(--accent);font-weight:600}
+
+/* === BMR === */
+.bmr-card{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:16px;backdrop-filter:blur(10px)}
+.bmr-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.bmr-inputs label{font-size:calc(var(--fs)*.85);color:var(--text2);display:block;margin-bottom:4px}
+.bmr-inputs input,.bmr-inputs select{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.3);color:var(--text);font-size:calc(var(--fs)*1)}
+.bmr-inputs input:focus,.bmr-inputs select:focus{outline:none;border-color:var(--accent)}
+.bmr-result{background:rgba(0,0,0,.3);border-radius:10px;padding:14px;text-align:center;margin-top:10px}
+.bmr-result .bmr-num{font-size:calc(var(--fs)*1.6);font-weight:700;color:var(--accent)}
+.bmr-result .bmr-label{font-size:calc(var(--fs)*.85);color:var(--text2)}
+
+/* === WATER === */
+.water-card{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:16px;backdrop-filter:blur(10px);text-align:center}
+.water-glasses{display:flex;justify-content:center;gap:8px;margin:12px 0;flex-wrap:wrap}
+.water-glass{width:40px;height:50px;border:2px solid rgba(255,255,255,.2);border-radius:4px 4px 12px 12px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.water-glass.filled{border-color:var(--accent);background:linear-gradient(180deg,var(--accent) 0%,var(--accent2) 100%)}
+.water-glass::after{content:'💧';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;opacity:0;transition:opacity .3s}
+.water-glass.filled::after{opacity:1}
+.water-text{font-size:calc(var(--fs)*1);color:var(--text2)}
+.water-text span{color:var(--accent);font-weight:700}
+
+/* === WEIGHT === */
+.weight-card{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:16px;backdrop-filter:blur(10px)}
+.weight-input-row{display:flex;gap:8px;margin-bottom:12px}
+.weight-input-row input{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.3);color:var(--text);font-size:calc(var(--fs)*1.1)}
+.weight-input-row button{padding:12px 20px;background:var(--accent);border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer}
+.weight-chart{height:120px;display:flex;align-items:flex-end;justify-content:space-around;gap:4px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.weight-bar{flex:1;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;min-width:8px;transition:height .5s ease;position:relative}
+.weight-bar .w-tooltip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text2);white-space:nowrap;margin-bottom:4px}
+.weight-entries{display:flex;flex-direction:column;gap:6px;margin-top:10px;max-height:150px;overflow-y:auto}
+.weight-entry{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(0,0,0,.2);border-radius:8px;font-size:calc(var(--fs)*.9)}
+.weight-entry .w-date{color:var(--text2)}
+.weight-entry .w-val{color:var(--accent);font-weight:600}
+
+/* === MEAL === */
+.meal-card{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:16px;backdrop-filter:blur(10px)}
+.meal-day{border-bottom:1px solid rgba(255,255,255,.06);padding:12px 0}
+.meal-day:last-child{border-bottom:none}
+.meal-day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.meal-day-title{font-size:calc(var(--fs)*1.05);font-weight:600;color:var(--accent)}
+.meal-day-cal{font-size:calc(var(--fs)*.85);color:var(--text2)}
+.meal-items{font-size:calc(var(--fs)*.92);color:var(--text2);line-height:1.6}
+
+/* === JOURNAL === */
+.journal-card{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:16px;backdrop-filter:blur(10px)}
+.journal-card textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.3);color:var(--text);font-size:calc(var(--fs)*1);resize:none;min-height:80px;font-family:inherit}
+.journal-card textarea:focus{outline:none;border-color:var(--accent)}
+.journal-save{width:100%;margin-top:10px;padding:14px;background:var(--accent);border:none;border-radius:10px;color:#000;font-size:calc(var(--fs)*1.05);font-weight:700;cursor:pointer}
+.journal-entries{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:200px;overflow-y:auto}
+.journal-entry{background:rgba(0,0,0,.2);border-radius:10px;padding:12px}
+.journal-entry .j-date{font-size:calc(var(--fs)*.8);color:var(--accent);margin-bottom:4px}
+.journal-entry .j-text{font-size:calc(var(--fs)*.95);color:var(--text)}
+
+/* === PHOTOS === */
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.photo-box{background:var(--glass);border:2px dashed rgba(255,255,255,.15);border-radius:var(--radius-sm);aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;backdrop-filter:blur(10px)}
+.photo-box.has-img{border-style:solid;border-color:var(--accent)}
+.photo-box img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.photo-box .photo-label{position:relative;z-index:2;font-size:calc(var(--fs)*1);color:var(--text2);text-align:center}
+.photo-box.has-img .photo-label{display:none}
+.photo-box .camera-icon{font-size:36px;margin-bottom:6px;position:relative;z-index:2}
+.photo-box.has-img .camera-icon{display:none}
+input[type="file"]{display:none}
+
+/* === HISTORY === */
+.history-list{display:flex;flex-direction:column;gap:8px}
+.history-item{background:var(--glass);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-sm);padding:16px 18px;backdrop-filter:blur(10px)}
+.history-item .history-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.history-item .history-plan{font-size:calc(var(--fs)*1.05);font-weight:600;color:var(--accent)}
+.history-item .history-date{font-size:calc(var(--fs)*.95);color:var(--text2)}
+.history-item .history-duration{font-size:calc(var(--fs)*1);color:var(--text2)}
+.empty-history{text-align:center;padding:24px;color:var(--text2);font-size:calc(var(--fs)*1)}
+
+/* === TABS === */
+.tab-content{display:none}
+.tab-content.active{display:block}
+.tab-bar{
+  position:fixed;bottom:0;left:0;right:0;height:calc(64px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(10,10,15,.9),rgba(10,10,15,.98));
+  backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.08);
+  display:flex;justify-content:space-around;align-items:center;z-index:50;
+  padding-bottom:env(safe-area-inset-bottom)
+}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:64px;background:none;border:none;color:var(--text2);cursor:pointer;transition:all .2s}
+.tab-btn.active{color:var(--accent)}
+.tab-btn .tab-icon{font-size:22px}
+.tab-btn .tab-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+/* === SECTION HEADERS === */
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.section-header h3{font-size:calc(var(--fs)*1.1);color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+.toggle-btn{font-size:calc(var(--fs)*.85);color:var(--accent);background:none;border:none;cursor:pointer}
+.collapsed{display:none}
+
+/* === SETTINGS === */
+.settings-group{background:var(--glass);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-sm);margin-bottom:12px;overflow:hidden;backdrop-filter:blur(10px)}
+.settings-row{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.04)}
+.settings-row:last-child{border-bottom:none}
+.settings-row label{font-size:calc(var(--fs)*.95);color:var(--text)}
+.settings-row .settings-val{font-size:calc(var(--fs)*.85);color:var(--accent);font-weight:600}
+.settings-btn-row{width:100%;padding:14px;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text);font-size:calc(var(--fs)*.95);text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.settings-btn-row:last-child{border-bottom:none}
+.settings-btn-row:hover{background:rgba(255,255,255,.02)}
+.settings-btn-row .arrow{color:var(--text2);font-size:18px}
+
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;padding:0 16px 16px}
+.theme-option{padding:16px;border-radius:var(--radius-sm);border:2px solid transparent;text-align:center;cursor:pointer;font-size:calc(var(--fs)*.9);font-weight:600}
+.theme-option.active{border-color:#fff}
+
+.font-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;padding:0 16px 16px}
+.font-option{padding:14px;border-radius:var(--radius-sm);border:2px solid rgba(255,255,255,.1);background:var(--glass);text-align:center;cursor:pointer;font-size:calc(var(--fs)*.95);color:var(--text)}
+.font-option.active{border-color:var(--accent)}
+
+.slider-row{padding:10px 16px}
+.slider-row label{display:block;font-size:calc(var(--fs)*.9);color:var(--text2);margin-bottom:6px}
+.slider-row input[type="range"]{width:100%;accent-color:var(--accent)}
+.slider-val{text-align:right;font-size:calc(var(--fs)*.9);color:var(--accent);margin-top:2px}
+
+/* === LEGAL SCREENS === */
+.legal-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:300;overflow-y:auto;display:none;padding:env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 80px)}
+.legal-screen.show{display:block}
+.legal-header{display:flex;align-items:center;gap:12px;padding:16px 0;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.legal-header h2{font-size:calc(var(--fs)*1.3);font-weight:700}
+.back-btn{width:36px;height:36px;border-radius:50%;background:var(--glass);border:1px solid rgba(255,255,255,.1);color:var(--text);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.legal-content{font-size:calc(var(--fs)*.9);line-height:1.7;color:var(--text2)}
+.legal-content h3{font-size:calc(var(--fs)*1.1);color:var(--text);margin:20px 0 8px;font-weight:600}
+.legal-content p{margin-bottom:12px}
+.legal-content ul{margin-left:20px;margin-bottom:12px}
+.legal-content li{margin-bottom:6px}
+
+/* === MODALS === */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-content{background:linear-gradient(180deg,#1a1a2e,#0a0a0f);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;padding:24px 20px;border-top:1px solid rgba(255,255,255,.1);animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-header h2{font-size:calc(var(--fs)*1.4)}
+.close-modal{width:40px;height:40px;border-radius:50%;background:var(--glass);border:none;color:var(--text);font-size:24px;cursor:pointer}
+
+.extend-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.extend-btn{padding:16px;background:var(--glass);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-sm);color:var(--text);font-size:calc(var(--fs)*1.05);font-weight:600;cursor:pointer}
+
+.share-preview{background:linear-gradient(145deg,var(--glass),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:20px;text-align:center;margin:16px 0}
+.share-preview h3{font-size:calc(var(--fs)*1.4);color:var(--accent);margin-bottom:8px}
+.share-preview p{font-size:calc(var(--fs)*1.1);color:var(--text2)}
+.share-preview .share-big{font-size:calc(var(--fs)*2.5);font-weight:700;color:var(--accent);margin:8px 0}
+
+/* === PRIVACY OVERLAY === */
+.privacy-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+.privacy-overlay.show{display:flex}
+.privacy-overlay .privacy-icon{font-size:70px;opacity:.3}
+.privacy-overlay p{color:#555;font-size:calc(var(--fs)*1.1)}
+
+::-webkit-scrollbar{width:0}
+.fade-in{animation:fadeIn .5s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body class="theme-ocean">
+<div id="particles"></div>
+
+<div class="app">
+
+<!-- ==================== TAB: FAST ==================== -->
+<div class="tab-content active" id="tab-fast">
+  <div class="medical-banner fade-in">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff4757" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <p data-i18n="medical">Thông báo Y tế: Tham khảo ý kiến bác sĩ trước khi nhịn ăn kéo dài. Không khuyến cáo cho phụ nữ mang thai, trẻ em, hoặc người có rối loạn ăn uống. Dừng ngay nếu cảm thấy không khỏe.</p>
+  </div>
+
+  <div class="header fade-in">
+    <h1>Fasting <span>Dragon</span></h1>
+    <button class="lang-toggle" onclick="toggleLang()" id="langBtn">EN</button>
+  </div>
+
+  <div class="stats-bar fade-in" id="statsBar">
+    <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label" data-i18n="statTotal">Tổng lần</div></div>
+    <div class="stat-box"><div class="stat-num" id="statHours">0</div><div class="stat-label" data-i18n="statHours">Tổng giờ</div></div>
+    <div class="stat-box"><div class="stat-num" id="statRate">0%</div><div class="stat-label" data-i18n="statRate">Tỷ lệ</div></div>
+  </div>
+
+  <div class="streak-badge fade-in" id="streakBadge" style="display:none;">
+    <div class="streak-left"><div class="streak-icon">🔥</div><div><div class="streak-text" data-i18n="streak">Chuỗi hiện tại</div><div class="streak-sub" data-i18n="streakSub">Tiếp tục phát huy!</div></div></div>
+    <div class="streak-num" id="streakNum">0</div>
+  </div>
+
+  <div class="timer-card fade-in">
+    <div class="status-label" id="statusLabel" data-i18n="ready">Sẵn sàng bắt đầu</div>
+    <div class="timer-display" id="timerDisplay">00:00:00</div>
+    <div class="timer-labels"><span data-i18n="hours">Giờ</span><span data-i18n="minutes">Phút</span><span data-i18n="seconds">Giây</span></div>
+    <div class="progress-ring-container">
+      <svg width="260" height="260" viewBox="0 0 260 260">
+        <defs>
+          <linearGradient id="gradRing" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+            <stop offset="20%" style="stop-color:#a855f7;stop-opacity:1" />
+            <stop offset="40%" style="stop-color:#f472b6;stop-opacity:1" />
+            <stop offset="60%" style="stop-color:#fb923c;stop-opacity:1" />
+            <stop offset="80%" style="stop-color:#fbbf24;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+          </linearGradient>
+          <linearGradient id="gradOuter" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:var(--accent);stop-opacity:.8" />
+            <stop offset="50%" style="stop-color:var(--warn);stop-opacity:.5" />
+            <stop offset="100%" style="stop-color:var(--accent2);stop-opacity:.8" />
+          </linearGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="6" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <circle class="progress-ring-bg" cx="130" cy="130" r="110"/>
+        <circle class="progress-ring-track" cx="130" cy="130" r="110" transform="rotate(-90 130 130)"/>
+        <circle class="progress-ring-outer" id="progressRingOuter" cx="130" cy="130" r="135" transform="rotate(-90 130 130)"/>
+        <circle class="progress-ring-glow" id="progressRingGlow" cx="130" cy="130" r="110" transform="rotate(-90 130 130)"/>
+        <circle class="progress-ring-fill" id="progressRing" cx="130" cy="130" r="110" transform="rotate(-90 130 130)"/>
+        <circle class="progress-ring-inner" cx="130" cy="130" r="92"/>
+        <circle class="progress-ring-inner" cx="130" cy="130" r="82" stroke-dasharray="4 4"/>
+      </svg>
+      <div class="progress-text" id="progressText">00:00</div>
+      <div class="progress-sub" id="progressSub">READY</div>
+      <div class="progress-pct" id="progressPct">0%</div>
+      <div class="ring-ticks" id="ringTicks"></div>
+      <div class="ring-sparkles" id="ringSparkles"></div>
+    </div>
+    <div style="font-size:calc(var(--fs)*.95);color:var(--text2);margin-top:4px;"><span data-i18n="target">Mục tiêu:</span> <span id="targetTime" style="color:var(--accent);font-weight:600;">16:00:00</span></div>
+    <div class="countdown-meal" id="countdownMeal" style="display:none;"><span data-i18n="nextMeal">Bữa tiếp theo sau:</span> <span id="nextMealTime">--:--</span></div>
+  </div>
+
+  <div class="plan-section fade-in">
+    <h3 data-i18n="selectPlan">Chọn kế hoạch</h3>
+    <div class="plan-grid" id="planGrid">
+      <div class="plan-btn active" data-hours="16" data-name="16:8" onclick="selectPlan(this)"><span class="plan-name">16:8</span><span class="plan-desc" data-i18n="beginner">Người mới</span></div>
+      <div class="plan-btn" data-hours="18" data-name="18:6" onclick="selectPlan(this)"><span class="plan-name">18:6</span><span class="plan-desc" data-i18n="intermediate">Trung cấp</span></div>
+      <div class="plan-btn" data-hours="20" data-name="20:4" onclick="selectPlan(this)"><span class="plan-name">20:4</span><span class="plan-desc" data-i18n="advanced">Nâng cao</span></div>
+      <div class="plan-btn" data-hours="23" data-name="OMAD" onclick="selectPlan(this)"><span class="plan-name">OMAD</span><span class="plan-desc">23:1</span></div>
+      <div class="plan-btn" data-hours="36" data-name="36H" onclick="selectPlan(this)"><span class="plan-name">36H</span><span class="plan-desc" data-i18n="extended">Kéo dài</span></div>
+      <div class="plan-btn" data-hours="48" data-name="48H" onclick="selectPlan(this)"><span class="plan-name">48H</span><span class="plan-desc" data-i18n="prolonged">Dài hạn</span></div>
+    </div>
+  </div>
+
+  <div class="custom-fast fade-in">
+    <h4 data-i18n="customFast">✍️ Tùy chỉnh thời gian nhịn</h4>
+    <div class="custom-inputs">
+      <div><label data-i18n="days">Ngày</label><input type="number" id="customDays" min="0" max="30" value="0"></div>
+      <div><label data-i18n="hoursLabel">Giờ</label><input type="number" id="customHours" min="0" max="23" value="16"></div>
+    </div>
+    <button class="btn-custom" onclick="startCustomFast()" data-i18n="startCustom">Bắt đầu nhịn tùy chỉnh</button>
+  </div>
+
+  <div class="action-btns fade-in" id="actionBtns">
+    <button class="btn btn-primary" onclick="startFasting()" data-i18n="startFast">Bắt đầu nhịn</button>
+    <button class="btn btn-secondary" onclick="togglePrivacy()" data-i18n="privacy">Riêng tư</button>
+  </div>
+</div>
+
+<!-- ==================== TAB: SCIENCE ==================== -->
+<div class="tab-content" id="tab-science">
+  <div class="header fade-in"><h1 data-i18n="scienceTitle">Khoa học</h1></div>
+
+  <div class="science-section fade-in">
+    <div class="section-header"><h3 data-i18n="bodyPhases">5 Giai đoạn cơ thể</h3></div>
+    <div class="phase-list" id="phaseList">
+      <div class="phase-item" id="phase1"><div class="phase-icon">⚡</div><div class="phase-info"><h4 data-i18n="p1title">Cạn glycogen</h4><p data-i18n="p1desc">Đốt cháy đường dự trữ</p></div><div class="phase-time">0-6h</div></div>
+      <div class="phase-item" id="phase2"><div class="phase-icon">🔥</div><div class="phase-info"><h4 data-i18n="p2title">Ketosis</h4><p data-i18n="p2desc">Bắt đầu đốt mỡ</p></div><div class="phase-time">6-12h</div></div>
+      <div class="phase-item" id="phase3"><div class="phase-icon">🧬</div><div class="phase-info"><h4 data-i18n="p3title">Tự thực bào</h4><p data-i18n="p3desc">Tái chế tế bào hỏng</p></div><div class="phase-time">12-18h</div></div>
+      <div class="phase-item" id="phase4"><div class="phase-icon">💪</div><div class="phase-info"><h4 data-i18n="p4title">Hormone tăng trưởng</h4><p data-i18n="p4desc">Bảo vệ cơ bắp</p></div><div class="phase-time">18-24h</div></div>
+      <div class="phase-item" id="phase5"><div class="phase-icon">🧠</div><div class="phase-info"><h4 data-i18n="p5title">Nhạy insulin</h4><p data-i18n="p5desc">Hồi phục chuyển hóa</p></div><div class="phase-time">24h+</div></div>
+    </div>
+  </div>
+
+  <div class="bmr-section fade-in">
+    <div class="section-header"><h3 data-i18n="bmrTitle">💪 Tính BMR / TDEE</h3></div>
+    <div class="bmr-card">
+      <div class="bmr-inputs">
+        <div><label data-i18n="age">Tuổi</label><input type="number" id="bmrAge" placeholder="30" onchange="calcBMR()"></div>
+        <div><label data-i18n="gender">Giới tính</label><select id="bmrGender" onchange="calcBMR()"><option value="male" data-i18n="male">Nam</option><option value="female" data-i18n="female">Nữ</option></select></div>
+        <div><label data-i18n="weightLabel">Cân nặng (kg)</label><input type="number" id="bmrWeight" placeholder="70" onchange="calcBMR()"></div>
+        <div><label data-i18n="heightLabel">Chiều cao (cm)</label><input type="number" id="bmrHeight" placeholder="175" onchange="calcBMR()"></div>
+      </div>
+      <div class="bmr-result" id="bmrResult" style="display:none;">
+        <div class="bmr-num" id="bmrNum">0</div>
+        <div class="bmr-label" data-i18n="bmrLabel">kcal / ngày (TDEE)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: TRACKER ==================== -->
+<div class="tab-content" id="tab-tracker">
+  <div class="header fade-in"><h1 data-i18n="trackerTitle">Theo dõi</h1></div>
+
+  <div class="water-section fade-in">
+    <div class="section-header"><h3 data-i18n="waterTitle">💧 Uống nước</h3><button class="toggle-btn" onclick="resetWater()" data-i18n="reset">Đặt lại</button></div>
+    <div class="water-card">
+      <div class="water-text"><span data-i18n="goal">Mục tiêu:</span> <span id="waterGoal">8</span> <span data-i18n="glasses">ly</span> | <span data-i18n="drank">Đã uống:</span> <span id="waterDrank">0</span></div>
+      <div class="water-glasses" id="waterGlasses"></div>
+    </div>
+  </div>
+
+  <div class="weight-section fade-in">
+    <div class="section-header"><h3 data-i18n="weightTitle">⚖️ Cân nặng</h3></div>
+    <div class="weight-card">
+      <div class="weight-input-row">
+        <input type="number" id="weightInput" placeholder="Cân nặng (kg)" step="0.1">
+        <button onclick="addWeight()" data-i18n="add">Thêm</button>
+      </div>
+      <div class="weight-chart" id="weightChart"></div>
+      <div class="weight-entries" id="weightEntries"></div>
+    </div>
+  </div>
+
+  <div class="meal-section fade-in">
+    <div class="section-header"><h3 data-i18n="mealTitle">🍽️ Thực đơn 7 ngày</h3></div>
+    <div class="meal-card">
+      <div class="meal-day"><div class="meal-day-header"><span class="meal-day-title" data-i18n="d1title">Ngày 1 — Khởi động nhẹ</span><span class="meal-day-cal">~1200 kcal</span></div><div class="meal-items" data-i18n="d1meal">Nước dùng xương + rau hấp + cơm trắng ít + ức gà nướng</div></div>
+      <div class="meal-day"><div class="meal-day-header"><span class="meal-day-title" data-i18n="d2title">Ngày 2 — Protein nhẹ</span><span class="meal-day-cal">~1400 kcal</span></div><div class="meal-items" data-i18n="d2meal">Sữa chua Hy Lạp + quả mọng + salad cá hồi + quinoa + bơ</div></div>
+      <div class="meal-day"><div class="meal-day-header"><span class="meal-day-title" data-i18n="d3title">Ngày 3 — Cân bằng</span><span class="meal-day-cal">~1600 kcal</span></div><div class="meal-items" data-i18n="d3meal">Yến mạch + hạt + cá nướng + salad + khoai lang</div></div>
+      <div class="meal-day"><div class="meal-day-header"><span class="meal-day-title" data-i18n="d4title">Ngày 4 — Năng lượng</span><span class="meal-day-cal">~1700 kcal</span></div><div class="meal-items" data-i18n="d4meal">Trứng + bò xào + gạo lứt + súp lơ + dầu olive</div></div>
+      <div class="meal-day"><div class="meal-day-header"><span class="meal-day-title" data-i18n="d5title">Ngày 5 — Hồi phục</span><span class="meal-day-cal">~1800 kcal</span></div><div class="meal-items" data-i18n="d5meal">Sinh tố protein + ức gà + mì Ý + rau củ + hạt</div></div>
+      <div class="meal-day"><div class="meal-day-header"><span class="meal-day-title" data-i18n="d6title">Ngày 6 — Sức mạnh</span><span class="meal-day-cal">~1900 kcal</span></div><div class="meal-items" data-i18n="d6meal">Phô mai cottage + cá ngừ + đậu lăng + rau quay + socola đen</div></div>
+      <div class="meal-day"><div class="meal-day-header"><span class="meal-day-title" data-i18n="d7title">Ngày 7 — Duy trì</span><span class="meal-day-cal">~2000 kcal</span></div><div class="meal-items" data-i18n="d7meal">Chế độ cân bằng đầy đủ: protein, tinh bột phức, chất béo lành mạnh, chất xơ</div></div>
+    </div>
+  </div>
+
+  <div class="photo-section fade-in">
+    <div class="section-header"><h3 data-i18n="photoTitle">📸 Ảnh tiến trình</h3></div>
+    <div class="photo-grid">
+      <div class="photo-box" id="beforeBox" onclick="document.getElementById('beforeInput').click()"><div class="camera-icon">📷</div><div class="photo-label" data-i18n="before">Trước</div><input type="file" id="beforeInput" accept="image/*" capture="environment" onchange="handlePhoto(this,'before')"></div>
+      <div class="photo-box" id="afterBox" onclick="document.getElementById('afterInput').click()"><div class="camera-icon">📷</div><div class="photo-label" data-i18n="after">Sau</div><input type="file" id="afterInput" accept="image/*" capture="environment" onchange="handlePhoto(this,'after')"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: JOURNAL ==================== -->
+<div class="tab-content" id="tab-journal">
+  <div class="header fade-in"><h1 data-i18n="journalTitle">Nhật ký</h1></div>
+
+  <div class="journal-section fade-in">
+    <div class="section-header"><h3 data-i18n="newEntry">📝 Ghi chép mới</h3></div>
+    <div class="journal-card">
+      <textarea id="journalInput" data-i18n-placeholder="journalPlaceholder" placeholder="Hôm nay bạn cảm thấy thế nào? Mức năng lượng, đói, tâm trạng, giấc ngủ..."></textarea>
+      <button class="journal-save" onclick="saveJournal()" data-i18n="saveEntry">Lưu ghi chép</button>
+      <div class="journal-entries" id="journalEntries"></div>
+    </div>
+  </div>
+
+  <div class="history-section fade-in">
+    <div class="section-header"><h3 data-i18n="historyTitle">📅 Lịch sử nhịn ăn</h3><button class="toggle-btn" onclick="clearHistory()" data-i18n="clearAll">Xóa tất cả</button></div>
+    <div class="history-list" id="historyList"><div class="empty-history" data-i18n="noHistory">Chưa có lần nhịn nào</div></div>
+  </div>
+</div>
+
+<!-- ==================== TAB: SETTINGS ==================== -->
+<div class="tab-content" id="tab-settings">
+  <div class="header fade-in"><h1 data-i18n="settingsTitle">Cài đặt</h1></div>
+
+  <div class="settings-group fade-in">
+    <div class="settings-row"><label data-i18n="langLabel">Ngôn ngữ</label><span class="settings-val" id="langDisplay">Tiếng Việt</span></div>
+    <button class="settings-btn-row" onclick="toggleLang()"><span data-i18n="switchLang">Chuyển sang English</span><span class="arrow">›</span></button>
+  </div>
+
+  <div class="settings-group fade-in">
+    <div class="settings-row"><label data-i18n="themeLabel">Màu chủ đạo</label></div>
+    <div class="theme-grid" style="padding:0 16px 16px;">
+      <div class="theme-option active" style="background:linear-gradient(135deg,#00d4ff,#0099cc);color:#fff;" data-theme="theme-ocean" onclick="setTheme(this)">Ocean</div>
+      <div class="theme-option" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;" data-theme="theme-purple" onclick="setTheme(this)">Purple</div>
+      <div class="theme-option" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;" data-theme="theme-forest" onclick="setTheme(this)">Forest</div>
+      <div class="theme-option" style="background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;" data-theme="theme-sunset" onclick="setTheme(this)">Sunset</div>
+      <div class="theme-option" style="background:linear-gradient(135deg,#f472b6,#db2777);color:#fff;" data-theme="theme-rose" onclick="setTheme(this)">Rose</div>
+      <div class="theme-option" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;" data-theme="theme-gold" onclick="setTheme(this)">Gold</div>
+    </div>
+  </div>
+
+  <div class="settings-group fade-in">
+    <div class="settings-row"><label data-i18n="fontLabel">Phông chữ</label></div>
+    <div class="font-grid" style="padding:0 16px 16px;">
+      <div class="font-option active" data-font="-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif" onclick="setFont(this)">SF Pro</div>
+      <div class="font-option" data-font="'Georgia', 'Times New Roman', serif" onclick="setFont(this)">Georgia</div>
+      <div class="font-option" data-font="'Courier New', monospace" onclick="setFont(this)">Monospace</div>
+      <div class="font-option" data-font="'Segoe UI', 'Roboto', sans-serif" onclick="setFont(this)">Roboto</div>
+      <div class="font-option" data-font="'Helvetica Neue', Arial, sans-serif" onclick="setFont(this)">Helvetica</div>
+    </div>
+  </div>
+
+  <div class="settings-group fade-in">
+    <div class="slider-row"><label data-i18n="sizeLabel">Cỡ chữ</label><input type="range" id="fontSizeSlider" min="12" max="24" value="16" oninput="updateFontSize(this.value)"><div class="slider-val" id="fontSizeVal">16px</div></div>
+    <div class="slider-row"><label data-i18n="heightLabel">Khoảng cách dòng</label><input type="range" id="lineHeightSlider" min="1.2" max="2.0" step="0.1" value="1.5" oninput="updateLineHeight(this.value)"><div class="slider-val" id="lineHeightVal">1.5</div></div>
+  </div>
+
+  <div class="settings-group fade-in">
+    <button class="settings-btn-row" onclick="showLegal('privacy')"><span data-i18n="privacyPolicy">Chính sách riêng tư</span><span class="arrow">›</span></button>
+    <button class="settings-btn-row" onclick="showLegal('terms')"><span data-i18n="terms">Điều khoản sử dụng</span><span class="arrow">›</span></button>
+    <button class="settings-btn-row" onclick="showLegal('medical')"><span data-i18n="medicalDisclaimer">Tuyên bố y tế</span><span class="arrow">›</span></button>
+    <button class="settings-btn-row" onclick="showLegal('about')"><span data-i18n="about">Về ứng dụng</span><span class="arrow">›</span></button>
+  </div>
+
+  <div style="text-align:center;padding:20px;color:var(--text2);font-size:calc(var(--fs)*.8);" data-i18n="version">Fasting Dragon v2.0 — Professor Edition</div>
+</div>
+
+</div><!-- /app -->
+
+<!-- ==================== TAB BAR ==================== -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('fast')" data-tab="fast"><span class="tab-icon">⏱️</span><span class="tab-label" data-i18n="tabFast">Nhịn</span></button>
+  <button class="tab-btn" onclick="switchTab('science')" data-tab="science"><span class="tab-icon">🔬</span><span class="tab-label" data-i18n="tabScience">Khoa học</span></button>
+  <button class="tab-btn" onclick="switchTab('tracker')" data-tab="tracker"><span class="tab-icon">📊</span><span class="tab-label" data-i18n="tabTracker">Theo dõi</span></button>
+  <button class="tab-btn" onclick="switchTab('journal')" data-tab="journal"><span class="tab-icon">📓</span><span class="tab-label" data-i18n="tabJournal">Nhật ký</span></button>
+  <button class="tab-btn" onclick="switchTab('settings')" data-tab="settings"><span class="tab-icon">⚙️</span><span class="tab-label" data-i18n="tabSettings">Cài đặt</span></button>
+</div>
+
+<!-- ==================== LEGAL SCREENS ==================== -->
+<div class="legal-screen" id="legal-privacy">
+  <div class="legal-header"><button class="back-btn" onclick="hideLegal()">‹</button><h2 id="privacyTitle">Chính sách riêng tư</h2></div>
+  <div class="legal-content" id="privacyContent">
+    <h3>1. Dữ liệu chúng tôi thu thập</h3>
+    <p>Fasting Dragon chỉ lưu trữ dữ liệu cục bộ trên thiết bị của bạn thông qua localStorage. Chúng tôi KHÔNG thu thập, truyền tải, hoặc lưu trữ bất kỳ dữ liệu cá nhân nào trên máy chủ.</p>
+    <h3>2. Dữ liệu được lưu trữ</h3>
+    <ul><li>Thời gian nhịn ăn và lịch sử</li><li>Cân nặng, ảnh tiến trình (chỉ trên thiết bị)</li><li>Ghi chép nhật ký cá nhân</li><li>Cài đặt giao diện (màu sắc, phông chữ, cỡ chữ)</li></ul>
+    <h3>3. Quyền riêng tư của bạn</h3>
+    <p>Bạn có toàn quyền xóa tất cả dữ liệu bất cứ lúc nào bằng cách nhấn "Xóa tất cả" trong phần Nhật ký hoặc xóa dữ liệu ứng dụng trong Cài đặt iPhone.</p>
+    <h3>4. Chia sẻ dữ liệu</h3>
+    <p>Chúng tôi KHÔNG bán, chia sẻ, hoặc chuyển giao dữ liệu của bạn cho bất kỳ bên thứ ba nào. Tính năng "Chia sẻ" chỉ sử dụng API chia sẻ native của thiết bị.</p>
+    <h3>5. Bảo mật</h3>
+    <p>Mặc dù dữ liệu chỉ lưu cục bộ, chúng tôi khuyến nghị sử dụng tính năng "Chế độ riêng tư" khi cần che giấu màn hình.</p>
+    <h3>6. Liên hệ</h3>
+    <p>Email: support@fastingdragon.app</p>
+  </div>
+</div>
+
+<div class="legal-screen" id="legal-terms">
+  <div class="legal-header"><button class="back-btn" onclick="hideLegal()">‹</button><h2 id="termsTitle">Điều khoản sử dụng</h2></div>
+  <div class="legal-content" id="termsContent">
+    <h3>1. Chấp nhận điều khoản</h3>
+    <p>Bằng việc sử dụng Fasting Dragon, bạn đồng ý tuân thủ các điều khoản này.</p>
+    <h3>2. Không phải tư vấn y tế</h3>
+    <p>Ứng dụng này chỉ cung cấp công cụ theo dõi và thông tin chung về nhịn ăn. Nó KHÔNG thay thế cho lời khuyên, chẩn đoán, hoặc điều trị y tế chuyên nghiệp.</p>
+    <h3>3. Trách nhiệm người dùng</h3>
+    <p>Bạn chịu hoàn toàn trách nhiệm về quyết định nhịn ăn của mình. Hãy luôn tham khảo ý kiến bác sĩ trước khi bắt đầu bất kỳ chế độ nhịn ăn nào.</p>
+    <h3>4. Giới hạn trách nhiệm</h3>
+    <p>Trong mọi trường hợp, nhà phát triển không chịu trách nhiệm về bất kỳ thiệt hại nào phát sinh từ việc sử dụng ứng dụng.</p>
+    <h3>5. Thay đổi điều khoản</h3>
+    <p>Chúng tôi có quyền cập nhật điều khoản bất cứ lúc nào. Việc tiếp tục sử dụng ứng dụng đồng nghĩa với việc chấp nhận điều khoản mới.</p>
+  </div>
+</div>
+
+<div class="legal-screen" id="legal-medical">
+  <div class="legal-header"><button class="back-btn" onclick="hideLegal()">‹</button><h2 id="medicalTitle">Tuyên bố y tế</h2></div>
+  <div class="legal-content" id="medicalContent">
+    <h3>⚠️ Cảnh báo quan trọng</h3>
+    <p>Fasting Dragon là một công cụ theo dõi thời gian nhịn ăn và KHÔNG PHẢI là ứng dụng y tế. Nó không được thiết kế để chẩn đoán, điều trị, chữa bệnh, hoặc ngăn ngừa bất kỳ tình trạng sức khỏe nào.</p>
+    <h3>Không khuyến cáo cho:</h3>
+    <ul><li>Phụ nữ mang thai hoặc đang cho con bú</li><li>Trẻ em dưới 18 tuổi</li><li>Người mắc bệnh tiểu đường type 1</li><li>Người có tiền sử rối loạn ăn uống (anorexia, bulimia)</li><li>Người đang điều trị bệnh lý nghiêm trọng</li><li>Người có chỉ số BMI dưới 18.5</li></ul>
+    <h3>Khuyến cáo an toàn:</h3>
+    <ul><li>Luôn tham khảo ý kiến bác sĩ trước khi bắt đầu nhịn ăn kéo dài</li><li>Dừng ngay lập tức nếu cảm thấy chóng mặt, buồn nôn, đau ngực, hoặc suy nhược</li><li>Uống đủ nước trong thời gian nhịn ăn</li><li>Không lái xe hoặc vận hành máy móc nếu cảm thấy choáng váng</li></ul>
+    <h3>Tính năng BMR/TDEE</h3>
+    <p>Công cụ tính calo chỉ mang tính chất tham khảo dựa trên công thức khoa học phổ biến. Kết quả có thể khác biệt tùy cá nhân.</p>
+    <p style="margin-top:20px;font-weight:600;color:var(--danger);">BẰNG VIỆC SỬ DỤNG ỨNG DỤNG NÀY, BẠN XÁC NHẬN ĐÃ ĐỌC VÀ HIỂU CÁC CẢNH BÁO TRÊN.</p>
+  </div>
+</div>
+
+<div class="legal-screen" id="legal-about">
+  <div class="legal-header"><button class="back-btn" onclick="hideLegal()">‹</button><h2 id="aboutTitle">Về ứng dụng</h2></div>
+  <div class="legal-content" id="aboutContent">
+    <p style="text-align:center;font-size:calc(var(--fs)*1.2);color:var(--text);margin-bottom:20px;"><strong>Fasting Dragon</strong><br><span style="color:var(--accent)">Professor Edition v2.0</span></p>
+    <p>Ứng dụng theo dõi nhịn ăn chuyên nghiệp được thiết kế cho người dùng iPhone. Tất cả dữ liệu được lưu trữ cục bộ trên thiết bị của bạn — không cần internet, không thu thập dữ liệu cá nhân.</p>
+    <h3>Tính năng nổi bật</h3>
+    <ul><li>Theo dõi thời gian nhịn ăn real-time với 6 kế hoạch + tùy chỉnh</li><li>5 giai đoạn khoa học của cơ thể khi nhịn ăn</li><li>Tính BMR/TDEE cá nhân hóa</li><li>Theo dõi uống nước và cân nặng với biểu đồ</li><li>Thực đơn 7 ngày sau nhịn ăn</li><li>Nhật ký và lịch sử đầy đủ</li><li>6 chủ đề màu + 5 phông chữ + điều chỉnh cỡ chữ</li><li>Song ngữ Anh-Việt</li></ul>
+    <p style="margin-top:20px;text-align:center;color:var(--text2);">© 2026 Fasting Dragon. All rights reserved.</p>
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+<div class="modal-overlay" id="extendModal" onclick="if(event.target===this)closeExtend()">
+  <div class="modal-content">
+    <div class="modal-header"><h2 data-i18n="extendTitle">Gia hạn nhịn</h2><button class="close-modal" onclick="closeExtend()">&times;</button></div>
+    <p style="color:var(--text2);font-size:calc(var(--fs)*.95);margin-bottom:10px;" data-i18n="extendDesc">Thêm thời gian:</p>
+    <div class="extend-options">
+      <button class="extend-btn" onclick="extendFast(1)">+1h</button>
+      <button class="extend-btn" onclick="extendFast(2)">+2h</button>
+      <button class="extend-btn" onclick="extendFast(4)">+4h</button>
+      <button class="extend-btn" onclick="extendFast(8)">+8h</button>
+      <button class="extend-btn" onclick="extendFast(12)">+12h</button>
+      <button class="extend-btn" onclick="extendFast(24)">+24h</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shareModal" onclick="if(event.target===this)closeShare()">
+  <div class="modal-content">
+    <div class="modal-header"><h2 data-i18n="shareTitle">Chia sẻ kết quả</h2><button class="close-modal" onclick="closeShare()">&times;</button></div>
+    <div class="share-preview">
+      <h3>🏆 Fasting Dragon</h3>
+      <p data-i18n="shareText1">Tôi vừa hoàn thành</p>
+      <div class="share-big" id="shareDuration">16h nhịn ăn!</div>
+      <p><span data-i18n="planLabel">Kế hoạch:</span> <span id="sharePlan">16:8</span></p>
+    </div>
+    <button class="btn btn-share" onclick="doShare()">🔗 <span data-i18n="shareNow">Chia sẻ ngay</span></button>
+  </div>
+</div>
+
+<!-- ==================== PRIVACY OVERLAY ==================== -->
+<div class="privacy-overlay" id="privacyOverlay" onclick="togglePrivacy()">
+  <div class="privacy-icon">🔒</div>
+  <p data-i18n="privacyActive">Chế độ riêng tư đang bật</p>
+  <p style="font-size:calc(var(--fs)*.85);" data-i18n="privacyTap">Chạm bất kỳ đâu để mở khóa</p>
+</div>
+
+<script>
+// ==================== I18N ====================
+const i18n = {
+  vi: {
+    medical: "Thông báo Y tế: Tham khảo ý kiến bác sĩ trước khi nhịn ăn kéo dài. Không khuyến cáo cho phụ nữ mang thai, trẻ em, hoặc người có rối loạn ăn uống. Dừng ngay nếu cảm thấy không khỏe.",
+    statTotal: "Tổng lần", statHours: "Tổng giờ", statRate: "Tỷ lệ",
+    streak: "Chuỗi hiện tại", streakSub: "Tiếp tục phát huy!",
+    ready: "Sẵn sàng bắt đầu", hours: "Giờ", minutes: "Phút", seconds: "Giây",
+    target: "Mục tiêu:", nextMeal: "Bữa tiếp theo sau:",
+    selectPlan: "Chọn kế hoạch", beginner: "Người mới", intermediate: "Trung cấp", advanced: "Nâng cao", extended: "Kéo dài", prolonged: "Dài hạn",
+    customFast: "✍️ Tùy chỉnh thời gian nhịn", days: "Ngày", hoursLabel: "Giờ", startCustom: "Bắt đầu nhịn tùy chỉnh",
+    startFast: "Bắt đầu nhịn", privacy: "Riêng tư",
+    scienceTitle: "Khoa học", bodyPhases: "5 Giai đoạn cơ thể",
+    p1title: "Cạn glycogen", p1desc: "Đốt cháy đường dự trữ",
+    p2title: "Ketosis", p2desc: "Bắt đầu đốt mỡ",
+    p3title: "Tự thực bào", p3desc: "Tái chế tế bào hỏng",
+    p4title: "Hormone tăng trưởng", p4desc: "Bảo vệ cơ bắp",
+    p5title: "Nhạy insulin", p5desc: "Hồi phục chuyển hóa",
+    bmrTitle: "💪 Tính BMR / TDEE", age: "Tuổi", gender: "Giới tính", male: "Nam", female: "Nữ",
+    weightLabel: "Cân nặng (kg)", heightLabel: "Chiều cao (cm)", bmrLabel: "kcal / ngày (TDEE)",
+    trackerTitle: "Theo dõi", waterTitle: "💧 Uống nước", reset: "Đặt lại", goal: "Mục tiêu:", glasses: "ly", drank: "Đã uống:",
+    weightTitle: "⚖️ Cân nặng", add: "Thêm",
+    mealTitle: "🍽️ Thực đơn 7 ngày",
+    d1title: "Ngày 1 — Khởi động nhẹ", d1meal: "Nước dùng xương + rau hấp + cơm trắng ít + ức gà nướng",
+    d2title: "Ngày 2 — Protein nhẹ", d2meal: "Sữa chua Hy Lạp + quả mọng + salad cá hồi + quinoa + bơ",
+    d3title: "Ngày 3 — Cân bằng", d3meal: "Yến mạch + hạt + cá nướng + salad + khoai lang",
+    d4title: "Ngày 4 — Năng lượng", d4meal: "Trứng + bò xào + gạo lứt + súp lơ + dầu olive",
+    d5title: "Ngày 5 — Hồi phục", d5meal: "Sinh tố protein + ức gà + mì Ý + rau củ + hạt",
+    d6title: "Ngày 6 — Sức mạnh", d6meal: "Phô mai cottage + cá ngừ + đậu lăng + rau quay + socola đen",
+    d7title: "Ngày 7 — Duy trì", d7meal: "Chế độ cân bằng đầy đủ: protein, tinh bột phức, chất béo lành mạnh, chất xơ",
+    photoTitle: "📸 Ảnh tiến trình", before: "Trước", after: "Sau",
+    journalTitle: "Nhật ký", newEntry: "📝 Ghi chép mới",
+    journalPlaceholder: "Hôm nay bạn cảm thấy thế nào? Mức năng lượng, đói, tâm trạng, giấc ngủ...",
+    saveEntry: "Lưu ghi chép", historyTitle: "📅 Lịch sử nhịn ăn", clearAll: "Xóa tất cả", noHistory: "Chưa có lần nhịn nào",
+    settingsTitle: "Cài đặt", langLabel: "Ngôn ngữ", switchLang: "Chuyển sang English",
+    themeLabel: "Màu chủ đạo", fontLabel: "Phông chữ", sizeLabel: "Cỡ chữ", heightLabel: "Khoảng cách dòng",
+    privacyPolicy: "Chính sách riêng tư", terms: "Điều khoản sử dụng", medicalDisclaimer: "Tuyên bố y tế", about: "Về ứng dụng",
+    version: "Fasting Dragon v2.0 — Professor Edition",
+    tabFast: "Nhịn", tabScience: "Khoa học", tabTracker: "Theo dõi", tabJournal: "Nhật ký", tabSettings: "Cài đặt",
+    extendTitle: "Gia hạn nhịn", extendDesc: "Thêm thời gian:",
+    shareTitle: "Chia sẻ kết quả", shareText1: "Tôi vừa hoàn thành", planLabel: "Kế hoạch:", shareNow: "Chia sẻ ngay",
+    privacyActive: "Chế độ riêng tư đang bật", privacyTap: "Chạm bất kỳ đâu để mở khóa",
+    fasting: "Đang nhịn", elapsed: "đã trôi qua", targetReached: "Đạt mục tiêu!",
+    stopFast: "Dừng nhịn", extend: "Gia hạn", privacyMode: "Chế độ riêng tư", share: "Chia sẻ"
+  },
+  en: {
+    medical: "Medical Notice: Consult a physician before extended fasting. Not recommended for pregnant women, children, or those with eating disorders. Stop immediately if you feel unwell.",
+    statTotal: "Total Fasts", statHours: "Total Hours", statRate: "Success Rate",
+    streak: "Current Streak", streakSub: "Keep it going!",
+    ready: "Ready to Start", hours: "Hours", minutes: "Minutes", seconds: "Seconds",
+    target: "Target:", nextMeal: "Next meal in:",
+    selectPlan: "Select Your Plan", beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced", extended: "Extended", prolonged: "Prolonged",
+    customFast: "✍️ Custom Fast Duration", days: "Days", hoursLabel: "Hours", startCustom: "Start Custom Fast",
+    startFast: "Start Fast", privacy: "Privacy",
+    scienceTitle: "Science", bodyPhases: "5 Body Phases",
+    p1title: "Glycogen Depletion", p1desc: "Burning stored sugar",
+    p2title: "Ketosis", p2desc: "Fat burning begins",
+    p3title: "Autophagy", p3desc: "Cellular cleanup",
+    p4title: "Growth Hormone", p4desc: "Muscle preservation",
+    p5title: "Insulin Sensitivity", p5desc: "Metabolic healing",
+    bmrTitle: "💪 BMR / TDEE Calculator", age: "Age", gender: "Gender", male: "Male", female: "Female",
+    weightLabel: "Weight (kg)", heightLabel: "Height (cm)", bmrLabel: "kcal / day (TDEE)",
+    trackerTitle: "Tracker", waterTitle: "💧 Water Tracker", reset: "Reset", goal: "Goal:", glasses: "glasses", drank: "Drank:",
+    weightTitle: "⚖️ Weight Tracker", add: "Add",
+    mealTitle: "🍽️ 7-Day Meal Plan",
+    d1title: "Day 1 — Gentle Start", d1meal: "Bone broth + steamed vegetables + small rice + grilled chicken",
+    d2title: "Day 2 — Light Protein", d2meal: "Greek yogurt + berries + salmon salad + quinoa + avocado",
+    d3title: "Day 3 — Balanced", d3meal: "Oatmeal + nuts + grilled fish + greens + sweet potato",
+    d4title: "Day 4 — Energy Boost", d4meal: "Eggs + beef stir-fry + brown rice + broccoli + olive oil",
+    d5title: "Day 5 — Full Recovery", d5meal: "Protein smoothie + chicken + pasta + vegetables + nuts",
+    d6title: "Day 6 — Strength", d6meal: "Cottage cheese + tuna + lentils + roasted vegetables + dark chocolate",
+    d7title: "Day 7 — Maintenance", d7meal: "Full balanced diet: protein, complex carbs, healthy fats, fiber",
+    photoTitle: "📸 Progress Photos", before: "Before", after: "After",
+    journalTitle: "Journal", newEntry: "📝 New Entry",
+    journalPlaceholder: "How do you feel today? Energy, hunger, mood, sleep...",
+    saveEntry: "Save Entry", historyTitle: "📅 Fasting History", clearAll: "Clear All", noHistory: "No fasting sessions yet",
+    settingsTitle: "Settings", langLabel: "Language", switchLang: "Switch to Tiếng Việt",
+    themeLabel: "Theme Color", fontLabel: "Font Family", sizeLabel: "Text Size", heightLabel: "Line Height",
+    privacyPolicy: "Privacy Policy", terms: "Terms of Service", medicalDisclaimer: "Medical Disclaimer", about: "About",
+    version: "Fasting Dragon v2.0 — Professor Edition",
+    tabFast: "Fast", tabScience: "Science", tabTracker: "Tracker", tabJournal: "Journal", tabSettings: "Settings",
+    extendTitle: "Extend Fast", extendDesc: "Add more time:",
+    shareTitle: "Share Results", shareText1: "I just completed a", planLabel: "Plan:", shareNow: "Share Now",
+    privacyActive: "Privacy Mode Active", privacyTap: "Tap anywhere to unlock",
+    fasting: "Fasting", elapsed: "elapsed", targetReached: "Target Reached!",
+    stopFast: "Stop Fast", extend: "Extend", privacyMode: "Privacy Mode", share: "Share"
+  }
+};
+
+let currentLang = 'vi';
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('langBtn').textContent = lang === 'vi' ? 'EN' : 'VI';
+  document.getElementById('langDisplay').textContent = lang === 'vi' ? 'Tiếng Việt' : 'English';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
+  // Update legal screens
+  updateLegalLang();
+  saveState();
+}
+function toggleLang() { setLang(currentLang === 'vi' ? 'en' : 'vi'); }
+function t(key) { return i18n[currentLang][key] || key; }
+
+function updateLegalLang() {
+  const l = currentLang;
+  document.getElementById('privacyTitle').textContent = l === 'vi' ? 'Chính sách riêng tư' : 'Privacy Policy';
+  document.getElementById('termsTitle').textContent = l === 'vi' ? 'Điều khoản sử dụng' : 'Terms of Service';
+  document.getElementById('medicalTitle').textContent = l === 'vi' ? 'Tuyên bố y tế' : 'Medical Disclaimer';
+  document.getElementById('aboutTitle').textContent = l === 'vi' ? 'Về ứng dụng' : 'About';
+}
+
+// ==================== TABS ====================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.tab-btn[data-tab="' + tab + '"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ==================== STATE ====================
+let state = {
+  isFasting: false, startTime: null, targetDuration: 16*3600000, planName: '16:8',
+  theme: 'theme-ocean', font: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+  fontSize: 16, lineHeight: 1.5, lang: 'vi',
+  photos: { before: null, after: null }, history: [],
+  water: 0, waterGoal: 8, weights: [], journal: [],
+  bmr: { age: '', gender: 'male', weight: '', height: '' }
+};
+let timerInterval = null;
+const PHASES = [{id:'phase1',start:0,end:6},{id:'phase2',start:6,end:12},{id:'phase3',start:12,end:18},{id:'phase4',start:18,end:24},{id:'phase5',start:24,end:999}];
+
+// ==================== INIT ====================
+function init() {
+  loadState();
+  createParticles();
+  createRingTicks();
+  applyFontSettings();
+  setLang(state.lang || 'vi');
+  updateUI();
+  if (state.isFasting) startTimer();
+  renderHistory(); renderPhotos(); renderWater(); renderWeights(); renderJournal();
+  updateStats(); updateStreak();
+}
+function createRingTicks() {
+  const c = document.getElementById('ringTicks');
+  const colors = ['#00d4ff','#a855f7','#f472b6','#fb923c','#fbbf24','#22c55e'];
+  for (let i = 0; i < 60; i++) {
+    const t = document.createElement('div'); t.className = 'ring-tick';
+    t.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
+    const colorIdx = Math.floor((i / 60) * colors.length);
+    t.style.background = colors[colorIdx];
+    if (i % 5 === 0) { t.style.height = '12px'; t.style.width = '3px'; t.style.opacity = '0.8'; t.style.boxShadow = `0 0 6px ${colors[colorIdx]}`; }
+    else { t.style.opacity = '0.25'; }
+    c.appendChild(t);
+  }
+  // Sparkles
+  const s = document.getElementById('ringSparkles');
+  for (let i = 0; i < 12; i++) {
+    const sp = document.createElement('div'); sp.className = 'ring-sparkle';
+    const angle = (i / 12) * 360;
+    const rad = 125;
+    const x = 130 + rad * Math.cos((angle - 90) * Math.PI / 180);
+    const y = 130 + rad * Math.sin((angle - 90) * Math.PI / 180);
+    sp.style.left = x + 'px'; sp.style.top = y + 'px';
+    sp.style.animationDelay = (i * 0.3) + 's';
+    sp.style.background = colors[i % colors.length];
+    s.appendChild(sp);
+  }
+}
+function createParticles() {
+  const c = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div'); p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.width = p.style.height = (Math.random() * 4 + 2) + 'px';
+    p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    c.appendChild(p);
+  }
+}
+
+// ==================== FONT ====================
+function applyFontSettings() {
+  const r = document.querySelector(':root');
+  r.style.setProperty('--font', state.font);
+  r.style.setProperty('--fs', state.fontSize + 'px');
+  r.style.setProperty('--lh', state.lineHeight);
+  document.getElementById('fontSizeSlider').value = state.fontSize;
+  document.getElementById('fontSizeVal').textContent = state.fontSize + 'px';
+  document.getElementById('lineHeightSlider').value = state.lineHeight;
+  document.getElementById('lineHeightVal').textContent = state.lineHeight;
+}
+function updateFontSize(v) { state.fontSize = parseInt(v); document.getElementById('fontSizeVal').textContent = v + 'px'; applyFontSettings(); saveState(); }
+function updateLineHeight(v) { state.lineHeight = parseFloat(v); document.getElementById('lineHeightVal').textContent = v; applyFontSettings(); saveState(); }
+function setFont(el) {
+  document.querySelectorAll('.font-option').forEach(f => f.classList.remove('active'));
+  el.classList.add('active'); state.font = el.dataset.font; applyFontSettings(); saveState();
+}
+
+// ==================== PLAN ====================
+function selectPlan(el) {
+  if (state.isFasting) { if (!confirm(t('changePlanConfirm') || 'Changing plan will stop current fast. Continue?')) return; stopFasting(false); }
+  document.querySelectorAll('.plan-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active'); state.planName = el.dataset.name; state.targetDuration = parseInt(el.dataset.hours) * 3600000;
+  saveState(); updateUI();
+}
+function startCustomFast() {
+  const d = parseInt(document.getElementById('customDays').value) || 0;
+  const h = parseInt(document.getElementById('customHours').value) || 0;
+  if (d === 0 && h === 0) { alert(t('enterDuration') || 'Please enter a duration'); return; }
+  if (state.isFasting) { if (!confirm(t('stopCurrent') || 'This will stop current fast. Continue?')) return; stopFasting(false); }
+  state.planName = d > 0 ? `${d}d ${h}h` : `${h}h`;
+  state.targetDuration = (d * 24 + h) * 3600000;
+  state.isFasting = true; state.startTime = Date.now();
+  saveState(); startTimer(); updateButtons();
+}
+
+// ==================== TIMER ====================
+function startFasting() {
+  state.isFasting = true; state.startTime = Date.now();
+  saveState(); startTimer(); updateButtons();
+}
+function stopFasting(save = true) {
+  if (save && state.isFasting) {
+    const elapsed = Date.now() - state.startTime;
+    const h = Math.floor(elapsed / 3600000); const m = Math.floor((elapsed % 3600000) / 60000);
+    state.history.unshift({ plan: state.planName, date: new Date().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}), duration: `${h}h ${m}m`, completed: elapsed >= state.targetDuration, timestamp: Date.now() });
+    if (elapsed >= state.targetDuration * 0.5) { document.getElementById('shareDuration').textContent = `${h}h ${m}m ${t('fastSuffix') || 'fast!'}`; document.getElementById('sharePlan').textContent = state.planName; document.getElementById('shareModal').classList.add('show'); }
+  }
+  state.isFasting = false; state.startTime = null;
+  clearInterval(timerInterval); timerInterval = null;
+  saveState(); updateUI(); renderHistory(); updateStats(); updateStreak();
+}
+function startTimer() { clearInterval(timerInterval); updateTimer(); timerInterval = setInterval(updateTimer, 1000); }
+function updateTimer() {
+  const elapsed = Date.now() - state.startTime;
+  const remaining = Math.max(0, state.targetDuration - elapsed);
+  const pct = Math.min(100, (elapsed / state.targetDuration) * 100);
+  const h = Math.floor(elapsed / 3600000); const m = Math.floor((elapsed % 3600000) / 60000); const s = Math.floor((elapsed % 60000) / 1000);
+  document.getElementById('timerDisplay').innerHTML = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const circ = 2 * Math.PI * 110;
+  const circOuter = 2 * Math.PI * 135;
+  document.getElementById('progressRing').style.strokeDashoffset = circ - (pct / 100) * circ;
+  document.getElementById('progressRingGlow').style.strokeDashoffset = circ - (pct / 100) * circ;
+  document.getElementById('progressRingOuter').style.strokeDashoffset = circOuter - (pct / 100) * circOuter;
+  document.getElementById('progressText').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  document.getElementById('progressSub').textContent = pct >= 100 ? 'DONE!' : (pct >= 75 ? 'ALMOST' : (pct >= 50 ? 'HALFWAY' : (pct >= 25 ? 'GOING' : 'START')));
+  document.getElementById('progressPct').textContent = Math.floor(pct) + '%';
+  const th = Math.floor(elapsed / 3600000);
+  document.getElementById('statusLabel').textContent = remaining <= 0 ? t('targetReached') : `${t('fasting')} — ${th}h ${t('elapsed')}`;
+  updatePhases(th);
+  const mealEl = document.getElementById('countdownMeal'); const mealTimeEl = document.getElementById('nextMealTime');
+  if (remaining > 0) { mealEl.style.display = 'block'; const rh = Math.floor(remaining / 3600000); const rm = Math.floor((remaining % 3600000) / 60000); mealTimeEl.textContent = `${rh}h ${rm}m`; }
+  else { mealEl.style.display = 'none'; }
+}
+function updatePhases(hours) {
+  PHASES.forEach(p => {
+    const el = document.getElementById(p.id); el.classList.remove('active', 'locked');
+    if (hours >= p.start && hours < p.end) el.classList.add('active');
+    else if (hours < p.start) el.classList.add('locked');
+  });
+}
+function updateUI() {
+  const th = Math.floor(state.targetDuration / 3600000); const tm = Math.floor((state.targetDuration % 3600000) / 60000);
+  document.getElementById('targetTime').textContent = `${String(th).padStart(2,'0')}:${String(tm).padStart(2,'0')}:00`;
+  if (!state.isFasting) {
+    document.getElementById('timerDisplay').textContent = '00:00:00';
+    document.getElementById('statusLabel').textContent = t('ready');
+    document.getElementById('progressRing').style.strokeDashoffset = 2 * Math.PI * 110;
+    document.getElementById('progressRingGlow').style.strokeDashoffset = 2 * Math.PI * 110;
+    document.getElementById('progressRingOuter').style.strokeDashoffset = 2 * Math.PI * 135;
+    document.getElementById('progressText').textContent = '00:00';
+    document.getElementById('progressSub').textContent = 'READY';
+    document.getElementById('progressPct').textContent = '0%';
+    document.getElementById('countdownMeal').style.display = 'none';
+    document.querySelectorAll('.phase-item').forEach(el => { el.classList.remove('active'); if (el.id !== 'phase1') el.classList.add('locked'); });
+  }
+  updateButtons();
+}
+function updateButtons() {
+  const btns = document.getElementById('actionBtns');
+  if (state.isFasting) {
+    btns.innerHTML = `<button class="btn btn-danger" onclick="stopFasting(true)">${t('stopFast')}</button><button class="btn btn-secondary" onclick="openExtend()">${t('extend')}</button><button class="btn btn-extend" onclick="togglePrivacy()">${t('privacyMode')}</button><button class="btn btn-share" onclick="openShare()">${t('share')}</button>`;
+    btns.style.gridTemplateColumns = '1fr 1fr';
+  } else {
+    btns.innerHTML = `<button class="btn btn-primary" onclick="startFasting()">${t('startFast')}</button><button class="btn btn-secondary" onclick="togglePrivacy()">${t('privacy')}</button>`;
+    btns.style.gridTemplateColumns = '1fr 1fr';
+  }
+}
+
+// ==================== EXTEND / SHARE ====================
+function openExtend() { document.getElementById('extendModal').classList.add('show'); }
+function closeExtend() { document.getElementById('extendModal').classList.remove('show'); }
+function extendFast(hours) { state.targetDuration += hours * 3600000; saveState(); updateUI(); closeExtend(); }
+function openShare() {
+  const elapsed = state.isFasting ? Date.now() - state.startTime : 0;
+  const h = Math.floor(elapsed / 3600000); const m = Math.floor((elapsed % 3600000) / 60000);
+  document.getElementById('shareDuration').textContent = state.isFasting ? `${h}h ${m}m ${t('fasting')}!` : t('ready');
+  document.getElementById('sharePlan').textContent = state.planName;
+  document.getElementById('shareModal').classList.add('show');
+}
+function closeShare() { document.getElementById('shareModal').classList.remove('show'); }
+function doShare() {
+  const text = `Fasting Dragon — ${document.getElementById('shareDuration').textContent} (${document.getElementById('sharePlan').textContent})`;
+  if (navigator.share) { navigator.share({ title: 'Fasting Dragon', text: text }); }
+  else { alert('Copied!\n' + text); }
+  closeShare();
+}
+
+// ==================== PRIVACY ====================
+function togglePrivacy() { document.getElementById('privacyOverlay').classList.toggle('show'); }
+
+// ==================== STATS / STREAK ====================
+function updateStats() {
+  const total = state.history.length;
+  const hours = state.history.reduce((sum, h) => sum + (parseInt(h.duration) || 0), 0);
+  const completed = state.history.filter(h => h.completed).length;
+  const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statHours').textContent = hours;
+  document.getElementById('statRate').textContent = rate + '%';
+}
+function updateStreak() {
+  if (state.history.length === 0) { document.getElementById('streakBadge').style.display = 'none'; return; }
+  let streak = 0; const today = new Date().setHours(0,0,0,0);
+  const dates = [...new Set(state.history.map(h => new Date(h.timestamp).setHours(0,0,0,0)))].sort((a,b) => b-a);
+  if (dates.length > 0 && (today - dates[0]) <= 86400000 * 2) {
+    streak = 1;
+    for (let i = 1; i < dates.length; i++) { if ((dates[i-1] - dates[i]) <= 86400000 * 2) streak++; else break; }
+  }
+  if (streak > 0) { document.getElementById('streakBadge').style.display = 'flex'; document.getElementById('streakNum').textContent = streak; }
+  else { document.getElementById('streakBadge').style.display = 'none'; }
+}
+
+// ==================== BMR ====================
+function calcBMR() {
+  const age = parseInt(document.getElementById('bmrAge').value);
+  const gender = document.getElementById('bmrGender').value;
+  const weight = parseFloat(document.getElementById('bmrWeight').value);
+  const height = parseFloat(document.getElementById('bmrHeight').value);
+  if (!age || !weight || !height) return;
+  let bmr = gender === 'male' ? (10 * weight + 6.25 * height - 5 * age + 5) : (10 * weight + 6.25 * height - 5 * age - 161);
+  const tdee = Math.round(bmr * 1.375);
+  document.getElementById('bmrNum').textContent = tdee;
+  document.getElementById('bmrResult').style.display = 'block';
+  state.bmr = { age, gender, weight, height };
+  saveState();
+}
+
+// ==================== WATER ====================
+function renderWater() {
+  const g = document.getElementById('waterGlasses'); g.innerHTML = '';
+  for (let i = 0; i < state.waterGoal; i++) {
+    const d = document.createElement('div'); d.className = 'water-glass' + (i < state.water ? ' filled' : '');
+    d.onclick = () => { state.water = i + 1; renderWater(); saveState(); };
+    g.appendChild(d);
+  }
+  document.getElementById('waterDrank').textContent = state.water;
+  document.getElementById('waterGoal').textContent = state.waterGoal;
+}
+function resetWater() { state.water = 0; renderWater(); saveState(); }
+
+// ==================== WEIGHT ====================
+function addWeight() {
+  const v = parseFloat(document.getElementById('weightInput').value);
+  if (!v) return;
+  state.weights.unshift({ val: v, date: new Date().toLocaleDateString('en-US', {month:'short',day:'numeric'}) });
+  document.getElementById('weightInput').value = '';
+  saveState(); renderWeights();
+}
+function renderWeights() {
+  const chart = document.getElementById('weightChart'); const entries = document.getElementById('weightEntries');
+  chart.innerHTML = ''; entries.innerHTML = '';
+  if (state.weights.length === 0) { chart.innerHTML = '<div style="color:var(--text2);font-size:13px;">No data</div>'; return; }
+  const max = Math.max(...state.weights.map(w => w.val)); const min = Math.min(...state.weights.map(w => w.val));
+  const range = max - min || 1; const recent = state.weights.slice(0, 14).reverse();
+  recent.forEach(w => {
+    const bar = document.createElement('div'); bar.className = 'weight-bar';
+    const h = ((w.val - min) / range) * 80 + 20; bar.style.height = h + '%';
+    bar.innerHTML = `<div class="w-tooltip">${w.val}</div>`; chart.appendChild(bar);
+  });
+  state.weights.slice(0, 10).forEach(w => {
+    const d = document.createElement('div'); d.className = 'weight-entry';
+    d.innerHTML = `<span class="w-date">${w.date}</span><span class="w-val">${w.val} kg</span>`; entries.appendChild(d);
+  });
+}
+
+// ==================== JOURNAL ====================
+function saveJournal() {
+  const text = document.getElementById('journalInput').value.trim();
+  if (!text) return;
+  state.journal.unshift({ text: text, date: new Date().toLocaleString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) });
+  document.getElementById('journalInput').value = '';
+  saveState(); renderJournal();
+}
+function renderJournal() {
+  const e = document.getElementById('journalEntries'); e.innerHTML = '';
+  state.journal.slice(0, 20).forEach(j => {
+    const d = document.createElement('div'); d.className = 'journal-entry';
+    d.innerHTML = `<div class="j-date">${j.date}</div><div class="j-text">${j.text}</div>`; e.appendChild(d);
+  });
+}
+
+// ==================== PHOTOS ====================
+function handlePhoto(input, type) {
+  if (input.files && input.files[0]) {
+    const r = new FileReader();
+    r.onload = function(e) { state.photos[type] = e.target.result; saveState(); renderPhotos(); };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+function renderPhotos() {
+  ['before', 'after'].forEach(type => {
+    const box = document.getElementById(type + 'Box'); const ex = box.querySelector('img'); if (ex) ex.remove();
+    if (state.photos[type]) { const img = document.createElement('img'); img.src = state.photos[type]; box.appendChild(img); box.classList.add('has-img'); }
+    else { box.classList.remove('has-img'); }
+  });
+}
+
+// ==================== HISTORY ====================
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (state.history.length === 0) { list.innerHTML = `<div class="empty-history">${t('noHistory')}</div>`; return; }
+  list.innerHTML = state.history.map(h => `<div class="history-item"><div class="history-top"><span class="history-plan">${h.plan} ${h.completed ? '✅' : ''}</span><span class="history-date">${h.date}</span></div><div class="history-duration">${t('duration') || 'Duration'}: ${h.duration}</div></div>`).join('');
+}
+function clearHistory() { if (!confirm(t('clearConfirm') || 'Clear all history?')) return; state.history = []; saveState(); renderHistory(); updateStats(); updateStreak(); }
+
+// ==================== THEME / SETTINGS ====================
+function setTheme(el) {
+  document.querySelectorAll('.theme-option').forEach(t => t.classList.remove('active'));
+  el.classList.add('active'); document.body.className = el.dataset.theme;
+  state.theme = el.dataset.theme; saveState();
+}
+function showLegal(type) { document.getElementById('legal-' + type).classList.add('show'); }
+function hideLegal() { document.querySelectorAll('.legal-screen').forEach(s => s.classList.remove('show')); }
+
+// ==================== STORAGE ====================
+function saveState() { localStorage.setItem('fastingDragonPro', JSON.stringify(state)); }
+function loadState() {
+  const saved = localStorage.getItem('fastingDragonPro');
+  if (saved) {
+    const p = JSON.parse(saved); state = { ...state, ...p };
+    if (state.theme) document.body.className = state.theme;
+    if (state.lang) currentLang = state.lang;
+    document.querySelectorAll('.plan-btn').forEach(b => b.classList.toggle('active', b.dataset.name === state.planName));
+    document.querySelectorAll('.theme-option').forEach(t => t.classList.toggle('active', t.dataset.theme === state.theme));
+    document.querySelectorAll('.font-option').forEach(f => f.classList.toggle('active', f.dataset.font === state.font));
+    if (state.bmr && state.bmr.age) { document.getElementById('bmrAge').value = state.bmr.age; document.getElementById('bmrGender').value = state.bmr.gender; document.getElementById('bmrWeight').value = state.bmr.weight; document.getElementById('bmrHeight').value = state.bmr.height; }
+  }
+}
+
+// ==================== SW ====================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('data:text/javascript,' + encodeURIComponent(`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response('Offline'))));`)).catch(()=>{});
+}
+
+init();
+</script>
+</body>
+</html>
