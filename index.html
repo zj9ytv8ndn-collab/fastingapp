@@ -668,6 +668,43 @@ nav button .ic{font-size:23px}
 #gqPet .gq-ctl button:active{transform:scale(.93)}
 #gqPet .gq-ctl button.sel{border-color:var(--volt);color:var(--volt);background:color-mix(in srgb,var(--volt) 12%,transparent);box-shadow:0 0 16px color-mix(in srgb,var(--volt) 25%,transparent)}
 
+/* ===== HEALTH ZOO — Safari Park (gap doi island) ===== */
+.zoo{position:relative;height:880px;border-radius:24px;overflow:hidden;border:1.5px solid var(--line2);
+ background:linear-gradient(180deg,#aee3f7 0%,#cdeccb 30%,#a8d67e 55%,#8fbf62 78%,#7fae54 100%);
+ box-shadow:inset 0 0 60px rgba(255,255,255,.12)}
+.zoo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26%;background:linear-gradient(180deg,transparent,rgba(90,140,60,.25));pointer-events:none}
+.zsky{position:absolute;pointer-events:none}
+.zsun{top:4%;left:88%;font-size:34px;animation:tw 4s ease-in-out infinite;filter:drop-shadow(0 0 16px rgba(255,220,90,.8))}
+.zcloud{left:-12%;font-size:30px;opacity:.9;animation:cloudDrift 55s linear infinite}
+.zbird{left:-8%;font-size:15px;animation:birdFly 30s linear infinite}
+.zgate{position:absolute;top:2.5%;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,#8a5a2e,#6e4522);color:#ffe9c9;font-weight:800;font-size:12.5px;letter-spacing:1.5px;padding:8px 22px;border-radius:14px;border:2px solid #5a3a1c;box-shadow:0 4px 12px rgba(0,0,0,.35);z-index:5}
+.zpath{position:absolute;left:0;right:0;top:50%;height:7%;background:linear-gradient(180deg,#d9b77c,#c9a768);border-top:2px dashed rgba(120,85,40,.5);border-bottom:2px dashed rgba(120,85,40,.5);opacity:.95}
+.zhab{position:absolute;width:16%;height:19%;border-radius:18px;border:2px solid rgba(255,255,255,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 6px 16px rgba(0,0,0,.22),inset 0 2px 8px rgba(255,255,255,.25);transition:transform .15s;z-index:4}
+.zhab:active{transform:scale(.93)}
+.zh-pool{background:radial-gradient(ellipse at 50% 40%,#7fd4e8,#3d9ec4)}
+.zh-pen{background:radial-gradient(ellipse at 50% 40%,#f7c8d4,#e89aae)}
+.zh-tree{background:radial-gradient(ellipse at 50% 40%,#bfe3a8,#7cb35c)}
+.zh-pond{background:radial-gradient(ellipse at 50% 40%,#a8dcb8,#58a878)}
+.zh-bamboo{background:radial-gradient(ellipse at 50% 40%,#cdeab8,#88bc60)}
+.zh-den{background:radial-gradient(ellipse at 50% 40%,#e8cfae,#b08a56)}
+.zh-beach{background:radial-gradient(ellipse at 50% 40%,#f2e2b0,#d9bc74)}
+.zh-savanna{background:radial-gradient(ellipse at 50% 40%,#f0d290,#cfa050)}
+.zh-meadow{background:radial-gradient(ellipse at 50% 40%,#c8e8a0,#8cc060)}
+.zh-plains{background:radial-gradient(ellipse at 50% 40%,#dcd2c0,#a89880)}
+.zpet{font-size:42px;line-height:1.15;animation:petBob 2.6s ease-in-out infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.zname{font-size:11px;font-weight:800;color:#fff;background:rgba(20,30,20,.55);padding:2px 10px;border-radius:10px;letter-spacing:.5px}
+.z4d{position:absolute;top:-8px;right:-6px;font-size:9px;font-weight:800;color:#141a02;background:linear-gradient(135deg,#e6ff70,#a8e010);padding:3px 7px;border-radius:9px;box-shadow:0 0 12px rgba(212,255,63,.6);animation:pulseGlow 1.6s ease-in-out infinite}
+.zgame{position:absolute;width:15%;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;z-index:4}
+.zgame span{font-size:34px;animation:petBob 2.2s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.zgame:active span{transform:scale(.85)}
+.zgame i{font-style:normal;font-size:10px;font-weight:800;color:#fff;background:rgba(20,30,20,.55);padding:2px 9px;border-radius:9px}
+.zdeco{position:absolute;pointer-events:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));z-index:2}
+.zjeep{position:absolute;font-size:30px;cursor:pointer;z-index:6;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))}
+.zroam{position:absolute;z-index:5;will-change:left,top;transition:left 6s ease-in-out,top 6s ease-in-out;pointer-events:auto}
+.zroam img,.zroam svg{width:100%;height:100%}
+.zinfo{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10.5px;color:#f0f8ec;font-weight:700;z-index:7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.zooPulse{animation:zooPop .6s cubic-bezier(.3,1.6,.5,1)!important}
+@keyframes zooPop{0%{transform:scale(1)}40%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1)}}
 /* ===== DOLPHIN 4D TAB ===== */
 .d4d-title{position:absolute;top:4%;width:100%;text-align:center;pointer-events:none;color:#eaf8ff;font-size:clamp(20px,5vw,30px);font-weight:800;letter-spacing:2px;text-shadow:0 0 20px rgba(120,215,255,.6),0 3px 8px rgba(0,0,0,.65);z-index:5}
 .d4d-title small{display:block;font-size:.4em;font-weight:600;color:#9fd4ec;letter-spacing:6px;margin-top:4px}
@@ -725,7 +762,44 @@ nav button .ic{font-size:23px}
     <div class="bar" style="margin-top:20px;height:9px;border-radius:6px"><i id="heroBar" style="width:0%;background:linear-gradient(90deg,var(--volt),color-mix(in srgb,var(--volt) 55%,#fff));box-shadow:0 0 12px color-mix(in srgb,var(--volt) 50%,transparent)"></i></div>
     <div class="prog-line" id="dashProgTxt" style="margin-top:10px"></div>
   </div>
-  <div class="card"><h3>🏝️ Health Island</h3><div class="isl" id="gqScene"></div><div class="sub" id="gqNext" style="margin-top:10px"></div></div>
+  <div class="card"><h3>🦁 Health Zoo <span class="hint">Safari Park · gấp đôi island cũ · chạm chuồng thú để mở 4D</span></h3>
+    <div class="zoo" id="zooScene">
+      <span class="zsky zsun">☀️</span>
+      <span class="zsky zcloud" style="top:6%;animation-duration:52s">☁️</span>
+      <span class="zsky zcloud" style="top:13%;font-size:24px;animation-duration:70s;animation-delay:-30s">☁️</span>
+      <span class="zsky zbird" style="top:10%">🐦</span>
+      <div class="zgate">🎫 VƯỜN THÚ HEALTH ZOO</div>
+      <div class="zpath"></div>
+      <div class="zhab zh-pool" style="left:3%;top:26%" onclick="zooGo4D('dolphin')"><span class="zpet">🐬</span><span class="zname">Cá heo</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-pen" style="left:22.5%;top:26%" onclick="zooGo4D('pig')"><span class="zpet">🐷</span><span class="zname">Heo con</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-tree" style="left:42%;top:26%" onclick="zooGo4D('koala')"><span class="zpet">🐨</span><span class="zname">Koala</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-pond" style="left:61.5%;top:26%" onclick="zooGo4D('frog')"><span class="zpet">🐸</span><span class="zname">Ếch</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-bamboo" style="left:81%;top:26%" onclick="zooGo4D('panda')"><span class="zpet">🐼</span><span class="zname">Trúc</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-den" style="left:3%;top:58%" onclick="zooGo4D('fox')"><span class="zpet">🦊</span><span class="zname">Cáo</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-beach" style="left:22.5%;top:58%" onclick="zooGo4D('rua')"><span class="zpet">🐢</span><span class="zname">Rùa</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-savanna" style="left:42%;top:58%" onclick="zooGo4D('su')"><span class="zpet">🦁</span><span class="zname">Sư tử</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-meadow" style="left:61.5%;top:58%" onclick="zooGo4D('hu')"><span class="zpet">🦌</span><span class="zname">Hươu</span><span class="z4d">4D</span></div>
+      <div class="zhab zh-plains" style="left:81%;top:58%" onclick="zooGo4D('vo')"><span class="zpet">🐘</span><span class="zname">Voi</span><span class="z4d">4D</span></div>
+      <div class="zgame" id="zgBall" style="left:6%;top:85%" onclick="zooBall()"><span>🎾</span><i>Ném bóng</i></div>
+      <div class="zgame" id="zgFeed" style="left:24%;top:85%" onclick="zooFeed()"><span>🍎</span><i>Cho ăn</i></div>
+      <div class="zgame" id="zgChest" style="left:42%;top:85%" onclick="zooChest()"><span>🎁</span><i>Rương ngày</i></div>
+      <div class="zgame" id="zgJeep" style="left:60%;top:85%" onclick="zooJeep()"><span>🚙</span><i>Safari tour</i></div>
+      <div class="zgame" style="left:78%;top:85%;cursor:default"><span>🛝</span><i>Sân chơi</i></div>
+      <span class="zdeco" style="left:1%;top:47%;font-size:30px">🌳</span>
+      <span class="zdeco" style="left:92%;top:46%;font-size:30px">🌴</span>
+      <span class="zdeco" style="left:48%;top:47%;font-size:26px">⛲</span>
+      <span class="zdeco" style="left:12%;top:50%;font-size:20px">🌷</span>
+      <span class="zdeco" style="left:87%;top:76%;font-size:20px">🌻</span>
+      <span class="zdeco" style="left:33%;top:12%;font-size:22px">🎈</span>
+      <span class="zdeco" style="left:68%;top:15%;font-size:18px">🦋</span>
+      <span class="zdeco" style="left:50%;top:75%;font-size:26px">🎪</span>
+      <span class="zjeep" id="zJeep" style="left:4%;top:56%">🚙</span>
+      <div id="zooRoam" style="position:absolute;inset:0;pointer-events:none"></div>
+      <div class="zinfo" id="zooInfo"></div>
+    </div>
+    <div class="isl" id="gqScene" style="display:none"></div>
+    <div class="sub" id="gqNext" style="margin-top:10px"></div>
+  </div>
 
   <div class="preset" style="margin:-4px 0 0">
     <button onclick="addWater(250)" style="flex:1">💧 +250ml</button>
@@ -931,6 +1005,21 @@ nav button .ic{font-size:23px}
 </section>
 
 <section class="tab" id="t-island">
+  <div class="card"><h3>🗺️ Safari 4D — chạm để gặp bé <span class="hint">10 loài · thực tế ảo</span></h3>
+    <div class="preset" style="gap:8px">
+      <button class="btn ghost sm" onclick="zooGo4D('dolphin')">🐬 Cá heo</button>
+      <button class="btn ghost sm" onclick="zooGo4D('pig')">🐷 Heo</button>
+      <button class="btn ghost sm" onclick="zooGo4D('koala')">🐨 Koala</button>
+      <button class="btn ghost sm" onclick="zooGo4D('frog')">🐸 Ếch</button>
+      <button class="btn ghost sm" onclick="zooGo4D('panda')">🐼 Trúc</button>
+      <button class="btn ghost sm" onclick="zooGo4D('fox')">🦊 Cáo</button>
+      <button class="btn ghost sm" onclick="zooGo4D('rua')">🐢 Rùa</button>
+      <button class="btn ghost sm" onclick="zooGo4D('su')">🦁 Sư tử</button>
+      <button class="btn ghost sm" onclick="zooGo4D('hu')">🦌 Hươu</button>
+      <button class="btn ghost sm" onclick="zooGo4D('vo')">🐘 Voi</button>
+    </div>
+    <div class="sub" style="margin-top:10px">Mỗi bé có sân khấu 4D riêng: xoay 720°, zoom, chạm 2 lần để biểu diễn. Chơi ném bóng, cho ăn, mở rương safari ở vườn thú để đàn thú & avatar sống vui mỗi ngày.</div>
+  </div>
   <div class="card"><h3>📖 Bộ sưu tập thú cưng</h3><div class="gq-dex" id="gqDex"></div><div class="sub" style="margin-top:10px" id="gqDexNote"></div></div>
   <div class="card"><h3>🐣 Thú cưng của bạn</h3><div style="position:relative;text-align:center"><div id="gqPet" style="text-align:center"></div><div id="pigRunBox" style="display:none;position:absolute;inset:0;z-index:6;align-items:center;justify-content:center;background:rgba(10,14,20,.94);border-radius:18px;border:1.5px solid var(--line2)"></div></div></div>
   <div class="card"><h3>🛒 Cửa hàng thú cưng</h3><div class="row" style="border:0;padding-top:0"><span id="gqBalLbl"></span><b class="v" style="font-size:17px">🪙 <span id="gqCoins3">0</span></b></div><div class="gq-shop" id="gqPetShop"></div></div>
@@ -1253,7 +1342,7 @@ nav button .ic{font-size:23px}
   <button onclick="go('nutri',this)"><span class="ic">🍴</span>Nutrition</button>
   <button onclick="go('exe',this)"><span class="ic">🏃</span>Exercise</button>
   <button onclick="go('quest',this)"><span class="ic">🎯</span>Nhiệm vụ</button>
-  <button onclick="go('island',this)"><span class="ic">🏝️</span>Đảo</button>
+  <button onclick="go('island',this)"><span class="ic">🦁</span>Zoo</button>
   <button onclick="go('hist',this)"><span class="ic">↺</span>Lịch sử</button>
   <button onclick="go('set',this)"><span class="ic">⚙</span>Cài đặt</button>
   <button onclick="go('dolphin',this);setTimeout(openDolphin4D,80)"><span class="ic">🐬</span>4D</button>
@@ -1293,7 +1382,7 @@ nav button .ic{font-size:23px}
 const L=localStorage;
 const get=(k,d)=>{try{const v=L.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
 const set=(k,v)=>L.setItem(k,JSON.stringify(v));
-const TITLES={dash:"Dashboard",fast:"Fasting",health:"Health",nutri:"Nutrition",exe:"Exercise",quest:"Nhiệm vụ",island:"Đảo",hist:"Lịch sử",set:"Cài đặt",pets:"Thú cưng"};
+const TITLES={dash:"Dashboard",fast:"Fasting",health:"Health",nutri:"Nutrition",exe:"Exercise",quest:"Nhiệm vụ",island:"Vườn thú",hist:"Lịch sử",set:"Cài đặt",pets:"Thú cưng"};
 const PRESETS=[["12:12",12],["14:10",14],["16:8",16],["18:6",18],["20:4",20],["OMAD",23],["24 giờ",24],["36 giờ",36],["48 giờ",48],["72 giờ",72],["5 ngày",120],["7 ngày",168],["10 ngày",240],["15 ngày",360]];
 const CAT=h=>h<=24?["Standard","g","✓ Phù hợp sử dụng phổ thông với hướng dẫn chung."]:h<=72?["Extended Fasting","o","⚠️ Fasting kéo dài tạo thay đổi sinh lý lớn và có rủi ro y khoa. Theo dõi cơ thể sát sao."]:["Yêu cầu giám sát y tế","r","🚨 Extended fasting có thể gây thay đổi sinh lý đáng kể và rủi ro y khoa. Chế độ này chỉ dành cho ngườI đã được sàng lọc và giám sát bởi chuyên gia y tế."];
 const TIMELINE=[[0,"Sau ăn (0–4h)","Tiêu hóa đang diễn ra; insulin & glucose phản ánh bữa ăn trước."],[4,"Hậu hấp thu (4–12h)","Cơ thể dần dựa vào glucose lưu hành, sau đó huy động glycogen gan."],[12,"Chuyển tiếp (12–24h)","Dùng mỡ tăng khi glycogen cạn dần; sản xuất ketone có thể bắt đầu tăng."],[24,"Extended (24–48h)","Chuyển hóa ketone thường tăng. Chú ý protein, nước & điện giải."],[48,"Extended — giám sát sát (48–72h)","Tăng giám sát: nước, điện giải, nhịp tim, chóng mặt, yếu cơ."],[72,"Cao nguy cơ (72h+)","Vượt 72h có rủi ro y khoa đáng kể — cần giám sát chuyên môn."]];
@@ -9593,6 +9682,78 @@ function switchVo(){
     };
   }
 });
+</script>
+<script>
+/* ===== HEALTH ZOO — Safari engine ===== */
+function zooGo4D(id){
+  const navBtn=document.querySelectorAll('nav button')[9];
+  go('dolphin',navBtn);
+  setTimeout(()=>{
+    if(id==='fox')switchFox();
+    else if(id==='rua')switchRua();
+    else if(id==='su')switchSu();
+    else if(id==='hu')switchHu();
+    else if(id==='vo')switchVo();
+    else switch4D(id);
+  },120);
+}
+function zooPulse(id){const e=document.getElementById(id);if(!e)return;e.classList.remove('zooPulse');void e.offsetWidth;e.classList.add('zooPulse');setTimeout(()=>e.classList.remove('zooPulse'),650);}
+function zooBall(){
+  const k='zball'+TD()+':'+new Date().getHours();
+  if(get(k))return toastMsg('🎾 Đã chơi giờ này — quay lại sau nhé!');
+  set(k,'1');
+  const g=get('game',{coins:0,xp:0,hearts:0,bond:0});
+  g.xp=(g.xp||0)+8;g.bond=(g.bond||0)+1;g.hearts=(g.hearts||0)+1;set('game',g);
+  toastMsg('🎾 Ném bóng cho đàn thú! +8 XP · +1 ❤️');confetti(16);zooPulse('zgBall');
+}
+function zooFeed(){
+  const k='zfeed'+TD()+':'+new Date().getHours();
+  if(get(k))return toastMsg('🍎 Các bé no rồi! Giờ sau quay lại nhé.');
+  const g=get('game',{coins:0,xp:0,hearts:0});
+  if((g.coins||0)<5)return toastMsg('🪙 Cần 5 xu để mua thức ăn! Làm nhiệm vụ để kiếm thêm.');
+  g.coins-=5;g.hearts=(g.hearts||0)+2;set(k,'1');set('game',g);
+  toastMsg('🍎 Cho đàn thú ăn! -5 🪙 · +2 ❤️');confetti(24);zooPulse('zgFeed');
+}
+function zooChest(){
+  const k='zchest'+TD();
+  if(get(k))return toastMsg('🎁 Rương safari mỗi ngày 1 lần — mai quay lại nhé!');
+  set(k,'1');
+  const c=30+Math.floor(Math.random()*31),x=10+Math.floor(Math.random()*11);
+  const g=get('game',{coins:0,xp:0});g.coins=(g.coins||0)+c;g.xp=(g.xp||0)+x;set('game',g);
+  toastMsg('🎁 Safari chest! +'+c+' 🪙 · +'+x+' XP');confetti(40);zooPulse('zgChest');
+}
+function zooJeep(){
+  const j=document.getElementById('zJeep');if(!j)return;
+  if(j.dataset.touring==='1')return;
+  j.dataset.touring='1';
+  j.style.transition='left 6s linear,top 6s ease-in-out';
+  j.style.left='88%';j.style.top='47%';
+  setTimeout(()=>{j.style.left='4%';j.style.top='56%';},6200);
+  setTimeout(()=>{j.dataset.touring='0';},12500);
+  const g=get('game',{xp:0});g.xp=(g.xp||0)+6;set('game',g);
+  toastMsg('🚙 Safari tour quanh vườn thú! +6 XP');
+}
+function zooBuild(){
+  const box=document.getElementById('zooRoam');if(!box)return;
+  const g=get('game',{pets:[],pet:'',av:'🧑‍🚀'});
+  const owned=(g.pets&&g.pets.length?g.pets:[g.pet]).filter(Boolean);
+  const anims=['petHop','petBounce','petWaddle','petBob','petSway','petFlutter'];
+  let html=owned.slice(0,8).map((pe,i)=>`<span class="zroam" style="left:${8+(i*11)%70}%;top:${34+(i*13)%22}%;width:40px;height:40px;animation:${anims[i%6]} 2.6s ease-in-out ${(i*0.35).toFixed(2)}s infinite;cursor:pointer" onclick="petReact(this,'${pe}')">${petIMG(pe)}</span>`).join('');
+  if(g.av)html+=`<span class="zroam" style="left:46%;top:44%;width:38px;height:38px;cursor:pointer" onclick="avReact(this.firstElementChild)"><span style="display:block;width:100%;height:100%;animation:petSway 2.6s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))">${g.av}</span></span>`;
+  box.innerHTML=html;
+  const inf=document.getElementById('zooInfo');
+  if(inf){const h=new Date().getHours();inf.textContent='👣 '+(80+((h*37)%60))+' khách tham quan · 🌤️ '+(26+(h%5))+'°C · ⭐ Safari đang mở — chạm chuồng thú để xem bé ở thế giới 4D';}
+}
+setTimeout(zooBuild,1500);
+setInterval(zooBuild,10000);
+setInterval(()=>{
+  const box=document.getElementById('zooRoam');if(!box||document.hidden)return;
+  box.querySelectorAll('.zroam').forEach(el=>{
+    if(Math.random()<0.5)return;
+    el.style.left=(5+Math.random()*82).toFixed(1)+'%';
+    el.style.top=(30+Math.random()*52).toFixed(1)+'%';
+  });
+},5000);
 </script>
 </body>
 </html>
