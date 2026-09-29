@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#060608">
+<meta name="app-version" content="2.0.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<title>MetabolicCoach — Fasting & 4D Pet</title>
+<style>
+:root{
+  --bg:#060608;--bg2:#0b0b0f;
+  --card:rgba(255,255,255,.055);--card2:rgba(255,255,255,.09);
+  --line:rgba(255,255,255,.11);--line2:rgba(255,255,255,.28);
+  --txt:#fafbf7;--sub:#adb7c4;--sub2:#788290;
+  --volt:#d4ff3f;--volt2:#a8e010;
+  --green:#4ade80;--orange:#fb923c;--red:#ff5d5d;--blue:#6cb4ff;--purple:#b79bff;--cyan:#59e6d2;--gold:#e8cf9a;
+  --r:24px;--clockc:#d4ff3f;
+}
+body[data-theme=ocean]{--volt:#4ae3d9;--volt2:#0ea5e9}
+body[data-theme=royal]{--volt:#c4b5fd;--volt2:#e879f9}
+body[data-theme=amber]{--volt:#fcd34d;--volt2:#fb923c}
+body[data-theme=sunset]{--volt:#fb923c;--volt2:#f43f5e}
+body[data-theme=mint]{--volt:#4ade80;--volt2:#2dd4bf}
+body[data-theme=inferno]{--volt:#ff5d3a;--volt2:#ffb03a}
+body[data-theme=blood]{--volt:#ff3b5c;--volt2:#ff7a3d}
+body[data-theme=cyber]{--volt:#ff3df2;--volt2:#00e5ff}
+body[data-theme=steel]{--volt:#8ab8ff;--volt2:#4f7cff}
+body[data-theme=nova]{--volt:#8f7bff;--volt2:#5ea2ff}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:"Be Vietnam Pro",-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;zoom:var(--fs,1)}
+body::before{content:"";position:fixed;inset:0;max-width:430px;margin:0 auto;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(700px 480px at 90% -10%,color-mix(in srgb,var(--volt) 14%,transparent),transparent 55%),
+    radial-gradient(600px 500px at -25% 20%,color-mix(in srgb,var(--volt2) 7%,transparent),transparent 60%),
+    linear-gradient(180deg,var(--bg2),var(--bg) 45%)}
+.hdr{position:sticky;top:0;z-index:20;padding:calc(16px + env(safe-area-inset-top)) 22px 14px;background:linear-gradient(180deg,rgba(6,6,8,.94) 55%,transparent);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.kick{display:flex;justify-content:space-between;align-items:center}
+.kick .brand{font-size:12px;letter-spacing:3.2px;color:var(--txt);font-weight:800}
+.live{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--sub);letter-spacing:.5px}
+.live b{color:var(--volt);font-variant-numeric:tabular-nums;font-weight:800}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--volt);box-shadow:0 0 10px var(--volt);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.coach{font-size:15px;color:var(--sub);margin-top:9px}
+.coach2{font-size:13px;color:var(--sub2);margin-top:3px}
+.tab{display:none;padding:4px 18px 130px;position:relative;z-index:1}
+.tab.on{display:block;animation:fadeUp .4s cubic-bezier(.25,.8,.3,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{position:relative;background:var(--card);border:1.5px solid var(--line2);border-radius:var(--r);padding:24px;margin:16px 0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 14px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05);overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--volt) 40%,transparent),transparent)}
+.card h3{font-size:11.5px;color:var(--sub);text-transform:uppercase;letter-spacing:2.4px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.card h3::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--volt);box-shadow:0 0 8px color-mix(in srgb,var(--volt) 70%,transparent);flex-shrink:0}
+.card h3 .hint{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:500;font-size:10.5px;color:var(--sub2)}
+.hero{text-align:center;padding:30px 16px 24px;background:linear-gradient(160deg,color-mix(in srgb,var(--volt) 7%,transparent),transparent 45%),repeating-linear-gradient(115deg,transparent 0 22px,color-mix(in srgb,var(--volt) 3%,transparent) 22px 24px),var(--card)}
+.state-pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;letter-spacing:2.2px;text-transform:uppercase;font-weight:800;color:var(--volt);background:color-mix(in srgb,var(--volt) 12%,transparent);border:1px solid color-mix(in srgb,var(--volt) 35%,transparent);padding:6px 16px;border-radius:20px;margin-bottom:14px}
+.state-pill .dot{width:5px;height:5px}
+.clock{font-size:66px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1;color:var(--clockc);text-shadow:0 0 24px color-mix(in srgb,var(--clockc) 50%,transparent)}
+.elapsed{font-size:15.5px;color:var(--sub);margin-top:10px;font-weight:500}
+.prog-line{font-size:12.5px;color:var(--sub2);margin-top:6px;font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:.4px}
+.dual{display:flex;gap:12px;margin-top:16px}
+.dual>div{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;padding:15px 10px;text-align:center}
+.dual small{display:block;font-size:10px;letter-spacing:2.2px;color:var(--sub2);font-weight:800;margin-bottom:5px}
+.dual b{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.dual .d2 b{color:var(--clockc);text-shadow:0 0 14px color-mix(in srgb,var(--clockc) 45%,transparent)}
+.pbar{position:relative;height:9px;border-radius:6px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:20px}
+.pbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--volt),color-mix(in srgb,var(--volt) 55%,#fff));box-shadow:0 0 12px color-mix(in srgb,var(--volt) 50%,transparent);transition:width .8s ease}
+.pbar i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-110%);animation:shimmer 2.6s ease-in-out infinite}
+@keyframes shimmer{60%,100%{transform:translateX(110%)}}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{background:var(--card);border:1.5px solid var(--line2);border-radius:22px;padding:19px;position:relative;overflow:hidden;transition:transform .15s}
+.tile:active{transform:scale(.96)}
+.tile::before{content:"";position:absolute;top:0;left:14px;right:14px;height:2.5px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--volt),transparent);opacity:.55}
+.tile .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:13px}
+.tile .val{font-size:35px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.tile .lbl{font-size:11.5px;color:var(--sub);margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:1.1px}
+.tile .upd{font-size:11px;color:var(--sub2);margin-top:8px}
+.ic.g{background:linear-gradient(135deg,rgba(74,222,128,.28),rgba(74,222,128,.06));border:1px solid rgba(74,222,128,.35)}
+.ic.r{background:linear-gradient(135deg,rgba(255,93,93,.28),rgba(255,93,93,.06));border:1px solid rgba(255,93,93,.35)}
+.ic.b{background:linear-gradient(135deg,rgba(108,180,255,.28),rgba(108,180,255,.06));border:1px solid rgba(108,180,255,.35)}
+.ic.o{background:linear-gradient(135deg,rgba(251,146,60,.28),rgba(251,146,60,.06));border:1px solid rgba(251,146,60,.35)}
+.ic.p{background:linear-gradient(135deg,rgba(183,155,255,.28),rgba(183,155,255,.06));border:1px solid rgba(183,155,255,.35)}
+.ic.c{background:linear-gradient(135deg,rgba(89,230,210,.28),rgba(89,230,210,.06));border:1px solid rgba(89,230,210,.35)}
+.ic.v{background:linear-gradient(135deg,rgba(212,255,63,.3),rgba(212,255,63,.08));border:1px solid rgba(212,255,63,.4)}
+.bs-top{display:flex;align-items:center;gap:18px}
+.gauge{position:relative;width:124px;height:124px;flex-shrink:0}
+.gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .num b{font-size:38px;font-weight:800;letter-spacing:-1px}
+.gauge .num span{font-size:9.5px;color:var(--sub2);font-weight:700;letter-spacing:1px}
+.bs-side{flex:1;min-width:0}
+.bs-chip{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:800;padding:7px 15px;border-radius:16px;letter-spacing:.3px}
+.bs-rows{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.bs-row{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--sub);font-weight:700}
+.bs-row .bar{flex:1;height:5px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden}
+.bs-row .bar i{display:block;height:100%;border-radius:4px;transition:width .8s ease}
+.bs-row b{width:26px;text-align:right;font-variant-numeric:tabular-nums;color:var(--txt);font-size:13px}
+.coach-quote{display:flex;gap:12px;align-items:flex-start;border-left:3px solid var(--volt);padding:4px 0 4px 14px;margin:6px 0}
+.coach-quote .av{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--volt),var(--volt2));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px color-mix(in srgb,var(--volt) 30%,transparent)}
+.coach-quote p{font-size:14.5px;line-height:1.55;color:#dfe5d8}
+.coach-quote p b{color:var(--volt)}
+.alert{position:relative;border-radius:20px;padding:17px 18px 17px 20px;margin:14px 0;font-size:13.5px;line-height:1.5;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.alert::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+.alert.e{border-color:rgba(255,93,93,.5);background:rgba(255,93,93,.08)}.alert.e::before{background:var(--red);box-shadow:0 0 14px var(--red)}
+.alert.w{border-color:rgba(251,146,60,.45);background:rgba(251,146,60,.06)}.alert.w::before{background:var(--orange)}
+.alert.i{border-color:rgba(108,180,255,.4);background:rgba(108,180,255,.05)}.alert.i::before{background:var(--blue)}
+.alert b{display:flex;align-items:center;gap:7px;font-size:15.5px;margin-bottom:6px;color:#fff;font-weight:800}
+.alert .act{margin-top:9px;font-weight:800;font-size:13.5px;padding:11px 13px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--line2)}
+.alert.e .act{background:rgba(255,93,93,.16);border-color:rgba(255,93,93,.45);color:#ffc9c9}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:18px;border-radius:18px;border:0;font-size:16px;font-weight:800;margin:12px 0;cursor:pointer;letter-spacing:.5px;transition:transform .15s,opacity .2s;font-family:inherit}
+.btn:active{transform:scale(.96)}
+.btn.volt{background:linear-gradient(135deg,color-mix(in srgb,var(--volt) 65%,#fff),var(--volt) 55%,var(--volt2));color:#141a02;box-shadow:0 10px 30px color-mix(in srgb,var(--volt) 30%,transparent),inset 0 1px 0 rgba(255,255,255,.6);position:relative;overflow:hidden}
+.btn.volt::after{content:"";position:absolute;top:0;bottom:0;width:45%;left:-70%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shine 3.4s ease-in-out infinite}
+@keyframes shine{0%{left:-70%}55%{left:135%}100%{left:135%}}
+.btn.red{background:rgba(255,93,93,.12);color:var(--red);border:1px solid rgba(255,93,93,.4)}
+.btn.ghost{background:var(--card2);color:var(--txt);border:1px solid var(--line2)}
+.btn.sm{font-size:14px;padding:12px 18px}
+.btn:disabled{opacity:.35}
+.row{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);font-size:15.5px;gap:10px;font-weight:500}
+.row:last-child{border-bottom:0}
+.row .v{font-weight:800;color:var(--volt);font-variant-numeric:tabular-nums}
+.row .chipsmall{font-size:11.5px;color:var(--sub2);text-align:right;line-height:1.4}
+.row.why-row{cursor:pointer;transition:opacity .15s}
+.row.why-row:active{opacity:.6}
+.preset{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.preset button{background:var(--card2);border:1.5px solid var(--line2);color:var(--txt);padding:13px 18px;border-radius:15px;font-size:15.5px;cursor:pointer;transition:all .18s;font-weight:800;font-family:inherit}
+.preset button.sel{background:linear-gradient(135deg,color-mix(in srgb,var(--volt) 25%,transparent),color-mix(in srgb,var(--volt) 8%,transparent));border-color:var(--volt);color:var(--volt);box-shadow:0 4px 18px color-mix(in srgb,var(--volt) 20%,transparent)}
+.catbox{border-radius:16px;padding:16px 18px;margin-top:10px;font-size:14px;line-height:1.55;font-weight:500}
+.catbox b{font-weight:800}
+.catbox.g{background:rgba(74,222,128,.09);border:1px solid rgba(74,222,128,.35);color:#c9f7d9}
+.catbox.o{background:rgba(251,146,60,.09);border:1px solid rgba(251,146,60,.35);color:#ffe1c2}
+.catbox.r{background:rgba(255,93,93,.10);border:1px solid rgba(255,93,93,.45);color:#ffd0d0}
+.tl{position:relative;padding-left:24px;margin:12px 0}
+.tl::before{content:"";position:absolute;left:5px;top:8px;bottom:-10px;width:2px;background:linear-gradient(180deg,var(--volt),rgba(212,255,63,.04))}
+.tl:last-child::before{bottom:8px}
+.tl::after{content:"";position:absolute;left:1px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--volt);box-shadow:0 0 10px color-mix(in srgb,var(--volt) 70%,transparent)}
+.tl b{font-size:15.5px;font-weight:800}
+.tl div{font-size:13px;color:var(--sub);margin-top:3px;line-height:1.5}
+input[type=number],select,textarea{background:rgba(255,255,255,.05);border:1px solid var(--line2);color:var(--txt);border-radius:14px;padding:13px 15px;font-size:16.5px;font-family:inherit;outline:none;font-weight:600}
+input[type=number]{width:130px;text-align:right}
+input[type=number]:focus,select:focus{border-color:var(--volt)}
+.tgl{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:14.5px;gap:10px;border-bottom:1px solid var(--line);font-weight:500;cursor:pointer}
+.tgl:last-child{border-bottom:0}
+.switch{position:relative;width:52px;height:30px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch i{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:20px;transition:.25s;cursor:pointer}
+.switch i::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.25s}
+.switch input:checked+i{background:linear-gradient(135deg,color-mix(in srgb,var(--volt) 65%,#fff),var(--volt2))}
+.switch input:checked+i::after{transform:translateX(22px)}
+nav{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));left:0;right:0;margin:0 auto;width:min(410px,94%);background:rgba(13,14,17,.87);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border:1px solid var(--line2);border-radius:30px;display:flex;z-index:50;box-shadow:0 14px 44px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);padding:8px}
+nav button{flex:1;background:none;border:0;color:var(--sub2);font-size:9.5px;padding:9px 0 7px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border-radius:22px;transition:all .2s;font-weight:800;letter-spacing:.3px;font-family:inherit}
+nav button .ic{font-size:21px;transition:transform .2s}
+nav button.on{color:var(--volt);background:color-mix(in srgb,var(--volt) 14%,transparent)}
+nav button.on .ic{transform:translateY(-2px) scale(1.15)}
+.modal{position:fixed;inset:0;background:rgba(2,3,5,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;z-index:100;animation:fadeIn .25s}
+.modal.on{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.sheet{background:linear-gradient(180deg,#15161b,#0c0d11);width:100%;max-width:430px;max-height:88vh;overflow-y:auto;border-radius:28px 28px 0 0;padding:12px 22px calc(28px + env(safe-area-inset-bottom));border-top:1px solid var(--line2);box-shadow:0 -24px 70px rgba(0,0,0,.7);animation:slideUp .38s cubic-bezier(.3,.75,.3,1)}
+@keyframes slideUp{from{transform:translateY(70px);opacity:.4}to{transform:none;opacity:1}}
+.grab{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.2);margin:2px auto 16px}
+.sheet h2{font-size:23px;font-weight:800;margin-bottom:14px;letter-spacing:-.3px}
+.sheet h4{font-size:11.5px;text-transform:uppercase;letter-spacing:1.6px;color:var(--sub);margin:18px 0 8px;font-weight:800}
+.sub{font-size:13.5px;color:var(--sub);line-height:1.6}
+.safe-disclaimer{font-size:11.5px;font-style:italic;color:var(--sub2);margin-top:12px;line-height:1.5}
+.hist{padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.hist:last-child{border:0}
+.swatches{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 0 6px}
+.sw{width:54px;height:54px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;position:relative;transition:transform .18s;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.sw:active{transform:scale(.9)}
+.sw.sel{border-color:#fff;transform:scale(1.1)}
+.sw.volt{background:linear-gradient(135deg,#d4ff3f,#a8e010)}.sw.ocean{background:linear-gradient(135deg,#4ae3d9,#0ea5e9)}.sw.royal{background:linear-gradient(135deg,#c4b5fd,#e879f9)}.sw.amber{background:linear-gradient(135deg,#fcd34d,#fb923c)}.sw.sunset{background:linear-gradient(135deg,#fb923c,#f43f5e)}.sw.mint{background:linear-gradient(135deg,#4ade80,#2dd4bf)}.sw.inferno{background:linear-gradient(135deg,#ff5d3a,#ffb03a)}.sw.blood{background:linear-gradient(135deg,#ff3b5c,#ff7a3d)}.sw.cyber{background:linear-gradient(135deg,#ff3df2,#00e5ff)}.sw.steel{background:linear-gradient(135deg,#8ab8ff,#4f7cff)}.sw.nova{background:linear-gradient(135deg,#8f7bff,#5ea2ff)}
+.sw span{position:absolute;top:100%;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--sub2);margin-top:5px;white-space:nowrap;font-weight:800;letter-spacing:.5px}
+.fs-ctrl{display:flex;align-items:center;gap:12px;justify-content:center;padding:10px 0 4px}
+.fs-btn{width:60px;height:60px;border-radius:18px;background:var(--card2);border:1px solid var(--line2);color:var(--txt);font-size:24px;font-weight:800;cursor:pointer;font-family:inherit}
+.fs-btn:active{transform:scale(.93)}
+.fs-val{font-size:17px;font-weight:800;min-width:72px;text-align:center;color:var(--volt)}
+.h1x{font-size:18px;font-weight:800}
+/* ===== QUEST ===== */
+#gqToast{position:fixed;top:calc(18px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-24px);background:linear-gradient(135deg,#e6ff70,var(--volt2));color:#141a02;font-weight:800;padding:13px 24px;border-radius:16px;z-index:300;opacity:0;transition:all .4s cubic-bezier(.3,1.4,.5,1);box-shadow:0 12px 34px rgba(212,255,63,.4);font-size:14.5px;pointer-events:none;white-space:nowrap;max-width:92vw}
+#gqToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.gq-q{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.gq-q:last-child{border:0}
+.gq-chk{width:30px;height:30px;border-radius:10px;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;cursor:pointer;transition:border-color .18s}
+.gq-done .gq-chk{background:linear-gradient(135deg,#e6ff70,var(--volt2));border-color:transparent;color:#141a02}
+.gq-done .gq-n{opacity:.55;text-decoration:line-through}
+.gq-xp{margin-left:auto;font-size:12px;font-weight:800;color:var(--volt);white-space:nowrap}
+.gq-ach{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gq-a{background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:16px;padding:14px;text-align:center}
+.gq-a.lk{opacity:.38;filter:grayscale(1)}
+.gq-a .e{font-size:30px}
+.gq-a .t{font-size:11.5px;font-weight:800;margin-top:6px}
+.gq-login{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:12px;padding:8px 2px;text-align:center;font-size:10px;font-weight:800;color:var(--sub2)}
+.gq-login.on{background:linear-gradient(135deg,rgba(212,255,63,.2),rgba(212,255,63,.06));border-color:var(--volt);color:var(--volt)}
+.gq-login.today{box-shadow:0 0 0 2px color-mix(in srgb,var(--volt) 60%,transparent)}
+.gq-fact{background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:16px;padding:16px;font-size:14px;line-height:1.6}
+/* ===== 4D PET WORLD ===== */
+.p4-stage{position:relative;height:min(52vh,440px);min-height:340px;border-radius:20px;overflow:hidden;border:1.5px solid var(--line2);touch-action:none;user-select:none;-webkit-user-select:none}
+.p4-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.p4-title{position:absolute;top:4%;width:100%;text-align:center;pointer-events:none;font-size:clamp(20px,5vw,30px);font-weight:800;letter-spacing:2px;text-shadow:0 0 20px rgba(120,215,255,.45),0 3px 8px rgba(0,0,0,.65);z-index:5}
+.p4-title small{display:block;font-size:.4em;font-weight:700;letter-spacing:5px;margin-top:4px;opacity:.85}
+.p4-cam{position:absolute;top:15%;width:100%;text-align:center;pointer-events:none;font-size:12px;letter-spacing:3px;font-weight:800;z-index:5;opacity:.8}
+.p4-hint{position:absolute;bottom:5%;width:100%;text-align:center;pointer-events:none;font-size:11.5px;letter-spacing:.5px;z-index:5;opacity:.75;animation:hintFade 1s ease forwards 7s}
+@keyframes hintFade{to{opacity:0}}
+.p4-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;background:rgba(8,20,32,.5);border:1px solid var(--line2);padding:10px 12px;border-radius:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 10px 34px rgba(0,0,0,.55);margin:12px 2px 6px}
+.p4-btn{border:none;cursor:pointer;font-weight:800;font-size:12.5px;padding:10px 13px;border-radius:14px;color:#052033;background:linear-gradient(180deg,#bfe9ff,#6cb8e8);box-shadow:0 3px 0 #2a5d88;font-family:inherit;transition:transform .08s}
+.p4-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #2a5d88}
+.p4-btn.active{background:linear-gradient(180deg,#e6ff70,#a8e010);box-shadow:0 3px 0 #6a8a00}
+.p4-btn.pink{background:linear-gradient(180deg,#ffc9dd,#f78fb0);box-shadow:0 3px 0 #a84568;color:#3d0f22}
+.p4-btn.purple{background:linear-gradient(180deg,#d9c6ff,#a488ee);box-shadow:0 3px 0 #5e4599;color:#221040}
+.p4-btn.cyan{background:linear-gradient(180deg,#c2fff1,#67d9c4);box-shadow:0 3px 0 #2a7d6f;color:#07332c}
+.p4-speed{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;padding:0 4px;color:var(--sub)}
+.p4-speed input{width:80px;accent-color:var(--volt)}
+.p4-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.p4-cell{position:relative;aspect-ratio:1/1.15;border-radius:16px;overflow:hidden;cursor:pointer;border:1.5px solid var(--line2);background:radial-gradient(circle at 50% 35%,rgba(250,225,175,.10),transparent 70%),#12100c;transition:transform .15s;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.p4-cell:active{transform:scale(.93)}
+.p4-cell.sel{border-color:var(--volt);box-shadow:0 0 0 2px color-mix(in srgb,var(--volt) 60%,transparent),0 0 20px color-mix(in srgb,var(--volt) 28%,transparent)}
+.p4-cell canvas{width:88%;height:70%}
+.p4-cell .nm{font-size:9.5px;font-weight:800;letter-spacing:.4px;color:#f0e2c4;padding:3px 2px 6px;white-space:nowrap}
+.p4-lock{position:absolute;top:5px;right:5px;font-size:10px;font-weight:800;background:rgba(10,14,20,.75);border:1px solid var(--line2);color:var(--gold);padding:2px 7px;border-radius:9px;z-index:3}
+.p4-free{position:absolute;top:5px;right:5px;font-size:9px;font-weight:800;background:linear-gradient(135deg,#e6ff70,#a8e010);color:#141a02;padding:2px 7px;border-radius:9px;z-index:3}
+.gq-dex{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.gq-p{background:rgba(255,255,255,.04);border:1.5px solid var(--line2);border-radius:16px;padding:12px 2px;text-align:center}
+.gq-p.lk{opacity:.45;filter:grayscale(.75) brightness(.85)}
+.gq-p canvas{width:54px;height:54px}
+.gq-p .t{font-size:9.5px;font-weight:800;margin-top:4px}
+.float-heart{position:fixed;pointer-events:none;z-index:120;font-size:24px;animation:fheart 1.7s ease-out forwards}
+@keyframes fheart{0%{opacity:0;transform:translateY(0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translateY(-130px) scale(1.3) rotate(12deg)}}
+.conf{position:fixed;top:-14px;width:9px;height:15px;z-index:400;pointer-events:none;border-radius:2px;animation:confFall linear forwards}
+@keyframes confFall{to{transform:translateY(112vh) rotate(720deg);opacity:.6}}
+#lvOverlay,#hatchOverlay{position:fixed;inset:0;z-index:500;background:rgba(3,5,10,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center}
+#lvOverlay.on,#hatchOverlay.on{display:flex}
+.lv-badge{background:linear-gradient(135deg,#e6ff70,var(--volt2));color:#141a02;border-radius:30px;padding:36px 48px;text-align:center;animation:lvPop .7s cubic-bezier(.2,1.6,.4,1);box-shadow:0 0 100px rgba(212,255,63,.55)}
+@keyframes lvPop{0%{transform:scale(.3) rotate(-6deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.m7-day{border:1px solid var(--line2);border-radius:16px;padding:14px 16px;margin:10px 0;background:rgba(255,255,255,.03)}
+.m7-day b{font-size:14.5px}
+.m7-meal{display:flex;justify-content:space-between;font-size:12.5px;color:var(--sub);padding:5px 0;border-top:1px dashed rgba(255,255,255,.08);font-weight:500}
+.m7-meal span:last-child{color:var(--gold);font-weight:800;white-space:nowrap}
+#splash{position:fixed;inset:0;z-index:999;background:radial-gradient(600px 400px at 50% 40%,#101320,#060608 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .6s}
+.logoAnim{animation:floaty 4.5s ease-in-out infinite}
+@keyframes floaty{50%{transform:translateY(-3px)}}
+.orbHue{animation:hueflow 14s linear infinite}
+@keyframes hueflow{to{filter:hue-rotate(360deg)}}
+.spk{animation:tw 2.8s ease-in-out infinite}
+.spk.d1{animation-delay:.7s}.spk.d2{animation-delay:1.4s}.spk.d3{animation-delay:2.1s}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.12}}
+::-webkit-scrollbar{display:none}
+html{scrollbar-width:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="splash"><svg class="logoAnim" style="width:170px;height:170px;filter:drop-shadow(0 0 34px rgba(212,255,63,.35))" viewBox="0 0 512 512" fill="none"><defs><linearGradient id="og" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#50ebd7"/><stop offset="0.26" stop-color="#8cf469"/><stop offset="0.5" stop-color="#ffe05c"/><stop offset="0.68" stop-color="#ff9850"/><stop offset="0.86" stop-color="#ff5fcd"/><stop offset="1" stop-color="#aa6cff"/></linearGradient><radialGradient id="gl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#d4ff3f" stop-opacity=".35"/><stop offset="1" stop-color="#d4ff3f" stop-opacity="0"/></radialGradient></defs><circle cx="256" cy="288" r="200" fill="url(#gl)"/><circle class="orbHue" cx="256" cy="288" r="150" fill="url(#og)"/><circle cx="256" cy="288" r="141" stroke="rgba(255,255,255,.28)" stroke-width="3"/><ellipse cx="248" cy="230" rx="48" ry="20" fill="#fff" opacity=".3"/><g class="spk"><path d="M384 78 L392 118 L432 126 L392 134 L384 174 L376 134 L336 126 L376 118 Z" fill="#fffae8"/></g><g class="spk d1"><path d="M126 168 L130 184 L146 188 L130 192 L126 208 L122 192 L106 188 L122 184 Z" fill="#c8f5eb"/></g><g class="spk d2"><path d="M352 349 L356 361 L368 364 L356 367 L352 379 L349 367 L337 364 L349 361 Z" fill="#ffd2eb"/></g></svg><div style="font-size:11px;letter-spacing:3px;color:var(--sub);font-weight:800">METABOLIC COACH · 4D PET</div></div>
+
+<header class="hdr">
+  <div class="kick">
+    <span class="brand">METABOLIC COACH</span>
+    <span class="live"><span id="langPill" onclick="setLang(LANG==='vi'?'en':'vi')" style="background:color-mix(in srgb,var(--volt) 18%,transparent);border:1px solid color-mix(in srgb,var(--volt) 45%,transparent);color:var(--volt);font-weight:800;font-size:11px;padding:4px 10px;border-radius:12px;cursor:pointer;letter-spacing:1px">VI</span><span class="dot"></span><b id="hdrClock">--:--</b></span>
+  </div>
+  <div class="coach" id="hdrGreet"></div>
+  <div class="coach2" id="hdrSub">Huấn luyện viên chuyển hóa & thú 4D của bạn</div>
+</header>
+
+<!-- ============ DASHBOARD ============ -->
+<section class="tab on" id="t-dash">
+  <div id="dashAlerts"></div>
+  <div class="card hero">
+    <span class="state-pill" id="statePill" style="display:none"><span class="dot"></span>FASTING</span>
+    <div class="clock" id="dashClock" style="margin-top:4px">--:--:--</div>
+    <div class="elapsed" id="dashElapsed">Sẵn sàng — bấm ⚡ để bắt đầu</div>
+    <div class="dual" id="dualBox" style="display:none">
+      <div class="d1"><small>ĐÃ FAST</small><b id="dElapsed">--</b></div>
+      <div class="d2"><small>CÒN LẠI</small><b id="dRemain">--</b></div>
+    </div>
+    <div class="pbar"><i id="heroBar" style="width:0%"></i></div>
+    <div class="prog-line" id="dashProgTxt"></div>
+  </div>
+
+  <div class="card" style="border-color:color-mix(in srgb,var(--cyan) 45%,transparent)">
+    <h3>🐬 Bé 4D đồng hành <span class="hint" id="compName">Cá heo</span></h3>
+    <div class="p4-stage" id="compStage" style="height:260px;min-height:260px">
+      <canvas id="compCanvas"></canvas>
+      <div class="p4-hint">👆 Kéo để xoay · chạm 2 lần = xoay 720°</div>
+    </div>
+    <div class="sub" style="margin-top:10px;text-align:center" id="compLine">Bé cá heo luôn đồng hành cùng nhịp fasting của bạn 🌊</div>
+  </div>
+
+  <div class="preset" style="margin:-4px 0 0">
+    <button onclick="addWater(250)" style="flex:1">💧 +250ml</button>
+    <button onclick="addWater(500)" style="flex:1">💧 +500ml</button>
+    <button onclick="addWater(750)" style="flex:1">💧 +750ml</button>
+  </div>
+
+  <div class="card" style="padding:16px 20px">
+    <div class="coach-quote">
+      <div class="av">🎧</div>
+      <p id="coachMsg">Chào mừng trở lại! <b>Nhập chỉ số</b> ở tab Health để tôi phân tích thể trạng và lên kế hoạch tập cho bạn.</p>
+    </div>
+  </div>
+
+  <div class="card" style="padding:16px 20px;border-color:color-mix(in srgb,var(--volt) 35%,transparent)">
+    <h3>💡 Gợi ý sức khỏe hôm nay</h3>
+    <div id="dailyPrompt" style="font-size:14px;line-height:1.55;font-weight:500"></div>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="ic r">❤️</div><div class="val" id="mHR">—</div><div class="lbl">Nhịp tim nghỉ</div><div class="upd" id="mHRt">chưa có dữ liệu</div></div>
+    <div class="tile"><div class="ic p">🧠</div><div class="val" id="mHRV">—</div><div class="lbl">HRV · baseline</div><div class="upd" id="mHRVt">cần 7+ ngày</div></div>
+    <div class="tile"><div class="ic o">🔥</div><div class="val" id="mKcal">—</div><div class="lbl">Năng lượng</div><div class="upd">ước tính từ bước chân</div></div>
+    <div class="tile"><div class="ic c">💧</div><div class="val" id="mWater">0</div><div class="lbl">Nước (ml)</div><div class="upd">mục tiêu 2000</div></div>
+  </div>
+
+  <div class="card">
+    <h3>📊 Thống kê fasting</h3>
+    <div style="display:flex;gap:10px;text-align:center">
+      <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:16px;padding:14px 6px"><div style="font-size:24px;font-weight:800;color:var(--volt)" id="statTotal">0</div><div style="font-size:10.5px;color:var(--sub);font-weight:800;letter-spacing:.8px;margin-top:4px">GIỜ ĐÃ FAST</div></div>
+      <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:16px;padding:14px 6px"><div style="font-size:24px;font-weight:800;color:var(--gold)" id="statLong">0</div><div style="font-size:10.5px;color:var(--sub);font-weight:800;letter-spacing:.8px;margin-top:4px">FAST DÀI NHẤT</div></div>
+      <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:16px;padding:14px 6px"><div style="font-size:24px;font-weight:800;color:var(--cyan)" id="statCount">0</div><div style="font-size:10.5px;color:var(--sub);font-weight:800;letter-spacing:.8px;margin-top:4px">SỐ PHIÊN</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Body Status <span class="hint">not a medical diagnosis</span></h3>
+    <div class="bs-top">
+      <div class="gauge">
+        <svg width="124" height="124" viewBox="0 0 112 112">
+          <circle cx="56" cy="56" r="47" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9"/>
+          <circle id="bsArc" cx="56" cy="56" r="47" fill="none" stroke="url(#vg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="295" stroke-dashoffset="295" style="transition:stroke-dashoffset 1s ease;filter:drop-shadow(0 0 6px rgba(212,255,63,.45))"/>
+          <defs><linearGradient id="vg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d4ff3f"/><stop offset="1" stop-color="#59e6d2"/></linearGradient></defs>
+        </svg>
+        <div class="num"><b id="bsScore">—</b><span>SCORE</span></div>
+      </div>
+      <div class="bs-side">
+        <span class="bs-chip" id="bsRec">Phục hồi: —</span>
+        <div class="bs-rows" id="bsRows"></div>
+      </div>
+    </div>
+    <div class="safe-disclaimer">Wellness estimate — không phải chẩn đoán y khoa.</div>
+  </div>
+
+  <div class="card">
+    <h3>Trạng thái chuyển hóa <span class="hint">estimate</span></h3>
+    <div class="h1x" id="metTitle">—</div>
+    <div class="sub" id="metSum" style="margin-top:6px"></div>
+    <div class="safe-disclaimer">⚡ Ước tính theo thờI gian — không phải đo lường trực tiếp.</div>
+  </div>
+  <button class="btn red" id="btnEnd" style="display:none" onclick="endFast()">⏹&nbsp; KẾT THÚC FAST → REFEEDING</button>
+</section>
+
+<!-- ============ FASTING ============ -->
+<section class="tab" id="t-fast">
+  <div class="card">
+    <h3>Chọn giao thức của bạn</h3>
+    <div class="preset" id="presets"></div>
+    <div class="catbox g" id="catBox"></div>
+  </div>
+  <button class="btn volt" id="btnStart" onclick="startFlow()">⚡ BẮT ĐẦU FAST</button>
+  <div class="card">
+    <h3>Hành trình cơ thể <span class="hint">khoa học tham khảo</span></h3>
+    <div id="timeline" style="margin-top:8px"></div>
+    <div class="safe-disclaimer">Mốc thờI gian là sinh lý học tổng quát — không phải dự đoán y khoa.</div>
+  </div>
+</section>
+
+<!-- ============ HEALTH ============ -->
+<section class="tab" id="t-health">
+  <div class="card">
+    <h3>Nhập chỉ số đo được <span class="hint">đồng hồ / thiết bị riêng</span></h3>
+    <div class="row"><span>💓 Nhịp tim nghỉ (bpm)</span><input type="number" id="inRHR" placeholder="60"></div>
+    <div class="row"><span>🧠 HRV (ms)</span><input type="number" id="inHRV" placeholder="55"></div>
+    <div class="row"><span>😴 Ngủ (giờ)</span><input type="number" id="inSleep" placeholder="7.5"></div>
+    <div class="row"><span>🚶 Bước chân</span><input type="number" id="inSteps" placeholder="8000"></div>
+    <button class="btn volt" onclick="saveVitals()">⚡ LƯU & PHÂN TÍCH</button>
+    <div class="row" style="margin-top:10px"><span>⚖️ Cân nặng hôm nay (kg)</span><input type="number" id="wIn" placeholder="65.0" step="0.1"></div>
+    <button class="btn ghost" onclick="saveWeight()">Lưu cân nặng</button>
+    <div id="wList" style="margin-top:8px"></div>
+    <div class="sub" id="baseInfo" style="margin-top:6px;font-weight:600">Baseline cá nhân: chưa đủ dữ liệu (cần ≥7 ngày).</div>
+  </div>
+  <div class="card">
+    <h3>Phòng kiến thức <span class="hint">tap để xem · +XP</span></h3>
+    <div class="row why-row" onclick="why('🔬 Autophagy — thực sự biết gì?','Autophagy là quá trình sinh học phức tạp và THỜI ĐIỂM bắt đầu của nó ở ngườI không thể xác định chính xác chỉ từ thờI gian nhịn ăn. Nghiên cứu về mốc bắt đầu chính xác còn hạn chế và không nhất quán — hãy nghi ngờ mọi tuyên bố về giờ thứ X bắt đầu autophagy.')"><span>🔬 Autophagy</span><span class="chipsmall">›</span></div>
+    <div class="row why-row" onclick="why('⚗️ Ketone & ketosis','Ketone là phân tử tạo ra từ mỡ khi lượng carb thấp. ThờI gian fasting TƯƠNG THÍCH với tăng sản xuất ketone, nhưng không xác nhận được mức ketone nếu không đo máu / hơi thở / nước tiểu.')"><span>⚗️ Ketone & ketosis</span><span class="chipsmall">›</span></div>
+    <div class="row why-row" onclick="why('🧠 HRV là gì?','HRV là độ biến thiên khoảng cách giữa các nhịp tim. HRV nghỉ cao thường liên quan đến phục hồi tốt. HRV rất cá nhân — chỉ nên so với baseline CỦA BẠN, không so trung bình dân số.')"><span>🧠 HRV</span><span class="chipsmall">›</span></div>
+    <div class="row why-row" onclick="why('🍽 Hội chứng tái ăn (Refeeding)','Sau fasting kéo dài, cơ thể thích nghi với insulin thấp và điện giải dịch chuyển. Nạp lại quá nhiều carb đột ngột có thể kích hoạt chuyển dịch dịch & điện giải. Bữa nhỏ, từ từ, đủ protein & điện giải giúp giảm rủi ro.')"><span>🍽 Refeeding syndrome</span><span class="chipsmall">›</span></div>
+    <div class="row why-row" onclick="why('💓 Nhịp tim nghỉ (RHR)','RHR là nhịp tim lúc nghỉ hoàn toàn. Xu hướng RHR theo thờI gian hữu ích để theo dõi thể lực & phục hồi — so với baseline cá nhân, không phải con số tuyệt đối.')"><span>💓 RHR</span><span class="chipsmall">›</span></div>
+  </div>
+  <button class="btn ghost" onclick="openCheckin()">📝 CHECK-IN HẰNG NGÀY</button>
+</section>
+
+<!-- ============ NUTRITION ============ -->
+<section class="tab" id="t-nutri">
+  <div class="card">
+    <h3>Post-Fast Nutrition</h3>
+    <div class="preset" id="goals"></div>
+    <div id="mealStruct"></div>
+  </div>
+  <div class="card">
+    <h3>🍽 Thực đơn 7 ngày sau fast <span class="hint">khoa học · tính calo</span></h3>
+    <div class="row"><span>⚖️ Cân nặng (kg)</span><input type="number" id="dW" placeholder="65"></div>
+    <div class="row"><span>📏 Chiều cao (cm)</span><input type="number" id="dH" placeholder="170"></div>
+    <div class="row"><span>🎂 Tuổi</span><input type="number" id="dA" placeholder="30"></div>
+    <div class="row"><span>Giới tính</span><span style="display:flex;gap:8px"><button class="btn ghost sm sel" id="dM" onclick="dSex(1)">Nam</button><button class="btn ghost sm" id="dF" onclick="dSex(0)">Nữ</button></span></div>
+    <div class="row"><span>🏃 Vận động</span>
+      <select id="dAct">
+        <option value="1.2">Ít (văn phòng)</option>
+        <option value="1.375">Nhẹ (1–3 buổi/tuần)</option>
+        <option value="1.55" selected>Vừa (3–5 buổi/tuần)</option>
+        <option value="1.725">Nhiều (6–7 buổi/tuần)</option>
+      </select>
+    </div>
+    <button class="btn volt" onclick="calcMenu7()">⚡ TÍNH THỰC ĐƠN 7 NGÀY</button>
+    <div id="menu7Out"></div>
+  </div>
+  <div class="card">
+    <h3>💧 Hydration</h3>
+    <div style="display:flex;align-items:baseline;gap:6px;margin:8px 0 12px"><span style="font-size:30px;font-weight:800;letter-spacing:-1px" id="wTxt">0</span><span class="sub">/ 2000 ml</span></div>
+    <div class="pbar" style="margin-top:0"><i id="wBar" style="width:0%"></i></div>
+    <div class="preset" style="margin-top:16px"><button onclick="addWater(250)">+250ml</button><button onclick="addWater(500)">+500ml</button><button onclick="addWater(750)">+750ml</button></div>
+  </div>
+  <div class="card"><h3>Khoa học tái ăn</h3><div class="sub" id="refSci"></div></div>
+</section>
+
+<!-- ============ EXERCISE ============ -->
+<section class="tab" id="t-exe">
+  <div class="card" style="text-align:center;padding:26px 18px">
+    <h3 style="justify-content:center">Buổi tập hôm nay</h3>
+    <div style="font-size:34px;font-weight:800;margin:8px 0;letter-spacing:-1px" id="exLevel">—</div>
+    <div class="sub" id="exActs" style="font-size:14px;font-weight:600"></div>
+    <div style="text-align:left;margin-top:16px;border-top:1px solid var(--line);padding-top:14px" id="exReasons"></div>
+  </div>
+  <div class="card">
+    <h3>Thang cường độ</h3>
+    <div class="row" id="intRow_low" style="cursor:pointer;border-radius:14px;padding-left:10px;padding-right:10px" onclick="setIntensity('low')"><span>🟢 Thấp</span><span class="chipsmall">Đi bộ · mobility · stretching</span></div>
+    <div class="row" id="intRow_mod" style="cursor:pointer;border-radius:14px;padding-left:10px;padding-right:10px" onclick="setIntensity('mod')"><span>🔵 Vừa</span><span class="chipsmall">Zone 2 cardio · tạ giảm tải</span></div>
+    <div class="row" id="intRow_high" style="cursor:pointer;border-radius:14px;padding-left:10px;padding-right:10px" onclick="setIntensity('high')"><span>⚡ Cao</span><span class="chipsmall">Interval · tạ nặng — chỉ khi phục hồi tốt</span></div>
+    <div id="intStatus" style="margin-top:10px"></div>
+    <div class="safe-disclaimer">Fast ≥48h: app tự động giới hạn cường độ thấp — an toàn luôn thắng kỷ luật.</div>
+  </div>
+</section>
+
+<!-- ============ QUEST ============ -->
+<section class="tab" id="t-quest">
+  <div class="card">
+    <h3>🎯 Nhiệm vụ hôm nay</h3>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-size:34px;font-weight:800;color:var(--volt)">LV <span id="gqLevel">1</span></div>
+      <div style="flex:1"><div class="pbar" style="margin-top:0;height:10px"><i id="gqXpFill" style="width:0%"></i></div><div class="sub" style="margin-top:5px;font-size:11px"><span id="gqXpTxt">0/60 XP</span></div></div>
+      <div style="text-align:right;font-size:13px;font-weight:800;color:var(--gold)">🪙 <span id="gqCoins">0</span><div class="sub" style="font-size:10.5px">🔥 <span id="gqStreak">0</span> <span class="chipsmall">chuỗi ngày</span></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+      <div class="pbar" style="flex:1;height:8px;margin-top:0"><i id="gqDayFill" style="width:0%;background:linear-gradient(90deg,var(--cyan),var(--volt))"></i></div>
+      <b id="gqDayTxt" style="font-size:13px;color:var(--cyan);white-space:nowrap">0/5</b>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:12px" id="loginStrip"></div>
+  </div>
+  <div id="gqList"></div>
+  <button class="btn volt" style="margin-top:14px" onclick="submitDay()">📩 <span id="gqSubmitLbl">Nộp ngày — nhận thưởng</span></button>
+  <div class="sub" style="margin-top:10px">⚡ XP chỉ thưởng cho kỷ luật & thói quen an toàn — không thưởng cho fast dài.</div>
+  <div class="card"><h3>🎁 Rương bí ẩn</h3><div id="gqChest"></div></div>
+  <div class="card"><h3>🔍 Bạn có biết?</h3><div class="gq-fact" id="gqFact"></div></div>
+  <div class="card"><h3>📅 Tóm tắt 7 ngày</h3><div id="gqWeek"></div></div>
+  <div class="card"><h3>🏆 Thành tựu</h3><div class="gq-ach" id="gqAch"></div></div>
+</section>
+
+<!-- ============ 4D PETS ============ -->
+<section class="tab" id="t-pets">
+  <div class="card" style="padding:0;overflow:hidden;margin-top:14px">
+    <div class="p4-stage" id="p4Stage">
+      <canvas id="p4Canvas"></canvas>
+      <div class="p4-title" id="p4Title">CÁ HEO 4D<small>THỰC TẾ ẢO · XOAY 720° · ZOOM</small></div>
+      <div class="p4-cam" id="p4Cam">GÓC NHÌN: 0°</div>
+      <div class="p4-hint">👆 Kéo xoay · chụm zoom · chạm 2 lần = xoay 720° · chạm 1 lần = thả tim</div>
+    </div>
+    <div class="p4-controls">
+      <button class="p4-btn active" id="p4Run">🏃 Chạy</button>
+      <button class="p4-btn pink" id="p4Jump">🤸 Nhảy</button>
+      <button class="p4-btn pink" id="p4Dance">🕺 Nhảy múa</button>
+      <button class="p4-btn purple" id="p4Spin">🌀 360°</button>
+      <button class="p4-btn cyan" id="p4Roll">✨ 720°</button>
+      <div class="p4-speed">Tốc độ <input type="range" id="p4Speed" min="1" max="10" value="4"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🦁 Sở thú 4D <span class="hint" id="p4Count">1/10 · chạm để chọn / mở khóa</span></h3>
+    <div class="p4-grid" id="p4Grid"></div>
+    <div class="sub" style="margin-top:10px" id="p4Note"></div>
+  </div>
+  <div class="card">
+    <h3>📖 Bộ sưu tập 4D</h3>
+    <div class="gq-dex" id="gqDex"></div>
+    <div class="sub" style="margin-top:10px" id="gqDexNote"></div>
+  </div>
+</section>
+
+<!-- ============ HISTORY ============ -->
+<section class="tab" id="t-hist">
+  <div class="card"><h3>Lịch sử fasting</h3><div id="fastBars" style="display:flex;align-items:flex-end;gap:6px;height:90px;margin-bottom:14px"></div><div id="histList"><div class="sub">Chưa có phiên nào.</div></div></div>
+  <div class="card"><h3>Check-in gần đây</h3><div id="ciList"><div class="sub">Chưa có dữ liệu.</div></div></div>
+  <div class="card"><h3>Cân nặng</h3><div id="wList2" style="margin-top:4px"></div></div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="tab" id="t-set">
+  <div class="card">
+    <h3>🎨 Giao diện</h3>
+    <div class="swatches" id="swatches">
+      <div class="sw volt sel" onclick="setTheme('volt')"><span>VOLT</span></div>
+      <div class="sw ocean" onclick="setTheme('ocean')"><span>OCEAN</span></div>
+      <div class="sw royal" onclick="setTheme('royal')"><span>ROYAL</span></div>
+      <div class="sw amber" onclick="setTheme('amber')"><span>AMBER</span></div>
+      <div class="sw sunset" onclick="setTheme('sunset')"><span>SUNSET</span></div>
+      <div class="sw mint" onclick="setTheme('mint')"><span>MINT</span></div>
+      <div class="sw inferno" onclick="setTheme('inferno')"><span>INFERNO</span></div>
+      <div class="sw blood" onclick="setTheme('blood')"><span>BLOOD</span></div>
+      <div class="sw cyber" onclick="setTheme('cyber')"><span>CYBER</span></div>
+      <div class="sw steel" onclick="setTheme('steel')"><span>STEEL</span></div>
+      <div class="sw nova" onclick="setTheme('nova')"><span>NOVA</span></div>
+    </div>
+    <div class="fs-ctrl"><button class="fs-btn" onclick="fontSize(-1)">A−</button><div class="fs-val" id="fsVal">100%</div><button class="fs-btn" onclick="fontSize(1)">A+</button></div>
+    <div class="sub" style="text-align:center;margin-top:4px">Chạm A− / A+ để chỉnh cỡ chữ toàn ứng dụng</div>
+    <div class="sub" style="text-align:center;margin-top:16px;font-weight:800;letter-spacing:.5px">Màu số đồng hồ</div>
+    <div class="swatches" id="clockSw" style="padding-top:8px">
+      <div class="sw sel" data-c="#d4ff3f" style="background:#d4ff3f" onclick="setClockColor('#d4ff3f')"></div>
+      <div class="sw" data-c="#46ebd7" style="background:#46ebd7" onclick="setClockColor('#46ebd7')"></div>
+      <div class="sw" data-c="#ffe05c" style="background:#ffe05c" onclick="setClockColor('#ffe05c')"></div>
+      <div class="sw" data-c="#ff9e4a" style="background:#ff9e4a" onclick="setClockColor('#ff9e4a')"></div>
+      <div class="sw" data-c="#ff5fa8" style="background:#ff5fa8" onclick="setClockColor('#ff5fa8')"></div>
+      <div class="sw" data-c="#a06aff" style="background:#a06aff" onclick="setClockColor('#a06aff')"></div>
+      <div class="sw" data-c="#5aa8ff" style="background:#5aa8ff" onclick="setClockColor('#5aa8ff')"></div>
+      <div class="sw" data-c="#ffffff" style="background:#ffffff" onclick="setClockColor('#ffffff')"></div>
+    </div>
+    <div class="preset" style="justify-content:center" id="langBox">
+      <button id="langVi" class="sel" onclick="setLang('vi')">🇻🇳 Tiếng Việt</button>
+      <button id="langEn" onclick="setLang('en')">🇬🇧 English</button>
+    </div>
+  </div>
+  <div class="card"><h3>Quyền riêng tư</h3><div class="sub" style="line-height:1.9;font-weight:500">• Dữ liệu chỉ lưu trên máy bạn (localStorage)<br>• Không tài khoản, không gửi dữ liệu lên server<br>• Không bán dữ liệu sức khỏe<br>• Xóa toàn bộ dữ liệu bất cứ lúc nào</div></div>
+  <div class="card"><h3>⚕️ Khuyến cáo y khoa</h3><div class="sub" style="line-height:1.8;font-weight:500">Ứng dụng này <b>không phải thiết bị y tế</b>, không chẩn đoán, điều trị hay tư vấn y khoa. Body Status là <b>ước tính thể trạng</b>.<br>• Extended fasting (&gt;24h) chỉ nên thực hiện khi đã đọc kỹ rủi ro; &gt;72h yêu cầu giám sát chuyên gia y tế.<br>• Đau ngực, ngất, khó thở nặng, lú lẫn, nôn nhiều: <b>dừng fasting ngay và tìm chăm sóc y tế</b>.<br>• Bệnh nền, đang dùng thuốc, mang thai, cho con bú, thiếu cân, tiền sử rối loạn ăn uống: <b>hỏi bác sĩ trước khi fasting</b>.</div></div>
+  <button class="btn red" onclick="if(confirm('Xóa toàn bộ dữ liệu local? Không thể hoàn tác.')){localStorage.clear();location.reload()}">🗑&nbsp; XÓA TOÀN BỘ DỮ LIỆU</button>
+  <div class="safe-disclaimer" style="text-align:center">Ứng dụng không phải thiết bị y tế — không chẩn đoán, không điều trị.</div>
+</section>
+
+<nav>
+  <button class="on" onclick="go('dash',this)"><span class="ic">◉</span>Tổng quan</button>
+  <button onclick="go('fast',this)"><span class="ic">⏱</span>Fasting</button>
+  <button onclick="go('health',this)"><span class="ic">♥</span>Health</button>
+  <button onclick="go('nutri',this)"><span class="ic">🍴</span>Dinh dưỡng</button>
+  <button onclick="go('exe',this)"><span class="ic">🏃</span>Tập luyện</button>
+  <button onclick="go('quest',this)"><span class="ic">🎯</span>Nhiệm vụ</button>
+  <button onclick="go('pets',this)"><span class="ic">🐬</span>Thú 4D</button>
+  <button onclick="go('hist',this)"><span class="ic">↺</span>Lịch sử</button>
+  <button onclick="go('set',this)"><span class="ic">⚙</span>Cài đặt</button>
+</nav>
+
+<div id="gqToast"></div>
+<div id="lvOverlay"><div class="lv-badge"><div style="font-size:46px">🎉</div><div style="font-size:13px;letter-spacing:3.5px;font-weight:800;opacity:.7">LEVEL UP</div><div id="lvNew" style="font-size:60px;font-weight:800;line-height:1.1">2</div><div style="font-size:12.5px;opacity:.78;font-weight:700">+30 🪙 · mở khóa thú 4D đang chờ!</div></div></div>
+
+<div class="modal" id="sheetQ"><div class="sheet"><div class="grab"></div>
+  <h2>🛡 Sàng lọc an toàn</h2>
+  <div class="sub" style="margin-bottom:12px">Fasting kéo dài không phù hợp với mọi ngườI. Trả lờI trung thực — dữ liệu chỉ lưu trên máy bạn.</div>
+  <div id="qList"></div>
+  <div id="qWarn" class="alert w" style="display:none"><b>⚠️ Hãy trao đổi với bác sĩ</b>Vui lòng tham khảo ý kiến chuyên gia y tế trước khi tiếp tục extended fasting.</div>
+  <div id="qMed" style="display:none;margin:14px 0"><label class="tgl" style="border:1px solid rgba(255,93,93,.4);border-radius:16px;padding:14px;background:rgba(255,93,93,.08)"><span style="font-size:13px;color:#ffc9c9;font-weight:600">Tôi xác nhận đã được bác sĩ đánh giá & phê duyệt đợt fasting này</span><span class="switch"><input type="checkbox" id="qAck"><i></i></span></label></div>
+  <button class="btn volt" id="qBtn" onclick="qFinish()">TÔI HIỂU RỦI RO — BẮT ĐẦU</button>
+  <button class="btn ghost" onclick="closeSheet('sheetQ')">Hủy</button>
+</div></div>
+
+<div class="modal" id="sheetRefeed"><div class="sheet"><div class="grab"></div>
+  <h2>🍽 Refeeding Plan</h2><div id="refeedBox"></div>
+  <button class="btn volt" onclick="closeSheet('sheetRefeed')">Đã hiểu — bắt đầu tái ăn</button>
+</div></div>
+
+<div class="modal" id="sheetCheckin"><div class="sheet"><div class="grab"></div>
+  <h2>📝 Check-in hằng ngày</h2>
+  <div id="ciSliders"></div>
+  <h4 style="color:var(--red)">⚠️ Triệu chứng khẩn cấp</h4>
+  <div id="ciEmergency"></div>
+  <button class="btn volt" onclick="saveCheckin()">LƯU CHECK-IN</button>
+  <button class="btn ghost" onclick="closeSheet('sheetCheckin')">Hủy</button>
+</div></div>
+
+<div class="modal" id="sheetWhy"><div class="sheet"><div class="grab"></div>
+  <h2 id="whyTitle"></h2><div class="sub" id="whyBody" style="line-height:1.75;font-size:14px"></div>
+  <button class="btn volt" onclick="closeSheet('sheetWhy')">Đóng</button>
+</div></div>
+
+<script>
+/* ================= CORE ================= */
+const L=localStorage;
+const get=(k,d)=>{try{const v=L.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const set=(k,v)=>L.setItem(k,JSON.stringify(v));
+const $=id=>document.getElementById(id);
+
+/* ---------- LANGUAGE ---------- */
+let LANG=get('lang','vi');
+function setLang(l){LANG=l;set('lang',l);$('langPill').textContent=l.toUpperCase();$('langVi').classList.toggle('sel',l==='vi');$('langEn').classList.toggle('sel',l==='en');render()}
+function T(vi,en){return LANG==='en'?en:vi}
+
+/* ---------- NAV ---------- */
+const TITLES={dash:T('Tổng quan','Dashboard'),fast:'Fasting',health:'Health',nutri:T('Dinh dưỡng','Nutrition'),exe:T('Tập luyện','Exercise'),quest:T('Nhiệm vụ','Quest'),pets:'4D Pets',hist:T('Lịch sử','History'),set:T('Cài đặt','Settings')};
+function go(t,btn){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  const el=$('t-'+t);void el.offsetWidth;el.classList.add('on');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  window.scrollTo({top:0});
+  P4.setMainActive(t==='pets');
+  if(t==='pets')P4.resizeMain();
+  if(t==='dash')P4.resizeComp();
+}
+function openSheet(id){$(id).classList.add('on')}
+function closeSheet(id){$(id).classList.remove('on')}
+function why(t,b){gqAdd(10,5,'Knowledge +10!');$('whyTitle').textContent=t;$('whyBody').textContent=b;openSheet('sheetWhy')}
+
+/* ---------- DATA ---------- */
+const PRESETS=[[T('12:12','12:12'),12],[T('14:10','14:10'),14],['16:8',16],['18:6',18],['20:4',20],['OMAD',23],[T('24 giờ','24h'),24],[T('36 giờ','36h'),36],[T('48 giờ','48h'),48],[T('72 giờ','72h'),72],[T('5 ngày','5 days'),120],[T('7 ngày','7 days'),168]];
+const CAT=h=>h<=24?[T('Standard','Standard'),'g',T('✓ Phù hợp sử dụng phổ thông với hướng dẫn chung.','✓ Suitable for general use with common guidance.')]:h<=72?[T('Extended Fasting','Extended Fasting'),'o',T('⚠️ Fasting kéo dài tạo thay đổi sinh lý lớn và có rủi ro y khoa. Theo dõi cơ thể sát sao.','⚠️ Extended fasting creates major physiological changes and medical risks. Monitor closely.')]:[T('Yêu cầu giám sát y tế','Medical supervision required'),'r',T('🚨 Extended fasting có thể gây thay đổi sinh lý đáng kể. Chế độ này chỉ dành cho ngườI đã được sàng lọc và giám sát bởi chuyên gia y tế.','🚨 Extended fasting may cause significant physiological changes. For screened individuals under professional medical supervision only.')];
+const TIMELINE=[[0,T('Sau ăn (0–4h)','Fed (0–4h)'),T('Tiêu hóa đang diễn ra; insulin & glucose phản ánh bữa ăn trước.','Digestion ongoing; insulin & glucose reflect the previous meal.')],[4,T('Hậu hấp thu (4–12h)','Post-absorptive (4–12h)'),T('Cơ thể dần dựa vào glucose lưu hành, sau đó huy động glycogen gan.','Body gradually relies on circulating glucose, then liver glycogen.')],[12,T('Chuyển tiếp (12–24h)','Transition (12–24h)'),T('Dùng mỡ tăng khi glycogen cạn dần; sản xuất ketone có thể bắt đầu tăng.','Fat use rises as glycogen depletes; ketone production may begin to rise.')],[24,T('Extended (24–48h)','Extended (24–48h)'),T('Chuyển hóa ketone thường tăng. Chú ý protein, nước & điện giải.','Ketone metabolism typically rises. Mind protein, water & electrolytes.')],[48,T('Extended — giám sát sát (48–72h)','Extended — close monitoring (48–72h)'),T('Tăng giám sát: nước, điện giải, nhịp tim, chóng mặt, yếu cơ.','Increase monitoring: water, electrolytes, heart rate, dizziness, weakness.')],[72,T('Cao nguy cơ (72h+)','High risk (72h+)'),T('Vượt 72h có rủi ro y khoa đáng kể — cần giám sát chuyên môn.','Beyond 72h carries significant medical risk — professional supervision required.')]];
+const CONTRA=[T('Mang thai / cho con bú','Pregnant / breastfeeding'),T('Tiền sử rối loạn ăn uống','History of eating disorder'),T('Đái tháo đường / thuốc hạ đường huyết','Diabetes / glucose-lowering medication'),T('Bệnh thận','Kidney disease'),T('Bệnh gan','Liver disease'),T('Bệnh tim mạch','Cardiovascular disease'),T('Thuốc cần ăn kèm','Medication requiring food'),T('Thiếu cân','Underweight'),T('Tiền sử ngất','History of fainting'),T('Tình trạng khác cần giám sát','Other condition requiring supervision')];
+const EMERG=[T('Đau ngực','Chest pain'),T('Ngất / suýt ngất','Fainting / near-fainting'),T('Khó thở nặng','Severe shortness of breath'),T('Lú lẫn nghiêm trọng','Severe confusion'),T('Buồn nôn / nôn nhiều','Nausea / frequent vomiting')];
+const CILABELS=[T('Năng lượng','Energy'),T('Đói','Hunger'),T('Chóng mặt','Dizziness'),T('Yếu cơ','Muscle weakness'),T('Buồn nôn','Nausea'),T('Đau đầu','Headache'),T('Giấc ngủ','Sleep'),T('Tâm trạng','Mood'),T('Hydrat hóa','Hydration'),T('Vận động','Activity')];
+const GOALS=[T('Giảm mỡ','Fat loss'),T('Giữ cân','Maintenance'),T('Giữ cơ','Muscle retention'),T('Sức khỏe chuyển hóa','Metabolic health'),T('Thể trạng chung','General fitness')];
+const REFSCI=T("Sau fasting kéo dài, cơ thể thích nghi với insulin thấp và điện giải dịch chuyển. Nạp lại lượng lớn đồ ăn/carb đột ngột có thể kích hoạt chuyển dịch dịch & điện giải (refeeding syndrome trong y văn lâm sàng). Bữa nhỏ, từ từ, đủ protein & điện giải giúp giảm rủi ro.","After prolonged fasting, the body adapts to low insulin and electrolytes shift. Reintroducing large amounts of food/carbs abruptly can trigger fluid & electrolyte shifts (refeeding syndrome in clinical literature). Small meals, gradually, with adequate protein & electrolytes help reduce risk.");
+let selPreset=16, selGoal=3, pendingStart=null;
+
+/* ---------- FASTING CORE ---------- */
+function session(){return get('sess',null)}
+function startFlow(){const c=CAT(selPreset);if(c[0]==='Standard'||c[0]==='Standard'){if(selPreset<=24){doStart(selPreset,false);return}}if(selPreset<=24){doStart(selPreset,false);return}pendingStart=selPreset;renderQ();openSheet('sheetQ')}
+function renderQ(){
+  const med=selPreset>72;
+  $('qMed').style.display=med?'block':'none';
+  $('qList').innerHTML=CONTRA.map((c,i)=>`<label class="tgl"><span>${c}</span><span class="switch"><input type="checkbox" class="qc" data-i="${i}" onchange="qToggle()"><i></i></span></label>`).join('');
+  qToggle();
+}
+function qToggle(){$('qWarn').style.display=[...document.querySelectorAll('.qc')].some(c=>c.checked)?'block':'none'}
+function qFinish(){
+  const med=pendingStart>72;
+  if(med&&!$('qAck').checked){alert(T("Bạn phải xác nhận đã được bác sĩ phê duyệt để bắt đầu chế độ này.","You must confirm physician approval to start this protocol."));return}
+  set('contra',CONTRA.filter((_,i)=>document.querySelector(`.qc[data-i="${i}"]`).checked));
+  doStart(pendingStart,true);closeSheet('sheetQ');
+}
+function doStart(h,ack){set('sess',{start:Date.now(),plan:h*3600e3,ack});gqEvent('start_fast');render()}
+function endFast(){
+  const s=session();if(!s)return;
+  const hist=get('hist',[]);hist.unshift({start:s.start,end:Date.now(),plan:s.plan,ack:s.ack});
+  set('hist',hist.slice(0,100));L.removeItem('sess');showRefeed((Date.now()-s.start)/3600e3);gqEvent('end_fast');render();
+}
+function showRefeed(h){
+  let p;
+  if(h<=24)p={t:T("Fast ngắn — tái ăn nhẹ nhàng","Short fast — gentle refeed"),s:[T("Bữa đầu vừa phải, dễ tiêu — tránh phần ăn quá lớn","First meal moderate, easy to digest — avoid oversized portions"),T("Có protein (trứng, cá, sữa chua, đậu phụ)","Include protein (eggs, fish, yogurt, tofu)"),T("Rau củ nấu chín hoặc súp cho chất xơ dịu nhẹ","Cooked vegetables or soup for gentle fiber"),T("Uống nước; thêm điện giải nếu chóng mặt","Drink water; add electrolytes if dizzy")],w:[T("Ăn quá nhiều ngay sau fasting có thể gây khó chịu","Overeating right after fasting may cause discomfort")]};
+  else if(h<=72)p={t:T("Fast kéo dài — tái ăn từ từ","Extended fast — refeed slowly"),s:[T("Bắt đầu với bữa nhỏ, dễ tiêu","Start with a small, easy-to-digest meal"),T("Ăn chậm; chờ 60–90 phút trước bữa thứ hai lớn hơn","Eat slowly; wait 60–90 min before a larger second meal"),T("Ưu tiên protein & rau củ chín; thêm carb phức hợp từ từ","Prioritize protein & cooked vegetables; add complex carbs gradually"),T("Tiếp tục hydrat hóa với điện giải trong ngày","Continue hydration with electrolytes through the day")],w:[T("Tránh bữa rất lớn hoặc nhiều mỡ trong những giờ đầu","Avoid very large or fatty meals in the first hours"),T("Tim đập nhanh, phù hoặc yếu nặng sau tái ăn → tìm chăm sóc y tế","Racing heart, swelling or severe weakness after refeeding → seek medical care")]};
+  else p={t:T("Fast rất dài — yêu cầu giám sát y tế","Very long fast — medical supervision required"),s:[T("Tuân theo hướng dẫn tái ăn của bác sĩ đang giám sát","Follow the refeeding guidance of your supervising physician"),T("Chưa có kế hoạch từ bác sĩ → liên hệ trước khi ăn bữa lớn","No physician plan yet → contact one before a large meal")],w:[T("Tái ăn sau fasting kéo dài có thể gây chuyển dịch điện giải nghiêm trọng","Refeeding after prolonged fasting can cause severe electrolyte shifts"),T("App không tạo chỉ định tái ăn y khoa cá nhân","The app does not provide personal medical refeeding orders")]};
+  $('refeedBox').innerHTML=`<h3 style="font-size:17px;margin-bottom:12px;font-weight:800">${p.t}</h3>${p.s.map(x=>`<div class="row"><span style="font-size:13.5px">→ ${x}</span></div>`).join('')}<h4 style="color:var(--orange)">⚠️ ${T('Cảnh báo','Warning')}</h4>${p.w.map(x=>`<div class="sub" style="margin-bottom:6px">• ${x}</div>`).join('')}<div class="sub" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">${REFSCI}</div>`;
+  openSheet('sheetRefeed');
+}
+
+/* ---------- VITALS / BASELINE ---------- */
+function vitals(){return get('vitals',[])}
+function saveVitals(){
+  const rhr=+$('inRHR').value||null,hrv=+$('inHRV').value||null,sl=+$('inSleep').value||null,st=+$('inSteps').value||null;
+  if(!rhr&&!hrv&&!sl&&!st){alert(T('Nhập ít nhất một chỉ số.','Enter at least one metric.'));return}
+  const v=vitals();v.push({d:Date.now(),rhr,hrv,sleep:sl?sl*60:null,steps:st});
+  set('vitals',v.slice(-400));gqEvent('log_vitals');render();
+  toastMsg(T('✓ Đã lưu chỉ số!','✓ Metrics saved!'));
+}
+function baseline(){
+  const v=vitals().slice(-30);if(v.length<7)return null;
+  const avg=k=>{const a=v.map(x=>x[k]).filter(x=>x!=null);return a.length?a.reduce((s,x)=>s+x,0)/a.length:null};
+  const sd=(k,m)=>{const a=v.map(x=>x[k]).filter(x=>x!=null);return a.length>1?Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/a.length):1};
+  const rhr=avg('rhr'),hrv=avg('hrv');
+  return{rhr,hrv,rhrSd:sd('rhr',rhr)||1,hrvSd:sd('hrv',hrv)||1,n:v.length};
+}
+
+/* ---------- SAFETY ENGINE ---------- */
+function safety(fHrs){
+  const A=[],ci=get('ci',[])[0],b=baseline();
+  if(ci&&ci.em&&ci.em.length)A.push({s:"e",t:T("🚨 Triệu chứng khẩn cấp","🚨 Emergency symptoms"),m:T("Bạn báo cáo: ","You reported: ")+ci.em.join(", ")+T(". Đây có thể là dấu hiệu vấn đề y khoa nghiêm trọng trong fasting.",". This may signal a serious medical problem during fasting."),a:T("DỪNG FAST NGAY. Nếu nghiêm trọng hoặc kéo dài — gọi cấp cứu / đi cấp cứu.","STOP FASTING NOW. If severe or persistent — call emergency services.")});
+  const last=vitals().slice(-1)[0];
+  if(last&&b&&last.rhr&&(last.rhr-b.rhr)/b.rhrSd>2)A.push({s:fHrs>=24?"e":"w",t:T("⚠️ Nhịp tim nghỉ cao hơn baseline","⚠️ Resting HR above baseline"),m:`RHR ${last.rhr} bpm, `+T(`vượt >2 độ lệch chuẩn so với baseline cá nhân (${Math.round(b.rhr)} bpm).`,`>2 SD above your personal baseline (${Math.round(b.rhr)} bpm).`),a:fHrs>=24?T("Dừng fast, nghỉ ngơi, ăn nhẹ & uống điện giải.","Stop fasting, rest, eat lightly & take electrolytes."):T("Nghỉ ngơi, uống nước; cân nhắc kết thúc fast.","Rest, hydrate; consider ending the fast.")});
+  if(last&&b&&last.hrv&&(last.hrv-b.hrv)/b.hrvSd<-2)A.push({s:"w",t:T("⚠️ HRV giảm mạnh","⚠️ HRV dropped sharply"),m:`HRV ${last.hrv} ms, `+T(`thấp hơn đáng kể baseline cá nhân (${Math.round(b.hrv)} ms).`,`significantly below your personal baseline (${Math.round(b.hrv)} ms).`),a:T("Ưu tiên nghỉ ngơi & ngủ; giảm cường độ tập hôm nay.","Prioritize rest & sleep; reduce today's training intensity.")});
+  if(ci){
+    if(ci.v[3]>=7)A.push({s:"w",t:T("⚠️ Chóng mặt đáng kể","⚠️ Significant dizziness"),m:T(`Chóng mặt ${ci.v[3]}/10 trong check-in — có thể do hạ huyết áp hoặc mất điện giải.`,`Dizziness ${ci.v[3]}/10 in check-in — possibly low blood pressure or electrolyte loss.`),a:T("Dừng fast, ngồi/nằm, uống điện giải. Không hết thì đi khám.","Stop fasting, sit/lie down, take electrolytes. If unresolved, see a doctor.")});
+    if(ci.v[4]>=8)A.push({s:"w",t:T("⚠️ Buồn nôn nhiều","⚠️ Severe nausea"),m:T(`Buồn nôn ${ci.v[4]}/10.`,`Nausea ${ci.v[4]}/10.`),a:T("Uống từng ngụm nhỏ. Nôn không giữ được dịch → tìm chăm sóc y tế.","Sip small amounts. If you cannot keep fluids down → seek medical care.")});
+    if(ci.v[8]<=3)A.push({s:"i",t:T("💧 Thiếu nước","💧 Dehydration risk"),m:T(`Hydrat hóa ${ci.v[8]}/10 trong check-in.`,`Hydration ${ci.v[8]}/10 in check-in.`),a:T("Uống nước thêm điện giải — mất nước làm tăng rủi ro fasting.","Drink water with electrolytes — dehydration raises fasting risk.")});
+  }
+  if(fHrs>=72)A.push({s:"w",t:T("⚠️ Extended fasting yêu cầu giám sát y tế","⚠️ Extended fasting requires medical supervision"),m:CAT(80)[2],a:T("Xác nhận bác sĩ đang theo dõi; hoàn thành check-in hằng ngày.","Confirm physician supervision; complete daily check-ins.")});
+  else if(fHrs>=24)A.push({s:"i",t:T("ℹ️ Fast kéo dài đang diễn ra","ℹ️ Extended fast in progress"),m:T("Quá 24h, hydrat hóa & điện giải càng quan trọng. Theo dõi cảm giác cơ thể.","Past 24h, hydration & electrolytes become critical. Monitor how you feel."),a:T("Làm check-in hằng ngày & để ý dấu hiệu cảnh báo.","Do daily check-ins & watch for warning signs.")});
+  return A;
+}
+
+/* ---------- ENGINES ---------- */
+function metabolic(h){
+  if(h<4)return[T("Sau ăn","Fed"),T("Tiêu hóa đang diễn ra; insulin & glucose phản ánh bữa ăn trước.","Digestion ongoing; insulin & glucose reflect the previous meal.")];
+  if(h<12)return[T("Hậu hấp thu","Post-absorptive"),T("Dùng glucose lưu hành, bắt đầu huy động glycogen gan.","Using circulating glucose, beginning to tap liver glycogen.")];
+  if(h<24)return[T("Tăng sử dụng mỡ","Increased fat use"),T("ThờI gian fasting TƯƠNG THÍCH với tăng dùng mỡ & sản xuất ketone — nhưng không xác nhận mức ketone nếu không đo trực tiếp.","Fasting time is COMPATIBLE with increased fat use & ketone production — but does not confirm ketone levels without direct measurement.")];
+  if(h<48)return[T("Extended fasting","Extended fasting"),T("Chuyển hóa ketone thường tăng. Chú ý protein, nước & điện giải.","Ketone metabolism typically rises. Mind protein, water & electrolytes.")];
+  if(h<72)return[T("Extended — giám sát sát","Extended — close monitoring"),T("Tăng giám sát: nước, điện giải, nhịp tim, triệu chứng.","Increase monitoring: water, electrolytes, heart rate, symptoms.")];
+  return[T("Cao nguy cơ","High risk"),T("Vượt 72h có rủi ro y khoa đáng kể — cần giám sát chuyên môn.","Beyond 72h carries significant medical risk — professional supervision required.")];
+}
+function bodyStatus(fProg){
+  const v=vitals().slice(-1)[0]||{},b=baseline(),w=get('water',0);
+  let sc=50,rec=50;const rows=[];
+  if(v.rhr&&b){const d=(b.rhr-v.rhr)/b.rhrSd;sc+=Math.max(-15,Math.min(15,d*10));rec+=Math.max(-25,Math.min(25,d*15));rows.push([T("Nhịp tim","Heart rate"),Math.max(5,Math.min(100,50+d*20))])}
+  if(v.hrv&&b){const d=(v.hrv-b.hrv)/b.hrvSd;sc+=Math.max(-15,Math.min(15,d*10));rec+=Math.max(-25,Math.min(25,d*15));rows.push(["HRV",Math.max(5,Math.min(100,50+d*20))])}
+  if(v.sleep){const s=Math.max(0,Math.min(100,100-Math.abs(v.sleep-420)/4.8));sc+=(s-50)/4;rec+=(s-50)/3;rows.push([T("Ngủ","Sleep"),s])}
+  if(w>0){const s=Math.min(100,w/20);sc+=(s-50)/6;rows.push([T("Nước","Water"),s])}
+  sc+=fProg*10;rows.push(["Fast",Math.round(fProg*100)]);
+  sc=Math.max(5,Math.min(100,Math.round(sc)));
+  const r=rec>=70?[T("Sẵn sàng tập","Ready to train"),"#d4ff3f","rgba(212,255,63,.15)"]:rec>=50?[T("Ổn định","Stable"),"#6cb4ff","rgba(108,180,255,.15)"]:rec>=30?[T("Cần nghỉ","Needs rest"),"#fb923c","rgba(251,146,60,.15)"]:[T("Quá tải","Overreached"),"#ff5d5d","rgba(255,93,93,.15)"];
+  return[sc,r,rows];
+}
+function exercise(fHrs){
+  const v=vitals().slice(-1)[0]||{},b=baseline();let pen=0,rs=[];
+  if(fHrs>=48)return[T("NGHỈ — CHUYỂN ĐỘNG NHẸ","REST — LIGHT MOVEMENT ONLY"),[T("🚶 Đi bộ 20–30 phút","🚶 Walk 20–30 min"),T("🧘 Mobility & stretching","🧘 Mobility & stretching")],[T("Fast kéo dài ≥48h: năng lượng sẵn có giảm — ưu tiên an toàn tuyệt đối.","Extended fast ≥48h: available energy is reduced — safety first.")]];
+  if(fHrs>=24)rs.push(T("Fast kéo dài: tối đa cường độ vừa, buổi tập ngắn.","Extended fast: moderate intensity at most, short session."));
+  if(v.hrv&&b&&(v.hrv-b.hrv)/b.hrvSd<-1.5){pen++;rs.push(T("HRV dưới baseline — phục hồi giảm.","HRV below baseline — reduced recovery."))}
+  if(v.rhr&&b&&(v.rhr-b.rhr)/b.rhrSd>1.5){pen++;rs.push(T("Nhịp tim nghỉ trên baseline.","Resting HR above baseline."))}
+  if(v.sleep&&v.sleep<360){pen++;rs.push(T("Ngủ <6h — phục hồi kém.","Sleep <6h — poor recovery."))}
+  const lv=pen>=2?T("TẬP NHẸ + NGHỈ NHIỀU","LIGHT TRAINING + MORE REST"):(fHrs>=24||pen===1)?T("CƯỜNG ĐỘ VỪA","MODERATE INTENSITY"):T("BUỔI TẬP CƯỜNG ĐỘ CAO","HIGH INTENSITY SESSION");
+  const acts=lv.includes("NHẸ")||lv.includes("LIGHT")?[T("🚶 Đi bộ","🚶 Walking"),T("🧘 Mobility","🧘 Mobility"),T("🤸 Stretching","🤸 Stretching"),T("🚲 Đạp xe nhẹ","🚲 Easy cycling")]:lv.includes("VỪA")||lv.includes("MODERATE")?[T("🏃 Zone 2 cardio · 30–40 phút","🏃 Zone 2 cardio · 30–40 min"),T("🏋️ Tập tạ — giảm 30% khối lượng","🏋️ Weights — reduce load 30%")]:[T("⚡ Interval 4×4","⚡ Interval 4×4"),T("🏋️ Tập tạ compound","🏋️ Compound weights"),T("🔥 Tempo run 20 phút","🔥 Tempo run 20 min")];
+  if(!rs.length)rs.push(T("Các tín hiệu phục hồi nằm trong baseline cá nhân — hôm nay là ngày đẩy tải tốt.","Recovery signals are within your personal baseline — today is a good day to push."));
+  return[lv,acts,rs];
+}
+
+/* ---------- CHECK-IN ---------- */
+let ciVals=new Array(10).fill(5),ciEmerg=[];
+function openCheckin(){
+  $('ciSliders').innerHTML=CILABELS.map((l,i)=>`<div class="slider-row" style="padding:8px 0"><div class="top" style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:2px;font-weight:700"><span>${l}</span><b style="color:var(--volt)" id="ciV${i}">5</b></div><input type="range" min="0" max="10" value="5" oninput="ciVals[${i}]=+this.value;document.getElementById('ciV${i}').textContent=this.value"></div>`).join('');
+  $('ciEmergency').innerHTML=EMERG.map((e,i)=>`<label class="tgl"><span style="color:#ffc9c9">${e}</span><span class="switch"><input type="checkbox" class="ciE" data-i="${i}"><i></i></span></label>`).join('');
+  openSheet('sheetCheckin');
+}
+function saveCheckin(){
+  ciEmerg=EMERG.filter((_,i)=>document.querySelector(`.ciE[data-i="${i}"]`).checked);
+  const cis=get('ci',[]);cis.unshift({d:Date.now(),v:[...ciVals],em:ciEmerg});
+  set('ci',cis.slice(0,200));gqEvent('checkin');render();
+  if(ciEmerg.length){alert(T("🚨 Bạn đã báo triệu chứng khẩn cấp. App khuyến nghị DỪNG FAST và tìm chăm sóc y tế.","🚨 You reported emergency symptoms. The app recommends STOPPING the fast and seeking medical care."))}
+  else toastMsg(T('✓ Check-in đã lưu!','✓ Check-in saved!'));
+  closeSheet('sheetCheckin');
+}
+</script>
+
+<script>
+/* ================= RENDER ================= */
+function coachMsg(fHrs,rec,b){
+  const s=session();
+  if(!s&&!b)return T(`Chào mừng trở lại! <b>Nhập chỉ số</b> ở tab Health để tôi phân tích thể trạng và lên buổi tập cho bạn.`,`Welcome back! <b>Enter your metrics</b> in the Health tab so I can analyze readiness and plan your training.`);
+  if(rec[0].includes("Quá tải")||rec[0].includes("Overreached"))return T(`Cơ thể đang <b>quá tải</b>. Hôm nay chỉ đi bộ và ngủ sớm — kỷ luật nghỉ cũng là tập luyện.`,`Your body is <b>overreached</b>. Today: walk and sleep early — disciplined rest is also training.`);
+  if(rec[0].includes("Cần nghỉ")||rec[0].includes("Needs rest"))return T(`Tín hiệu phục hồi đang <b>giảm</b>. Ưu tiên ngủ, nước và bữa ăn đủ protein — đừng ép buổi tập nặng hôm nay.`,`Recovery signals are <b>declining</b>. Prioritize sleep, water and protein — don't force a hard workout today.`);
+  if(s&&fHrs>=24)return T(`Fast <b>${fHrs.toFixed(0)}h</b> đang vào pha chuyển hóa sâu. Giữ nhịp thở đều, uống điện giải và làm check-in tối nay.`,`Fast <b>${fHrs.toFixed(0)}h</b> is in deep metabolic phase. Breathe steadily, take electrolytes and check in tonight.`);
+  if(rec[0].includes("Sẵn sàng"))return T(`Cơ thể <b>sẵn sàng</b>. Hôm nay là ngày đẹp để đẩy cường độ — xem tab Tập luyện!`,`Your body is <b>ready</b>. A great day to push intensity — see the Exercise tab!`);
+  return T(`Thể trạng <b>ổn định</b>. Duy trì nhịp hiện tại, đừng quên mục tiêu nước 2000ml.`,`Condition is <b>stable</b>. Keep the current rhythm, don't forget the 2000ml water goal.`);
+}
+function fmtClock(ms){const s=Math.max(0,ms/1e3|0);return String(s/3600|0).padStart(2,'0')+":"+String((s%3600)/60|0).padStart(2,'0')+":"+String(s%60|0).padStart(2,'0')}
+function addWater(ml){const w=Math.min(get('water',0)+ml,4000);set('water',w);gqEvent('water');render();toastMsg(`💧 +${ml}ml`)}
+function saveWeight(){
+  const w=+$('wIn').value;if(!w)return;
+  const ws=get('ws',[]);ws.push({d:Date.now(),w});set('ws',ws.slice(-100));
+  $('wIn').value='';gqEvent('weight');renderW();toastMsg('⚖️ ✓');
+}
+function renderW(){
+  const ws=get('ws',[]).slice(-5).reverse();
+  const h=ws.length?ws.map(x=>`<div class="hist">${new Date(x.d).toLocaleDateString(LANG==='en'?'en-US':'vi-VN')} · <b style="color:var(--volt)">${x.w} kg</b></div>`).join(''):`<div class="sub">${T('Chưa có dữ liệu.','No data yet.')}</div>`;
+  const a=$('wList'),b=$('wList2');if(a)a.innerHTML=h;if(b)b.innerHTML=h;
+}
+function setIntensity(k){
+  if(session()&&((Date.now()-session().start)/3600e3)>=48){toastMsg(T('⚠️ Fast ≥48h — chỉ nên vận động nhẹ!','⚠️ Fast ≥48h — light movement only!'));return}
+  const r=get('intensity',{});r[new Date().toDateString()]=k;set('intensity',r);
+  if(k==='high'&&session())toastMsg(T('⚡ Ghi nhận — nhớ fast chỉ nên tập vừa!','⚡ Logged — remember to train moderately while fasting!'));
+  gqEvent('intensity');render();
+}
+function dSex(m){$('dM').classList.toggle('sel',!!m);$('dF').classList.toggle('sel',!m)}
+
+function render(){
+  const s=session();
+  /* fasting tab */
+  $('presets').innerHTML=PRESETS.map(([t,h])=>`<button class="${h===selPreset?'sel':''}" onclick="selPreset=${h};render()">${t}</button>`).join('');
+  const cat=CAT(selPreset),cb=$('catBox');cb.className='catbox '+cat[1];cb.innerHTML=`<b>${cat[0]}</b><div style="margin-top:4px;opacity:.9">${cat[2]}</div>`;
+  $('timeline').innerHTML=TIMELINE.map(([h,t,d])=>`<div class="tl"><b>${t}</b><div>${d}</div></div>`).join('');
+  const bsBtn=$('btnStart');bsBtn.disabled=!!s;
+  bsBtn.textContent=s?T("ĐANG FAST — XEM TỔNG QUAN","FASTING — SEE DASHBOARD"):(selPreset>72?T("TIẾP TỤC SÀNG LỌC AN TOÀN","CONTINUE SAFETY SCREENING"):T("⚡ BẮT ĐẦU FAST","⚡ START FAST"));
+  /* dashboard clock */
+  const fHrs=s?(Date.now()-s.start)/3600e3:0, el=s?Date.now()-s.start:0;
+  $('dashClock').textContent=s?fmtClock(el):"--:--:--";
+  $('dashElapsed').textContent=s?`${fHrs.toFixed(1)} ${T('giờ đang fasting','hours fasting')}`:T("Sẵn sàng — bấm ⚡ để bắt đầu","Ready — tap ⚡ to start");
+  const prog=s?Math.min(el/s.plan,1):0;
+  $('heroBar').style.width=(prog*100).toFixed(1)+'%';
+  $('statePill').style.display=s?"inline-flex":"none";
+  const dual=$('dualBox');
+  if(s){
+    dual.style.display="flex";
+    const done=el>=s.plan,remain=Math.max(s.plan-el,0);
+    $('dElapsed').textContent=fmtClock(el);
+    $('dRemain').textContent=done?T("HOÀN THÀNH ✓","COMPLETE ✓"):fmtClock(remain);
+    document.querySelector('#dualBox .d2').style.opacity=done?.5:1;
+    const endT=new Date(s.start+s.plan).toLocaleTimeString(LANG==='en'?'en-US':'vi-VN',{hour:'2-digit',minute:'2-digit'});
+    $('dashProgTxt').textContent=done
+      ?T(`🏁 ĐẠT MỤC TIÊU ${s.plan/3600e3}H — CHUYỂN SANG REFEEDING`,`🏁 GOAL ${s.plan/3600e3}H REACHED — MOVE TO REFEEDING`)
+      :`${Math.round(prog*100)}% · ${T('MỤC TIÊU','GOAL')} ${s.plan/3600e3}H · ${T('KẾT THÚC DỰ KIẾN','EST. END')} ${endT}`;
+  }else{dual.style.display="none";$('dashProgTxt').textContent=""}
+  $('btnEnd').style.display=s?"flex":"none";
+  /* header clock & greeting */
+  const nw=new Date(),gh=nw.getHours(),Lg=LANG==='en';
+  $('hdrClock').textContent=nw.toLocaleTimeString(Lg?'en-US':'vi-VN',{hour:'2-digit',minute:'2-digit'});
+  const gt=gh>=5&&gh<11?[T("Chào buổi sáng","Good morning"),"🌅"]:gh<13?[T("Chào buổi trưa","Midday check-in"),"☀️"]:gh<18?[T("Chào buổi chiều","Good afternoon"),"🌤️"]:gh<22?[T("Chào buổi tối","Good evening"),"🌙"]:["Khuya rồi — nghỉ ngơi nhé","It's late — rest well","🌌"];
+  $('hdrGreet').textContent=`${gt[2]||''} ${gt[0]} · ${nw.toLocaleDateString(Lg?'en-US':'vi-VN',{weekday:'long',day:'numeric',month:'long'})}`;
+  /* alerts */
+  $('dashAlerts').innerHTML=safety(fHrs).map(a=>`<div class="alert ${a.s}"><b>${a.t}</b>${a.m}${a.a?`<div class="act">${a.a}</div>`:''}</div>`).join('');
+  /* tiles */
+  const last=vitals().slice(-1)[0]||{},b=baseline();
+  const dstr=last.d?(T("cập nhật ","updated ")+new Date(last.d).toLocaleTimeString(LANG==='en'?'en-US':'vi-VN',{hour:'2-digit',minute:'2-digit'})):T("chưa có dữ liệu","no data yet");
+  $('mHR').textContent=last.rhr?last.rhr+" bpm":"—";$('mHRt').textContent=dstr;
+  $('mHRV').textContent=last.hrv?last.hrv+" ms":"—";$('mHRVt').textContent=b?T("baseline ","baseline ")+Math.round(b.hrv)+" ms":T("cần 7+ ngày","needs 7+ days");
+  $('mKcal').textContent=last.steps?Math.round(last.steps*0.05+1400):"—";
+  const w=get('water',0);$('mWater').textContent=w;
+  /* body status */
+  const[sc,rc,rows]=bodyStatus(prog);
+  const hasData=s||Object.keys(last).length>1||w>0;
+  $('bsScore').textContent=hasData?sc:"—";
+  $('bsArc').style.strokeDashoffset=295*(1-(hasData?sc:0)/100);
+  const chip=$('bsRec');chip.textContent=T("Phục hồi: ","Recovery: ")+rc[0];
+  chip.style.background=rc[2];chip.style.color=rc[1];
+  const rowColors=["#ff5d5d","#b79bff","#6cb4ff","#4ade80","#d4ff3f"];
+  $('bsRows').innerHTML=rows.slice(0,5).map(([t,v],i)=>`<div class="bs-row"><span style="width:72px">${t}</span><div class="bar"><i style="width:${Math.round(v)}%;background:${rowColors[i%5]}"></i></div><b>${Math.round(v)}</b></div>`).join('');
+  $('coachMsg').innerHTML=coachMsg(fHrs,rc,b);
+  /* metabolic */
+  const m=metabolic(fHrs);
+  $('metTitle').textContent=s?m[0]:"—";$('metSum').textContent=s?m[1]:"";
+  /* nutrition */
+  $('goals').innerHTML=GOALS.map((g,i)=>`<button class="${i===selGoal?'sel':''}" onclick="selGoal=${i};render()">${g}</button>`).join('');
+  const MS=[[T("Protein","Protein"),T("1–2 lòng bàn tay — giữ cơ, no lâu","1–2 palms — retain muscle, stay full")],[T("Chất xơ & rau","Fiber & vegetables"),T("Nửa đĩa — rau chín dịu nhẹ sau fast","Half plate — cooked gentle vegetables")],[T("Chất béo lành mạnh","Healthy fats"),T("Dầu olive, hạt, bơ quả — vừa phải","Olive oil, nuts, avocado — in moderation")],[T("Carb phức hợp","Complex carbs"),T("Ngũ cốc nguyên hạt, đậu — theo mục tiêu","Whole grains, legumes — per goal")],[T("Hydrat hóa","Hydration"),T("Nước trong bữa; điện giải nếu fast >24h","Water with meals; electrolytes if fast >24h")]];
+  $('mealStruct').innerHTML=MS.map(([t,d])=>`<div class="row"><span>✓ ${t}</span><span class="chipsmall">${d}</span></div>`).join('')+`<div class="sub" style="margin-top:10px">${T('Mục tiêu: ','Goal: ')}<b style="color:var(--volt)">${GOALS[selGoal]}</b> — ${T('cân bằng, không loại nhóm thực phẩm, không ăn kiêng cực đoan.','balanced, no food group elimination, no extreme dieting.')}</div>`;
+  $('wBar').style.width=Math.min(w/20,100)+'%';$('wTxt').textContent=w;
+  $('refSci').textContent=REFSCI;
+  /* exercise */
+  const ex=exercise(fHrs),el2=$('exLevel');
+  el2.textContent=ex[0];
+  el2.style.color=(ex[0].includes("CAO")||ex[0].includes("HIGH"))?"var(--volt)":(ex[0].includes("VỪA")||ex[0].includes("MODERATE"))?"var(--blue)":"var(--green)";
+  $('exActs').innerHTML=ex[1].join("&nbsp;&nbsp;·&nbsp;&nbsp;");
+  $('exReasons').innerHTML=ex[2].map(r=>`<div class="sub" style="margin-bottom:6px;font-weight:500">→ ${r}</div>`).join('');
+  const rec2=get('intensity',{}),today2=new Date().toDateString(),lvl=rec2[today2]||'';
+  ['low','mod','high'].forEach(k=>{const e2=$('intRow_'+k);if(e2)e2.classList.toggle('int-sel',lvl===k)});
+  const cntI=Object.keys(rec2).length,nmI={low:[T('Thấp','Low'),'Low'],mod:[T('Vừa','Moderate'),'Moderate'],high:[T('Cao','High'),'High']};
+  $('intStatus').innerHTML=`<div class="sub" style="font-weight:600">👆 ${T('Chạm để ghi lại mức cường độ hôm nay','Tap to log today\u2019s intensity')}</div>
+   <div class="sub" style="margin-top:4px">${lvl?(T('Hôm nay: ','Today: ')+'<b style="color:var(--volt)">'+(LANG==='en'?nmI[lvl][1]:nmI[lvl][0])+'</b>'):T('Chưa ghi','Not logged')} · ${cntI} ${T('ngày đã ghi','days logged')}</div>
+   ${session()?`<div class="sub" style="margin-top:4px;color:var(--orange);font-weight:600">⚡ ${T('Fast đang diễn ra — khuyến nghị tối đa "Vừa"','Fast in progress — recommended max "Moderate"')}</div>`:''}`;
+  /* baseline */
+  $('baseInfo').textContent=b?`✓ ${T('Baseline cá nhân','Personal baseline')} (${b.n} ${T('ngày','days')}): RHR ${Math.round(b.rhr)} bpm · HRV ${Math.round(b.hrv)} ms — ${T('chỉ so với chính bạn','compare only to yourself')}`:T("Baseline cá nhân: chưa đủ dữ liệu (cần ≥7 ngày).","Personal baseline: insufficient data (needs ≥7 days).");
+  /* history */
+  const hist=get('hist',[]);
+  $('histList').innerHTML=hist.length?hist.map(h=>`<div class="hist"><b style="color:var(--volt)">${h.plan/3600e3}h</b> · ${new Date(h.start).toLocaleDateString(LANG==='en'?'en-US':'vi-VN')} → ${T('thực tế','actual')} ${((h.end-h.start)/3600e3).toFixed(1)}h ${h.ack?'<span style="color:var(--green);font-size:10.5px">✓ '+T('xác nhận y tế','medical ack')+'</span>':''}</div>`).join(''):`<div class="sub">${T('Chưa có phiên nào.','No sessions yet.')}</div>`;
+  const cis=get('ci',[]).slice(0,7);
+  $('ciList').innerHTML=cis.length?cis.map(c=>`<div class="hist">${new Date(c.d).toLocaleDateString(LANG==='en'?'en-US':'vi-VN')} · ${T('Năng lượng','Energy')} ${c.v[0]}/10 · ${T('Chóng mặt','Dizzy')} ${c.v[3]}/10 · ${T('Ngủ','Sleep')} ${c.v[6]}/10 ${c.em&&c.em.length?'<span style="color:var(--red);font-size:10.5px">🚨 '+c.em.join(', ')+'</span>':''}</div>`).join(''):`<div class="sub">${T('Chưa có dữ liệu.','No data yet.')}</div>`;
+  /* stats */
+  const totH=Math.round(hist.reduce((s,x)=>s+(x.end-x.start)/3600e3,0));
+  $('statTotal').textContent=totH;
+  $('statLong').textContent=Math.round(Math.max(0,...hist.map(x=>(x.end-x.start)/3600e3)));
+  $('statCount').textContent=hist.length;
+  const fb=$('fastBars');
+  if(!hist.length)fb.innerHTML=`<div class="sub" style="align-self:center">${T('Chưa có dữ liệu','No data yet')}</div>`;
+  else{const last=hist.slice(0,10).reverse(),mx=Math.max(...last.map(x=>(x.end-x.start)/3600e3),1);
+    fb.innerHTML=last.map(x=>{const d=(x.end-x.start)/3600e3;
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0"><div style="width:100%;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--volt),color-mix(in srgb,var(--volt) 40%,transparent));height:${Math.max(8,d/mx*70)}px"></div><span style="font-size:8.5px;color:var(--sub2);font-weight:700">${d.toFixed(0)}h</span></div>`}).join('')}
+  renderW();
+  /* daily prompt */
+  const prompts=[T("💧 Uống 1 ly nước ngay khi mở mắt — cơ thể sau đêm dài đang thiếu nước nhất.","💧 Drink a glass of water right after waking — your body is most dehydrated after sleep."),T("🚶 10 phút đi bộ sau bữa ăn giúp đường huyết ổn định hơn ngồi yên.","🚶 A 10-minute walk after meals stabilizes blood sugar better than sitting."),T("🧂 Trong fast >24h: thêm chút muối vào nước giúp giữ điện giải & giảm chóng mặt.","🧂 During fasts >24h: a pinch of salt in water helps retain electrolytes & reduce dizziness."),T("😴 Ngủ đủ 7–9h là 'liều insulin' tự nhiên tốt nhất cho chuyển hóa.","😴 7–9h of sleep is the best natural 'insulin dose' for metabolism."),T("🥗 Bữa đầu sau fast: protein trước, carb sau — giảm sót đường huyết.","🥗 First meal after a fast: protein first, carbs after — smoother blood sugar.")];
+  $('dailyPrompt').textContent=prompts[nw.getDate()%prompts.length];
+  gqRender();
+}
+
+/* ================= NUTRITION 7-DAY MENU ================= */
+const MEALS={
+  b:[["Yến mạch sữa chua & hạt chia",320],["Bánh mì trứng ốp & bơ quả",380],["Phở gà bún nhỏ + rau",350],["Sữa chua Hy Lạp & trái cây",300],["Cháo yến mạch trứng",330],["Bánh mì ốp la & dưa leo",340],["Smoothie chuối yến mạch",310]],
+  l:[["Cơm gà áp chảo & rau củ",520],["Cá hồi nướng & khoai lang",540],["Cơm thịt bò xào rau",530],["Ức gà luộc & cơm gạo lứt",510],["Cá diêu hồng hấp & rau",480],["Mì ý sốt cà & thịt bằm",520],["Cơm cá kho & dưa chua",500]],
+  d:[["Súp gà rau củ & bánh mì",420],["Salad cá ngừ & trứng",400],["Tôm xào bông cải & cơm nhỏ",430],["Đậu phụ sốt cà & rau",380],["Gà hấp lá chanh & rau",410],["Cá rim & canh rau",390],["Bò nạc xào rau củ",420]],
+  s:[["Táo & 10 hạnh nhân",180],["Sữa chua không đường",120],["Chuối & bơ đậu phộng",200],["Trứng luộc 2 quả",150],["Cam vắt & hạt óc chó",170],["Cà phê sữa ít đường",120],["Ổi & sữa chua",160]]
+};
+function calcMenu7(){
+  const W=+$('dW').value||65,H=+$('dH').value||170,A=+$('dA').value||30,male=$('dM').classList.contains('sel'),act=+$('dAct').value;
+  const bmr=Math.round(10*W+6.25*H-5*A+(male?5:-161));
+  const tdee=Math.round(bmr*act);
+  const goalK=[0.85,1,1.05,0.95,1][selGoal];
+  const target=Math.round(tdee*goalK);
+  const pG=Math.round(W*1.6),fG=Math.round(W*0.8),cG=Math.round((target-pG*4-fG*9)/4);
+  let out=`<div class="sub" style="margin:12px 0 4px;font-weight:600">${T('BMR','BMR')}: <b style="color:var(--cyan)">${bmr} kcal</b> · TDEE: <b style="color:var(--cyan)">${tdee} kcal</b> → ${T('Mục tiêu','Target')} (<b style="color:var(--volt)">${GOALS[selGoal]}</b>): <b style="color:var(--volt)">${target} kcal/ngày</b><br>${T('Protein','Protein')}: <b>${pG}g</b> · ${T('Fat','Fat')}: <b>${fG}g</b> · ${T('Carb','Carb')}: <b>${cG}g</b></div>`;
+  const dn=[T('Thứ 2','Mon'),T('Thứ 3','Tue'),T('Thứ 4','Wed'),T('Thứ 5','Thu'),T('Thứ 6','Fri'),T('Thứ 7','Sat'),T('Chủ nhật','Sun')];
+  for(let i=0;i<7;i++){
+    const off=(new Date().getDay()+6)%7;
+    const b=MEALS.b[(i+off)%7],l=MEALS.l[(i+off)%7],d=MEALS.d[(i+off)%7],s=MEALS.s[(i+off)%7];
+    const tot=b[1]+l[1]+d[1]+s[1];
+    out+=`<div class="m7-day"><b style="color:var(--gold)">${dn[i]}</b> <span class="sub" style="font-size:11px">· ${T('khoảng','about')} ${tot} kcal</span>
+      <div class="m7-meal"><span>🌅 ${T('Sáng','Breakfast')}: ${b[0]}</span><span>${b[1]}</span></div>
+      <div class="m7-meal"><span>☀️ ${T('Trưa','Lunch')}: ${l[0]}</span><span>${l[1]}</span></div>
+      <div class="m7-meal"><span>🌙 ${T('Tối','Dinner')}: ${d[0]}</span><span>${d[1]}</span></div>
+      <div class="m7-meal"><span>🥤 ${T('Phụ','Snack')}: ${s[0]}</span><span>${s[1]}</span></div></div>`;
+  }
+  out+=`<div class="safe-disclaimer">${T('Thực đơn tham khảo sau fast — calo chuẩn ±10% tùy khẩu phần. Điều chỉnh theo cảm giác no & mục tiêu cá nhân.','Reference post-fast menu — calories vary ±10% by portion. Adjust to your hunger and personal goal.')}</div>`;
+  $('menu7Out').innerHTML=out;gqEvent('menu');toastMsg('🍽 ✓');
+}
+
+/* ================= QUEST ================= */
+const GQ_TASKS=[
+  {id:'water',n:[T('Uống đủ 1000ml nước','Drink 1000ml water'),T('Uống đủ 2000ml nước','Drink 2000ml water')],xp:10,coin:5,ck:()=>get('water',0)>=1000},
+  {id:'vitals',n:[T('Nhập chỉ số sức khỏe','Log health metrics'),T('Nhập chỉ số sức khỏe','Log health metrics')],xp:15,coin:8,ck:()=>vitals().length&&new Date(vitals().slice(-1)[0].d).toDateString()===new Date().toDateString()},
+  {id:'checkin',n:[T('Check-in cảm giác cơ thể','Body check-in'),T('Check-in cảm giác cơ thể','Body check-in')],xp:15,coin:8,ck:()=>{const c=get('ci',[])[0];return c&&new Date(c.d).toDateString()===new Date().toDateString()}},
+  {id:'move',n:[T('Ghi nhận vận động hôm nay','Log today\u2019s activity'),T('Ghi nhận vận động hôm nay','Log today\u2019s activity')],xp:10,coin:5,ck:()=>!!get('intensity',{})[new Date().toDateString()]},
+  {id:'edu',n:[T('Đọc 1 bài khoa học','Read 1 science note'),T('Đọc 1 bài khoa học','Read 1 science note')],xp:10,coin:5,ck:()=>get('eduToday','')===new Date().toDateString()},
+];
+function gq(){return get('gq',{xp:0,coins:0,streak:0,lastDay:'',login:{},chestDay:'',ach:{}})}
+function gqSave(g){set('gq',g)}
+function gqLevel(xp){return Math.floor(Math.sqrt(xp/60))+1}
+function gqAdd(xp,coin,msg){
+  const g=gq(),oldLv=gqLevel(g.xp);
+  g.xp+=xp;g.coins+=coin;gqSave(g);
+  if(msg)toastMsg(msg);
+  const newLv=gqLevel(g.xp);
+  if(newLv>oldLv){$('lvNew').textContent=newLv;$('lvOverlay').classList.add('on');setTimeout(()=>$('lvOverlay').classList.remove('on'),2200);gqSave({...gq(),coins:gq().coins+30});confetti();toastMsg(`🎉 LEVEL ${newLv}! +30 🪙`)}
+  gqRender();
+}
+function gqEvent(id){
+  const t=GQ_TASKS.find(t=>t.id===id);
+  if(id==='edu')set('eduToday',new Date().toDateString());
+  if(!t)return;
+  const done=get('gqDone',{});
+  if(done[new Date().toDateString()+id])return;
+  if(t.ck()){done[new Date().toDateString()+id]=1;set('gqDone',done);gqAdd(t.xp,t.coin,`✓ ${t.n[0]} +${t.xp}XP`)}
+}
+function gqTaskDone(id){const done=get('gqDone',{});return !!done[new Date().toDateString()+id]}
+function submitDay(){
+  const today=new Date().toDateString(),g=gq();
+  const allDone=GQ_TASKS.every(t=>gqTaskDone(t.id));
+  if(get('gqSubmit','')===today){toastMsg(T('Đã nộp hôm nay rồi!','Already submitted today!'));return}
+  if(!allDone){toastMsg(T('⚠️ Hoàn thành hết nhiệm vụ trước đã!','⚠️ Complete all tasks first!'));return}
+  set('gqSubmit',today);gqAdd(25,15,T('📩 Nộp ngày hoàn thành!','📩 Day submitted!'));
+  /* streak */
+  const yest=new Date(Date.now()-864e5).toDateString();
+  g.streak=(g.lastDay===yest||g.lastDay===today)?(g.lastDay===today?g.streak:g.streak+1):1;
+  g.lastDay=today;gqSave(g);gqRender();
+}
+function openChest(){
+  const today=new Date().toDateString(),g=gq();
+  if(g.chestDay===today){toastMsg(T('🎁 Rương đã mở — quay lại ngày mai!','🎁 Chest opened — come back tomorrow!'));return}
+  const allDone=GQ_TASKS.every(t=>gqTaskDone(t.id));
+  if(!allDone){toastMsg(T('⚠️ Hoàn thành hết nhiệm vụ để mở rương!','⚠️ Finish all tasks to open the chest!'));return}
+  g.chestDay=today;gqSave(g);
+  const prize=[20,30,40,50,60][Math.floor(Math.random()*5)];
+  gqAdd(10,prize,`🎁 +${prize} 🪙!`);confetti();gqRender();
+}
+function confetti(){
+  const cols=['#d4ff3f','#59e6d2','#ff5fa8','#ffe05c','#8ab8ff'];
+  for(let i=0;i<40;i++){const c=document.createElement('div');c.className='conf';c.style.left=Math.random()*100+'vw';c.style.background=cols[i%5];c.style.animationDuration=(1.6+Math.random()*1.6)+'s';c.style.animationDelay=(Math.random()*.5)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),3600)}
+}
+function gqAchCheck(){
+  const g=gq(),h=get('hist',[]),w=get('ws',[]),ach=g.ach||(g.ach={});
+  const defs=[
+    ['fast3',h.length>=3,T('3 phiên fast','3 fast sessions')],
+    ['fast24',h.some(x=>(x.end-x.start)>=864e5),T('Fast trọn 24h','A full 24h fast')],
+    ['water7',Object.keys(get('intensity',{})).length>=7,T('7 ngày vận động','7 active days')],
+    ['vitals7',vitals().length>=7,T('7 lần nhập chỉ số','7 metric logs')],
+    ['weight5',w.length>=5,T('5 lần cân nặng','5 weight logs')],
+    ['rich',g.coins>=200,T('200 🪙 tích lũy','200 🪙 saved')],
+  ];
+  defs.forEach(([id,ok,label])=>{if(ok&&!ach[id]){ach[id]=1;gqAdd(20,10,'🏆 '+label);toastMsg('🏆 '+label)}});
+  gqSave(g);
+  return defs.map(([id,,label])=>({id,ok:!!ach[id],label}));
+}
+const GQ_FACTS=[
+  "Não bộ chiếm ~20% năng lượng cơ thể dù chỉ nặng 2% — vì vậy chóng mặt khi fast là tín hiệu cần nghỉ.",
+  "Glycogen gan cạn sau ~12–24h nhịn — đó là lúc cơ thể bắt đầu dùng mỡ nhiều hơn.",
+  "Uống nước có điện giải trong fast >24h giảm đáng kể nguy cơ chóng mặt do hạ huyết áp tư thế.",
+  "HRV của bạn chỉ nên so với chính bạn — chênh lệch giữa hai ngườI có thể tới 100%.",
+  "Protein 1.6g/kg/ngày giúp giữ cơ trong giai đoạn giảm cân — theo khuyến nghị ISSN.",
+  "Ngủ <6h làm tăng ghrelin (hormone đói) ~15% vào hôm sau — bạn sẽ thấy đói hơn thật.",
+  "Zone 2 cardio (nhịp tim 60–70% max) đốt mỡ hiệu quả nhất trong trạng thái fast vừa phải.",
+  "Autophagy ở ngườI không có mốc giờ chính xác — mọi con số 'giờ thứ X' đều là lý thuyết từ động vật.",
+];
+function gqRender(){
+  const g=gq(),lv=gqLevel(g.xp),nextXp=60*lv*lv,prevXp=60*(lv-1)*(lv-1);
+  const pct=Math.min(100,Math.round((g.xp-prevXp)/(nextXp-prevXp)*100));
+  $('gqLevel').textContent=lv;$('gqXpFill').style.width=pct+'%';
+  $('gqXpTxt').textContent=`${g.xp-prevXp}/${nextXp-prevXp} XP · ${T('tổng','total')} ${g.xp}`;
+  $('gqCoins').textContent=g.coins;$('gqCoins3')&&($('gqCoins3').textContent=g.coins);
+  $('gqStreak').textContent=g.streak;
+  const done=GQ_TASKS.filter(t=>gqTaskDone(t.id)).length;
+  $('gqDayFill').style.width=(done/GQ_TASKS.length*100)+'%';
+  $('gqDayTxt').textContent=`${done}/${GQ_TASKS.length}`;
+  $('gqSubmitLbl').textContent=get('gqSubmit','')===new Date().toDateString()?T('Đã nộp ✓ — quay lại ngày mai','Submitted ✓ — see you tomorrow'):T('Nộp ngày — nhận thưởng','Submit day — claim reward');
+  $('gqList').innerHTML=`<div class="card"><h3>${T('✅ Danh sách nhiệm vụ','✅ Task list')}</h3>${GQ_TASKS.map(t=>{const d=gqTaskDone(t.id);return `<div class="gq-q ${d?'gq-done':''}"><div class="gq-chk">${d?'✓':''}</div><div class="gq-n" style="font-size:14px;font-weight:600;flex:1">${t.n[0]}<div class="sub" style="font-size:11px;margin-top:2px">${d?T('Hoàn thành!','Done!'):T('Tự động ghi nhận khi bạn thực hiện','Auto-tracks as you do it')}</div></div><span class="gq-xp">+${t.xp} XP · ${t.coin}🪙</span></div>`}).join('')}</div>`;
+  /* login strip 7 days */
+  const dow=[];for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*864e5);dow.push({k:d.toDateString(),l:'T2 T3 T4 T5 T6 T7 CN'.split(' ')[(d.getDay()+6)%7],today:i===0})}
+  $('loginStrip').innerHTML=dow.map(d=>`<div class="gq-login ${g.login[d.k]?'on':''} ${d.today?'today':''}">${d.l}${g.login[d.k]?'<br>✓':''}</div>`).join('');
+  const today=new Date().toDateString();
+  if(!g.login[today]){g.login[today]=1;gqSave({...g,coins:g.coins+10});toastMsg(T('🎁 Điểm danh hôm nay +10 🪙!','🎁 Daily login +10 coins!'))}
+  /* chest */
+  const open=g.chestDay===today;
+  $('gqChest').innerHTML=`<div style="text-align:center;padding:8px 0"><div style="font-size:52px;line-height:1.3;${open?'opacity:.4':'animation:floaty 2.2s ease-in-out infinite'}">🎁</div><div class="sub" style="margin-top:6px">${open?T('Đã mở — quay lại ngày mai!','Opened — come back tomorrow!'):T('Hoàn thành hết nhiệm vụ hôm nay để mở rương!','Finish all today\u2019s tasks to open!')}</div>${open?'':`<button class="btn volt sm" style="margin:12px auto 0;width:auto" onclick="openChest()">🔓 Mở rương</button>`}</div>`;
+  $('gqFact').textContent=GQ_FACTS[new Date().getDate()%GQ_FACTS.length];
+  /* week summary */
+  const days=[];for(let i=6;i>=0;i--)days.push(new Date(Date.now()-i*864e5).toDateString());
+  const doneMap=get('gqDone',{});
+  $('gqWeek').innerHTML=days.map(d=>{const n=GQ_TASKS.filter(t=>doneMap[d+t.id]).length;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><span style="width:76px;font-size:12px;color:var(--sub);font-weight:700">${new Date(d).toLocaleDateString(LANG==='en'?'en-US':'vi-VN',{weekday:'short'})}</span><div class="pbar" style="flex:1;margin-top:0;height:7px"><i style="width:${n/GQ_TASKS.length*100}%"></i></div><b style="font-size:12px;width:32px;text-align:right;color:${n===GQ_TASKS.length?'var(--volt)':'var(--sub2)'}">${n}/${GQ_TASKS.length}</b></div>`}).join('');
+  /* achievements */
+  const achs=gqAchCheck();
+  $('gqAch').innerHTML=achs.map(a=>`<div class="gq-a ${a.ok?'':'lk'}"><div class="e">${a.ok?'🏆':'🔒'}</div><div class="t">${a.label}</div></div>`).join('');
+  /* dex & pet grid */
+  renderDex();P4.renderGrid();
+}
+function renderDex(){
+  const own=get('p4own',['dolphin','pig']);
+  $('gqDex').innerHTML=Object.entries(PET_DEFS).map(([k,d])=>{const o=own.includes(k);
+    return `<div class="gq-p ${o?'':'lk'}"><canvas data-pet="${k}" width="108" height="108"></canvas><div class="t">${d.name[LANG]}</div></div>`}).join('');
+  $('gqDexNote').textContent=T(`Đã sưu tầm ${own.length}/10 bé 4D — mở khóa thêm ở tab Thú 4D bằng 🪙!`,`Collected ${own.length}/10 4D pets — unlock more in the 4D Pets tab with coins!`);
+  /* paint tiny stills */
+  requestAnimationFrame(()=>{document.querySelectorAll('#gqDex canvas').forEach(c=>{
+    const ctx=c.getContext('2d');
+    drawPetTo(ctx,c.dataset.pet,54,66,0.62,-0.5,0.1,0,0);
+  })});
+}
+function toastMsg(m){const t=$('gqToast');t.textContent=m;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ================= SETTINGS ================= */
+function setTheme(t){document.body.dataset.theme=t==='volt'?'':t;set('theme',t);document.querySelectorAll('#swatches .sw').forEach(s=>s.classList.toggle('sel',s.classList.contains(t===''?'volt':t)))}
+function fontSize(d){const f=Math.max(0.8,Math.min(1.4,(get('fs',1)+d*0.05)));set('fs',f);document.body.style.setProperty('--fs',f);$('fsVal').textContent=Math.round(f*100)+'%'}
+function setClockColor(c){document.documentElement.style.setProperty('--clockc',c);set('clockc',c);document.querySelectorAll('#clockSw .sw').forEach(s=>s.classList.toggle('sel',s.dataset.c===c))}
+</script>
+
+<script>
+/* ================= 4D PET ENGINE ================= */
+const PET_DEFS={
+  dolphin:{name:{vi:'Cá heo',en:'Dolphin'},cost:0,hab:'ocean'},
+  pig:{name:{vi:'Heo con',en:'Piglet'},cost:0,hab:'farm'},
+  koala:{name:{vi:'Koala',en:'Koala'},cost:150,hab:'tree'},
+  frog:{name:{vi:'Ếch con',en:'Frog'},cost:150,hab:'pond'},
+  turtle:{name:{vi:'Rùa con',en:'Turtle'},cost:250,hab:'pond'},
+  panda:{name:{vi:'Gấu trúc',en:'Panda'},cost:300,hab:'bamboo'},
+  fox:{name:{vi:'Cáo con',en:'Fox'},cost:300,hab:'den'},
+  deer:{name:{vi:'Hươu con',en:'Deer'},cost:400,hab:'meadow'},
+  lion:{name:{vi:'Sư tử con',en:'Lion cub'},cost:400,hab:'savanna'},
+  elephant:{name:{vi:'Voi con',en:'Elephant'},cost:500,hab:'plains'},
+};
+function mkQuad(o){
+  return st=>{
+    const P=[],t=st.t,ph=st.phase,A=st.legAmp,by=st.bodyY;
+    const E=(x,y,z,rx,ry,c,a,bl)=>P.push({k:'e',x,y:y+by,z,rx,ry,c,a:a==null?1:a,bl:!!bl});
+    const PL=(pts,c)=>P.push({k:'p',pts:pts.map(q=>[q[0],q[1]+by,q[2]||0]),c});
+    const roll=st.bodyRoll||0;
+    E(-2,50,0,o.fat?52:46,o.fat?30:26,o.body);
+    E(28,52+roll*20,0,24,22,o.body);
+    if(o.belly)E(4,43,0,o.fat?38:33,13,o.belly,0.95);
+    const hx=64,hy=o.headY||66;
+    if(o.mane){E(hx-4,hy,0,30,27,o.mane);E(hx+2,hy,0,17,15,o.face)}
+    else E(hx,hy,0,20,18,o.body);
+    const blink=st.blink;
+    const ex=o.mane?hx+8:hx+10, ey=o.mane?hy+2:hy+4;
+    E(ex,ey,11,4.6,4.6*blink,'#fff');E(ex+2,ey,12,2.6,2.6*blink,'#222');
+    E(ex,ey,-11,4.6,4.6*blink,'#fff');E(ex+2,ey,-12,2.6,2.6*blink,'#222');
+    if(o.ear==='round'){E(hx-6,hy+20,10,9,9,o.earC||o.body);E(hx-6,hy+20,-10,9,9,o.earC||o.body);
+      if(o.inner){E(hx-6,hy+20,13,4.5,4.5,o.inner,0.9);E(hx-6,hy+20,-13,4.5,4.5,o.inner,0.9)}}
+    if(o.ear==='point'){PL([[hx-10,hy+14,6],[hx-2,hy+36,6],[hx+5,hy+17,6]],o.earC||o.body);PL([[hx-10,hy+14,-6],[hx-2,hy+36,-6],[hx+5,hy+17,-6]],o.earC||o.body)}
+    if(o.ear==='flop'){E(hx-10,hy+16,12,11,6,o.earC||o.body);E(hx-10,hy+16,-12,11,6,o.earC||o.body)}
+    if(o.ear==='big'){E(hx-10,hy+14,17,13,16,o.earC||o.body);E(hx-10,hy+14,-17,13,16,o.earC||o.body);
+      if(o.inner){E(hx-10,hy+14,20,7,9,o.inner,0.9);E(hx-10,hy+14,-20,7,9,o.inner,0.9)}}
+    if(o.snout)E(hx+18,hy-4,0,9,7.5,o.snout);
+    if(o.nose)E(hx+15,hy+1,2,7,9,o.nose);
+    if(o.mouth)E(hx+16,hy-8,9,5,2.2,o.mouth,0.7);
+    const L2=o.legH||26;
+    const leg=(lx,lz,off)=>{const lift=Math.max(0,Math.sin(ph+off))*A*14;
+      E(lx,lift+L2,lz,o.legW||9,L2,o.legC||o.body);
+      E(lx,lift+6,lz,(o.legW||9)+1,5.5,o.pawC||o.legC||o.body)};
+    leg(34,14,0);leg(34,-14,Math.PI);leg(-28,14,Math.PI);leg(-28,-14,0);
+    const wag=Math.sin(t*3.2)*3;
+    if(o.tail==='bush'){E(-52,54+wag,0,17,12,o.body);E(-64,54+wag,0,8,6,o.belly||'#fff')}
+    if(o.tail==='tuft'){E(-50,56+wag,0,10,4,o.body);E(-60,58+wag,0,5,5,o.tailC||'#6b4a24')}
+    if(o.tail==='curl'){E(-50,56+wag,0,7,7,o.body)}
+    if(o.tail==='short'){E(-48,56+wag,0,6,5,o.body)}
+    if(o.extra)o.extra(st,P,E,PL,hx,hy);
+    return P;
+  };
+}
+const PET_BUILD={
+  dolphin:st=>{
+    const P=[],t=st.t,by=st.bodyY;
+    const E=(x,y,z,rx,ry,c,a,bl)=>P.push({k:'e',x,y:y+by,z,rx,ry,c,a:a==null?1:a,bl:!!bl});
+    const PL=(pts,c)=>P.push({k:'p',pts:pts.map(q=>[q[0],q[1]+by,q[2]||0]),c});
+    const sw=Math.sin(t*2.6)*2.5;
+    E(0,66+sw*0.3,0,50,17,'#6db7d9');
+    E(4,60+sw*0.3,0,42,11,'#d9eef8',0.95);
+    E(48,68,0,14,6.5,'#5aa7cc');
+    PL([[-4,80,0],[8,102,0],[-16,82,0]],'#5aa7cc');
+    const flap=Math.sin(t*5)*6;
+    PL([[-46,66+flap*0.3,0],[-62,80+flap,0],[-57,63+flap,0]],'#5aa7cc');
+    PL([[-46,66-flap*0.3,0],[-62,52-flap,0],[-57,69-flap,0]],'#5aa7cc');
+    const pf=Math.sin(t*4)*4;
+    PL([[16,58,14],[26,44+pf,24],[31,58,17]],'#5aa7cc');
+    PL([[16,58,-14],[26,44-pf,-24],[31,58,-17]],'#5aa7cc');
+    const blink=st.blink;
+    E(34,74,13,4.4,4.4*blink,'#fff');E(36,74,14,2.4,2.4*blink,'#1c2b33');
+    E(45,61,11,6,2,'#3d7f9e',0.8);
+    return P;
+  },
+  pig:mkQuad({body:'#f6a9bb',belly:'#fbd3dd',ear:'flop',snout:'#e88ba0',tail:'curl',fat:true,mouth:'#c06a80'}),
+  koala:mkQuad({body:'#a7b0b8',belly:'#d7dde2',ear:'big',earC:'#98a2ab',inner:'#e8b7c0',nose:'#3a3f45',tail:'none',fat:true,headY:68,
+    extra:(st,P,E,PL,hx,hy)=>{E(30,44,15,8,13,'#98a2ab');E(30,44,-15,8,13,'#98a2ab')}}),
+  frog:st=>{
+    const P=[],ph=st.phase,by=st.bodyY;
+    const E=(x,y,z,rx,ry,c,a,bl)=>P.push({k:'e',x,y:y+by,z,rx,ry,c,a:a==null?1:a,bl:!!bl});
+    E(0,34,0,34,20,'#58b368');
+    E(18,46,0,24,15,'#58b368');
+    E(2,28,0,26,12,'#d6efd2',0.95);
+    const blink=st.blink,kick=Math.max(0,Math.sin(ph))*st.legAmp*10;
+    E(22,62,12,10,10,'#58b368');E(24,64,15,5,5*blink,'#222');E(26,66,17,1.8,1.8,'#fff');
+    E(22,62,-12,10,10,'#58b368');E(24,64,-15,5,5*blink,'#222');E(26,66,-17,1.8,1.8,'#fff');
+    E(34,40,9,8,2.4,'#2f6b3a',0.75);
+    E(-8,20+kick,20,14,7,'#4a9e5a');E(-8,20+kick,-20,14,7,'#4a9e5a');
+    E(30,13,12,6,8,'#4a9e5a');E(30,13,-12,6,8,'#4a9e5a');
+    return P;
+  },
+  turtle:mkQuad({body:'#6fae5c',belly:'#e6d9a8',ear:'none',tail:'short',legH:13,legW:11,
+    extra:(st,P,E,PL)=>{E(-2,60,0,40,19,'#5d8a4a');E(-2,66,0,34,12,'#79a862');
+      E(-12,70,0,4,3,'#4a7339');E(2,72,0,4,3,'#4a7339');E(14,69,0,4,3,'#4a7339');
+      E(-34,54,0,10,9,'#6fae5c');E(-43,52,0,4,3,'#4a7339')}}),
+  panda:mkQuad({body:'#f2f2f0',ear:'round',earC:'#2b2b2b',legC:'#2b2b2b',pawC:'#2b2b2b',tail:'none',fat:true,
+    extra:(st,P,E,PL,hx,hy)=>{E(hx+7,hy+2,10,7.5,8,'#2b2b2b');E(hx+7,hy+2,-10,7.5,8,'#2b2b2b');
+      E(30,44,15,9,15,'#2b2b2b');E(30,44,-15,9,15,'#2b2b2b')}}),
+  fox:mkQuad({body:'#e8863a',belly:'#fff4e6',ear:'point',earC:'#d06f26',snout:'#fff4e6',tail:'bush',
+    mouth:'#a8581e',extra:(st,P,E,PL,hx,hy)=>{E(hx+2,hy+30,7,4,4,'#5a3a22');E(hx+2,hy+30,-7,4,4,'#5a3a22')}}),
+  deer:mkQuad({body:'#c98f5a',belly:'#f2e3cd',ear:'point',earC:'#b57c48',snout:'#e8c9a5',tail:'short',legH:30,legW:7,pawC:'#4a3626',
+    extra:(st,P,E,PL,hx,hy)=>{
+      E(20,58,0,10,7,'#f2e3cd',0.95);
+      E(-8,66,8,3,2.5,'#fff',0.85);E(6,70,-6,3,2.5,'#fff',0.85);E(-20,64,-8,3,2.5,'#fff',0.85);E(14,60,10,3,2.5,'#fff',0.85);
+      PL([[hx-2,hy+14,8],[hx-6,hy+34,10],[hx+6,hy+30,10]],'#7a5230');
+      PL([[hx-6,hy+34,10],[hx-13,hy+44,10]],'#7a5230');
+      PL([[hx-2,hy+14,-8],[hx-6,hy+34,-10],[hx+6,hy+30,-10]],'#7a5230');
+      PL([[hx-6,hy+34,-10],[hx-13,hy+44,-10]],'#7a5230');}}),
+  lion:mkQuad({body:'#d9a75f',face:'#e8c184',mane:'#b07a35',ear:'none',tail:'tuft',legH:24,
+    extra:(st,P,E,PL,hx,hy)=>{E(hx+10,hy-8,8,5,4,'#8a5a24',0.9);E(hx+10,hy-8,-8,5,4,'#8a5a24',0.9)}}),
+  elephant:mkQuad({body:'#9aa3ad',belly:'#b8bfc7',ear:'big',earC:'#8b95a0',fat:true,legH:24,legW:12,tail:'tuft',tailC:'#6e7680',
+    extra:(st,P,E,PL,hx,hy)=>{
+      E(hx+22,hy-2,0,7,8,'#8b95a0');E(hx+28,hy-11,0,6.5,7.5,'#8b95a0');E(hx+31,hy-21,0,6,6.5,'#8b95a0');E(hx+33,hy-30,0,5.5,5.5,'#8b95a0');
+      E(hx+33,hy-35,0,3.5,2.5,'#d9a0a8');
+      E(hx+18,hy-6,7,2.6,5,'#fff');E(hx+18,hy-6,-7,2.6,5,'#fff');}}),
+};
+function petPose(key,t,mode,speed){
+  const run=mode==='run';
+  return{t,mode,phase:t*(run?7:3)*speed,
+    legAmp:run?1:mode==='dance'?0.55:0.1,
+    bodyY:mode==='jump'?Math.abs(Math.sin(t*4.2))*44:mode==='dance'?Math.abs(Math.sin(t*7))*9:Math.sin(t*1.9)*2.5,
+    bodyRoll:mode==='dance'?Math.sin(t*9)*0.12:0,
+    blink:(t%3.6)<0.13?0.1:1};
+}
+function drawPetTo(ctx,key,cx,cy,zoom,yaw,pitch,t,st){
+  const F=860;
+  const pr=(x,y,z)=>{const cy0=Math.cos(yaw),sy=Math.sin(yaw);const x1=x*cy0+z*sy,z1=-x*sy+z*cy0;
+    const cp=Math.cos(pitch),sp=Math.sin(pitch);const y1=y*cp-z1*sp,z2=y*sp+z1*cp;
+    const s=F/(F+z2);return[cx+x1*zoom*s,cy-y1*zoom*s,s,z2]};
+  const parts=PET_BUILD[key](st);
+  const sc=pr(0,0,0);
+  ctx.save();ctx.globalAlpha=0.32*(1-Math.min(0.55,st.bodyY/90));ctx.fillStyle='#000';
+  ctx.beginPath();ctx.ellipse(sc[0],sc[1]+6*zoom*sc[2],56*zoom*sc[2],12*zoom*sc[2],0,0,7);ctx.fill();ctx.restore();
+  const items=parts.map(pt=>{const ax=pt.k==='p'?pt.pts[0][0]:pt.x,ay=pt.k==='p'?pt.pts[0][1]:pt.y,az=pt.k==='p'?(pt.pts[0][2]||0):pt.z;
+    return{pt,z:pr(ax,ay,az)[3]}}).sort((a,b)=>a.z-b.z);
+  for(const{pt} of items){
+    ctx.save();ctx.globalAlpha=pt.a==null?1:pt.a;
+    if(pt.k==='e'){
+      const p=pr(pt.x,pt.y,pt.z);
+      ctx.fillStyle=pt.c;ctx.beginPath();
+      ctx.ellipse(p[0],p[1],Math.max(0.4,pt.rx*zoom*p[2]),Math.max(0.4,pt.ry*(pt.bl?st.blink:1)*zoom*p[2]),pt.rot||0,0,7);
+      ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(0,0,0,.14)';ctx.stroke();
+    }else if(pt.k==='p'){
+      ctx.fillStyle=pt.c;ctx.beginPath();
+      const pts=pt.pts.map(q=>pr(q[0],q[1],q[2]));
+      ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);
+      ctx.closePath();ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(0,0,0,.14)';ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+class Pet{
+  constructor(canvas,key){
+    this.cv=canvas;this.ctx=canvas.getContext('2d');this.key=key;
+    this.yaw=-0.55;this.pitch=0.12;this.zoom=1;this.zoomT=1;
+    this.mode='idle';this.speed=1;this.t=Math.random()*10;
+    this.x=0;this.dir=1;this.act=null;this.actT=0;this.yawOff=0;
+    this.resize();
+  }
+  resize(){const r=this.cv.parentElement?this.cv.parentElement.getBoundingClientRect():{width:320,height:260};
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    this.cv.width=Math.max(50,r.width*dpr);this.cv.height=Math.max(50,r.height*dpr);
+    this.ctx.setTransform(dpr,0,0,dpr,0,0);this.w=r.width;this.h=r.height}
+  setKey(k){this.key=k}
+  frame(dt){
+    this.t+=dt*this.speed;this.zoom+=(this.zoomT-this.zoom)*0.15;
+    if(this.mode==='run'){this.x+=this.dir*dt*0.4*this.speed;if(this.x>0.75){this.x=0.75;this.dir=-1}if(this.x<-0.75){this.x=-0.75;this.dir=1}}
+    if(this.act){this.actT+=dt;const dur=this.act==='roll'?1.35:0.9;const p=Math.min(1,this.actT/dur);
+      this.yawOff=(this.act==='roll'?Math.PI*4:Math.PI*2)*(1-Math.pow(1-p,3));
+      if(p>=1){this.act=null;this.yawOff=0}}
+    this.draw();
+  }
+  draw(){
+    const ctx=this.ctx;if(!this.w)return;
+    ctx.clearRect(0,0,this.w,this.h);
+    const g=ctx.createRadialGradient(this.w/2,this.h*0.55,10,this.w/2,this.h*0.55,this.w*0.75);
+    g.addColorStop(0,'rgba(120,190,255,.13)');g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,this.w,this.h);
+    const st=petPose(this.key,this.t,this.mode,this.speed);
+    const z=this.zoom*(0.62+Math.min(this.w,430)/430*0.55);
+    drawPetTo(ctx,this.key,this.w/2+this.x*this.w*0.26,this.h*0.68,z,(this.yaw+this.yawOff)*this.dir,this.pitch,this.t,st);
+  }
+}
+const P4={
+  main:null,comp:null,mainOn:false,gridT:0,_last:0,
+  init(){
+    this.main=new Pet($('p4Canvas'),get('p4active','dolphin'));
+    this.comp=new Pet($('compCanvas'),get('p4active','dolphin'));
+    this.comp.zoomT=0.85;
+    this.wireStage($('p4Stage'),this.main,true);
+    this.wireStage($('compStage'),this.comp,false);
+    this.wireControls();
+    this.renderGrid();this.syncUI();
+    requestAnimationFrame(ts=>this.loop(ts));
+  },
+  loop(ts){
+    const dt=Math.min(0.05,(ts-this._last)/1000||0.016);this._last=ts;
+    this.comp.mode=session()?'run':'idle';
+    this.comp.frame(dt);
+    if(this.mainOn)this.main.frame(dt);
+    this.gridT+=dt;
+    if(this.mainOn&&this.gridT>0.12){this.gridT=0;this.paintGrid()}
+    requestAnimationFrame(t2=>this.loop(t2));
+  },
+  setMainActive(b){this.mainOn=b;if(b)this.main.resize()},
+  resizeMain(){this.main.resize()},
+  resizeComp(){this.comp.resize()},
+  syncUI(){
+    const k=this.main.key,d=PET_DEFS[k];
+    $('p4Title').innerHTML=`${d.name[LANG].toUpperCase()} 4D<small>${T('THỰC TẾ ẢO · XOAY 720° · ZOOM · CỬ ĐỘNG','VIRTUAL 4D · 720° ROTATE · ZOOM · ANIMATED')}</small>`;
+    $('compName').textContent=d.name[LANG];
+    $('compLine').textContent=T(`Bé ${d.name.vi} luôn đồng hành cùng nhịp fasting của bạn — ${session()?'bé đang vận động cùng bạn!':'kéo để xoay ngắm bé nhé!'}`,`Your ${d.name.en} companion follows your fasting rhythm — drag to spin!`);
+    this.comp.setKey(k);
+  },
+  wireControls(){
+    const M=this.main;
+    const bind=(id,fn)=>$(id).addEventListener('click',()=>fn());
+    bind('p4Run',()=>{M.mode='run';this.selBtn('p4Run')});
+    bind('p4Jump',()=>{M.mode='jump';this.selBtn('p4Jump')});
+    bind('p4Dance',()=>{M.mode='dance';this.selBtn('p4Dance')});
+    bind('p4Spin',()=>{M.act='spin';M.actT=0});
+    bind('p4Roll',()=>{M.act='roll';M.actT=0});
+    $('p4Speed').addEventListener('input',e=>M.speed=+e.target.value/4);
+  },
+  selBtn(id){['p4Run','p4Jump','p4Dance'].forEach(b=>$(b).classList.toggle('active',b===id))},
+  wireStage(el,pet,full){
+    let pts=new Map(),lastTap=0,moved=0;
+    el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=0});
+    el.addEventListener('pointermove',e=>{
+      if(!pts.has(e.pointerId))return;
+      const p=pts.get(e.pointerId);const dx=e.clientX-p.x,dy=e.clientY-p.y;
+      moved+=Math.abs(dx)+Math.abs(dy);
+      if(pts.size===1){pet.yaw+=dx*0.012;pet.pitch=Math.max(-0.5,Math.min(0.95,pet.pitch+dy*0.008))}
+      p.x=e.clientX;p.y=e.clientY;
+      if(pts.size===2){const a=[...pts.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+        if(this._pinch){pet.zoomT=Math.max(0.45,Math.min(2.2,pet.zoomT*d/this._pinch))}this._pinch=d}
+      if(full)$('p4Cam').textContent=`${T('GÓC NHÌN','VIEW')}: ${Math.round(((pet.yaw*180/Math.PI)%360+360)%360)}°`;
+    });
+    const up=e=>{
+      pts.delete(e.pointerId);this._pinch=null;
+      if(moved<14){
+        const now=Date.now();
+        if(now-lastTap<320){pet.act='roll';pet.actT=0}
+        else{const h=document.createElement('div');h.className='float-heart';h.textContent=['💖','💛','💙','💜'][Math.floor(Math.random()*4)];
+          h.style.position='absolute';h.style.zIndex=6;
+          const r=el.getBoundingClientRect();h.style.left=(e.clientX-r.left-12)+'px';h.style.top=(e.clientY-r.top-12)+'px';
+          el.appendChild(h);setTimeout(()=>h.remove(),1700)}
+        lastTap=now;
+      }
+    };
+    el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+  },
+  renderGrid(){
+    const own=get('p4own',['dolphin','pig']),active=this.main.key;
+    $('p4Grid').innerHTML=Object.entries(PET_DEFS).map(([k,d])=>{
+      const o=own.includes(k);
+      return `<div class="p4-cell ${k===active?'sel':''}" onclick="P4.pick('${k}')">
+        ${o?'<span class="p4-free">4D</span>':`<span class="p4-lock">🔒 ${d.cost}🪙</span>`}
+        <canvas data-pet="${k}" width="144" height="130"></canvas>
+        <div class="nm">${d.name[LANG]}</div></div>`}).join('');
+    $('p4Count').textContent=`${own.length}/10 · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
+    $('p4Note').innerHTML=own.length<10
+      ?T(`💡 Thu thập 🪙 từ nhiệm vụ ngày để mở khóa <b style="color:var(--gold)">${10-own.length}</b> bé còn lại — mỗi bé đều có cử động 4D riêng!`,`💡 Earn coins from daily quests to unlock the remaining <b style="color:var(--gold)">${10-own.length}</b> pets — each with its own 4D motion!`)
+      :T('🏆 Bộ sưu tập 4D đã hoàn chỉnh!','🏆 Your 4D collection is complete!');
+    this.paintGrid();
+  },
+  paintGrid(){
+    document.querySelectorAll('#p4Grid canvas').forEach((c,i)=>{
+      const ctx=c.getContext('2d');ctx.clearRect(0,0,144,130);
+      const st=petPose(c.dataset.pet,this.main.t+i*0.7,'idle',1);
+      drawPetTo(ctx,c.dataset.pet,72,92,0.62,-0.5+Math.sin(this.main.t*0.4+i)*0.12,0.1,this.main.t+i*0.7,st);
+    });
+  },
+  pick(k){
+    const own=get('p4own',['dolphin','pig']),g=gq();
+    if(!own.includes(k)){
+      const cost=PET_DEFS[k].cost;
+      if(g.coins<cost){toastMsg(T(`⚠️ Cần ${cost} 🪙 — làm nhiệm vụ ngay!`,`⚠️ Need ${cost} coins — do quests!`));return}
+      if(!confirm(T(`Mở khóa ${PET_DEFS[k].name.vi} với ${cost} 🪙?`,`Unlock ${PET_DEFS[k].name.en} for ${cost} coins?`)))return;
+      g.coins-=cost;gqSave(g);own.push(k);set('p4own',own);
+      confetti();toastMsg(`🎉 ${T('Đã mở khóa','Unlocked')} ${PET_DEFS[k].name[LANG]}!`);
+    }
+    set('p4active',k);this.main.setKey(k);this.syncUI();this.renderGrid();gqRender();
+  },
+};
+</script>
+
+<script>
+/* ================= BOOT ================= */
+(function(){
+  const th=get('theme','volt');document.body.dataset.theme=th==='volt'?'':th;
+  document.querySelectorAll('#swatches .sw').forEach(s=>s.classList.toggle('sel',s.classList.contains(th)));
+  const fs=get('fs',1);document.body.style.setProperty('--fs',fs);$('fsVal').textContent=Math.round(fs*100)+'%';
+  const cc=get('clockc','#d4ff3f');document.documentElement.style.setProperty('--clockc',cc);
+  document.querySelectorAll('#clockSw .sw').forEach(s=>s.classList.toggle('sel',s.dataset.c===cc));
+  $('langPill').textContent=LANG.toUpperCase();
+  $('langVi').classList.toggle('sel',LANG==='vi');$('langEn').classList.toggle('sel',LANG==='en');
+  P4.init();
+  render();
+  setInterval(render,1000);
+  window.addEventListener('resize',()=>{P4.resizeMain();P4.resizeComp()});
+  setTimeout(()=>{const s=$('splash');s.style.opacity='0';setTimeout(()=>s.remove(),650)},900);
+})();
+</script>
+</body>
+</html>
