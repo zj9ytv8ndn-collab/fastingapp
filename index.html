@@ -510,6 +510,26 @@ html{scrollbar-width:none}
       <button class="p4-btn cyan" id="sfDayNight">🌙 Đêm</button>
     </div>
   </div>
+  <div class="card" id="sfPanel">
+    <h3>🎮 Bảng điều khiển Pet</h3>
+    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:14px 0 8px">⭐ CHỌN BÉ DẪN ĐẦU ĐOÀN</div>
+    <div class="preset" id="sfPets"></div>
+    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🎪 LỆNH ĐIỀU KHIỂN</div>
+    <div class="preset">
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('jump')">🦘 Nhảy</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('spin')">🌀 Xoay</button>
+    </div>
+    <div class="preset">
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('sit')">🪑 Ngồi</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('dance')">🕺 Nhảy múa</button>
+    </div>
+    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🚀 DỊCH CHUYỂN TỚI ĐỊA ĐIỂM</div>
+    <div class="preset" id="sfTP"></div>
+    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🎥 CAMERA</div>
+    <div class="tgl"><span>🎯 Tự theo dõi bé dẫn đầu</span><span class="switch"><input type="checkbox" id="sfFollow" checked onchange="Safari.setFollow(this.checked)"><i></i></span></div>
+    <div class="tgl"><span>🔭 Khoảng cách (<span id="sfZoomV">32</span>m)</span><input type="range" id="sfZoom" min="14" max="85" value="32" style="width:120px" oninput="Safari.setZoom(+this.value)"></div>
+    <div class="tgl"><span>🙋 Chạm canvas = di chuyển · kéo = xoay · chụm = zoom</span></div>
+  </div>
   <div class="card">
     <h3>🗺️ Bản đồ khuôn viên</h3>
     <div class="row"><span>🚪 Cổng Safari</span><span class="chipsmall">Cổng gỗ khổng lồ · dây cờ · đuốc đêm</span></div>
@@ -517,6 +537,9 @@ html{scrollbar-width:none}
     <div class="row"><span>🌉 Cầu gỗ</span><span class="chipsmall">Bắc qua sông · bé qua cầu để sang bờ bên kia</span></div>
     <div class="row"><span>🏠 Nhà gỗ Safari</span><span class="chipsmall">Mái rơm · ống khói · đèn đêm · hàng rào</span></div>
     <div class="row"><span>🎡 Vòng quay lớn</span><span class="chipsmall">8 cabin · đèn nháy đêm · chạm để tăng tốc</span></div>
+    <div class="row"><span>🎠 Khu trò chơi</span><span class="chipsmall">Xích đu · cầu trượt · bập bênh · đu quay · bạt nhún · bể cát · bóng đẩy</span></div>
+    <div class="row"><span>🏘️ Làng Safari</span><span class="chipsmall">Cửa hàng quà · cafe · WC · tháp quan sát · chuồng thú · đài phun nước</span></div>
+    <div class="row"><span>💡 Tiện ích</span><span class="chipsmall">Ghế dài · đèn đường sáng đêm · biển chỉ dẫn</span></div>
     <div class="row"><span>🦋 Vườn bướm</span><span class="chipsmall">Bướm đầy màu bay lượn khắp cánh đồng</span></div>
     <div class="sub" style="margin-top:10px">🐾 Các bé 4D bạn sở hữu sẽ cùng dạo chơi trong safari — bé bạn chọn ở tab Thú 4D sẽ là bé dẫn đầu đoàn.</div>
   </div>
@@ -5074,7 +5097,7 @@ let pets=[],butterflies=[],birds=[],clouds=[],splashes=[],ripples=[],smokes=[];
 let fireflies,stars,hemi,dirL,moonL;
 let riverTex,wheel,gondolas=[],bulbs=[],torchLights=[],flames=[],winMats=[],lanternMats=[];
 let tubes=[],smokeT=0.4,birdT=4,titleT=0;
-let camAz=0.8,camPol=1.02,camR=32;
+let camAz=0.8,camPol=1.02,camR=32,followCam=true;
 const camPos=new THREE.Vector3(),camTgt=new THREE.Vector3();
 const HALF=1150,RW=58;
 const rZ=x=>140*Math.sin(x*0.0032)+70*Math.sin(x*0.0011+2);
@@ -5198,7 +5221,7 @@ function makeLabel(text,emoji){
   if(emoji){x.font='30px sans-serif';x.fillText(emoji,222,44);}
   const tex=new THREE.CanvasTexture(c);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
-  sp.scale.set(7,2,1);return sp;
+  sp.scale.set(7,2,1);sp.position.y=4.4;return sp;
 }
 
 /* ---------- cây cối & cảnh vật ---------- */
@@ -5228,6 +5251,326 @@ function bush(x,z,s){
   for(let i=0;i<3;i++){const b=new THREE.Mesh(new THREE.SphereGeometry((0.9-i*0.2)*s,10,8),M(i?0x5d9a44:0x4a7c33));
     b.position.set((R()-0.5)*1.6*s,0.6*s+i*0.4*s,(R()-0.5)*1.6*s);g.add(b);}
   g.position.set(x,0,z);return g;
+}
+
+/* ---------- khu trò chơi & làng safari (chi tiết) ---------- */
+const swings=[],seesaws=[],balls=[],lampLights=[],winMats2=[],trampolines=[],sandboxes=[],fountains=[];
+let carouselG=null,fountainT=0;
+function swingSet(x,z,ry){
+  const g=new THREE.Group();
+  for(const sd of[-1,1]){
+    const leg1=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,5.4,7),M(0xe84d4d));
+    leg1.position.set(sd*2.6,2.7,0);leg1.rotation.z=-sd*0.32;g.add(leg1);
+    const leg2=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,5.4,7),M(0xe84d4d));
+    leg2.position.set(sd*2.6,2.7,1.6);leg2.rotation.z=-sd*0.32;g.add(leg2);}
+  const bar=new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,6.4,8),M(0xffd166));
+  bar.rotation.z=Math.PI/2;bar.position.set(0,5.2,0.8);g.add(bar);
+  for(const sd of[-0.9,0.9]){
+    const piv=new THREE.Group();piv.position.set(sd,5.2,0.8);g.add(piv);
+    for(const cd of[-0.35,0.35]){
+      const ch=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,3.4,5),M(0x8a8f98));
+      ch.position.set(cd,-1.7,0);piv.add(ch);}
+    const seat=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.16,0.5),M(0x4a90d9));
+    seat.position.set(0,-3.4,0);piv.add(seat);
+    swings.push({piv,phase:swings.length*1.4});}
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function slide3d(x,z,ry){
+  const g=new THREE.Group();
+  const plat=new THREE.Mesh(new THREE.BoxGeometry(2.6,0.4,2.6),M(0xffd166));
+  plat.position.y=3.2;g.add(plat);
+  for(const sd of[-1,1]){
+    const rail=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,3.4,6),M(0xe84d4d));
+    rail.position.set(sd*1.1,1.6,-1.1);g.add(rail);
+    const rail2=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,3.4,6),M(0xe84d4d));
+    rail2.position.set(sd*1.1,1.6,1.1);g.add(rail2);}
+  for(let i=0;i<4;i++){const rung=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.07,2.2,5),M(0xffd166));
+    rung.rotation.z=Math.PI/2;rung.position.set(0,0.6+i*0.8,-1.1);g.add(rung);}
+  const ramp=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.24,6.4),M(0x4a90d9));
+  ramp.position.set(0,1.5,3.4);ramp.rotation.x=0.42;g.add(ramp);
+  for(const sd of[-1,1]){
+    const railS=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.5,6.4),M(0xe84d4d));
+    railS.position.set(sd*0.85,1.95,3.4);railS.rotation.x=0.42;g.add(railS);}
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(2.2,1.2,4),M(0xe84d4d));
+  roof.position.y=4.6;roof.rotation.y=Math.PI/4;g.add(roof);
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function seesaw(x,z,ry){
+  const g=new THREE.Group();
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.9,1.1,4),M(0x8a8f98));
+  base.position.y=0.55;g.add(base);
+  const plank=new THREE.Group();plank.position.y=1.15;g.add(plank);
+  const bd=new THREE.Mesh(new THREE.BoxGeometry(6,0.22,0.9),M(0x4ade80));
+  plank.add(bd);
+  for(const sd of[-1,1]){
+    const hdl=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.9,5),M(0xffd166));
+    hdl.position.set(sd*2.6,0.55,0);plank.add(hdl);
+    const seat=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.12,0.9),M(0xe84d4d));
+    seat.position.set(sd*2.6,0.2,0);plank.add(seat);}
+  seesaws.push({plank,phase:seesaws.length*2});
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function carousel(x,z){
+  const g=new THREE.Group();
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(6,6.6,0.7,20),M(0xd3a6ff));
+  base.position.y=0.35;g.add(base);
+  const spin=new THREE.Group();spin.position.y=0.7;g.add(spin);carouselG=spin;
+  const floor=new THREE.Mesh(new THREE.CylinderGeometry(5.6,5.6,0.24,20),M(0xf7f48b));
+  floor.position.y=0.12;spin.add(floor);
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.5,5.4,10),M(0xffd166));
+  pole.position.y=2.9;spin.add(pole);
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(6.4,2.4,12),M(0xff8fa3));
+  roof.position.y=6;spin.add(roof);
+  const tip=new THREE.Mesh(new THREE.SphereGeometry(0.5,8,6),M(0xffd166));
+  tip.position.y=7.4;spin.add(tip);
+  const cols=[0xff8fa3,0x7ad3ff,0x9be89b,0xffb37a];
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2;const px=Math.cos(a)*3.8,pz=Math.sin(a)*3.8;
+    const pp=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,3.4,6),M(0xffd166));
+    pp.position.set(px,2,pz);spin.add(pp);
+    const bd=new THREE.Mesh(new THREE.SphereGeometry(0.85,12,10),M(cols[i]));
+    bd.scale.set(0.8,0.75,1.15);bd.position.set(px,1.5+Math.sin(t+i)*0,pz);spin.add(bd);
+    const hd=new THREE.Mesh(new THREE.SphereGeometry(0.5,10,8),M(cols[i]));
+    hd.position.set(px,2.1,pz+0.85);spin.add(hd);
+    const ear=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.5,4),M(cols[i]));
+    ear.position.set(px,2.6,pz+0.8);spin.add(ear);
+    bd.userData.bob=i;}
+  g.position.set(x,0,z);return g;
+}
+function trampoline(x,z){
+  const g=new THREE.Group();
+  const bd=new THREE.Mesh(new THREE.CylinderGeometry(3.4,3.4,0.9,18),M(0x2b4a8f));
+  bd.position.y=0.45;g.add(bd);
+  const mat=new THREE.Mesh(new THREE.CylinderGeometry(3,3,0.16,18),M(0x1a2c52));
+  mat.position.y=0.95;g.add(mat);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(3.3,0.22,8,24),M(0xe84d4d));
+  rim.rotation.x=Math.PI/2;rim.position.y=0.95;g.add(rim);
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2+Math.PI/4;
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,0.5,6),M(0x8a8f98));
+    leg.position.set(Math.cos(a)*2.8,0.25,Math.sin(a)*2.8);g.add(leg);}
+  g.position.set(x,0,z);trampolines.push({x,z});
+  g.userData.tramp=true;return g;
+}
+function sandbox(x,z){
+  const g=new THREE.Group();
+  const sand=new THREE.Mesh(new THREE.BoxGeometry(11,0.35,8.6),M(0xe8d5a0));
+  sand.position.y=0.18;g.add(sand);
+  for(const[bx,bz,bw,bd2]of[[0,-4.3,11.4,0.5],[0,4.3,11.4,0.5],[-5.5,0,0.5,8.6],[5.5,0,0.5,8.6]]){
+    const b2=new THREE.Mesh(new THREE.BoxGeometry(bw,0.8,bd2),M(0x8a6238));
+    b2.position.set(bx,0.4,bz);g.add(b2);}
+  const buc=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.3,0.6,8),M(0xe84d4d));
+  buc.position.set(2,0.6,1);g.add(buc);
+  const spade=new THREE.Mesh(new THREE.BoxGeometry(0.16,0.9,0.3),M(0x4a90d9));
+  spade.position.set(-1.5,0.7,-0.5);spade.rotation.z=0.5;g.add(spade);
+  g.position.set(x,0,z);sandboxes.push({x,z,w:5.5,d:4.3});
+  return g;
+}
+function ballToy(x,z,c){
+  const g=new THREE.Group();
+  const b=new THREE.Mesh(new THREE.SphereGeometry(2,16,12),M(c));
+  b.position.y=2;g.add(b);
+  const st2=new THREE.Mesh(new THREE.SphereGeometry(2.02,16,12),new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:0.25}));
+  st2.position.y=2;g.add(st2);
+  g.userData.ball=true;
+  balls.push({g,vx:0,vz:0});
+  return g;
+}
+function fountain(x,z){
+  const g=new THREE.Group();
+  const basin=new THREE.Mesh(new THREE.CylinderGeometry(6,6.6,1.3,18),M(0x9a958a));
+  basin.position.y=0.65;g.add(basin);
+  const water=new THREE.Mesh(new THREE.CircleGeometry(5.6,18),new THREE.MeshPhongMaterial({color:0x3fa7d6,transparent:true,opacity:0.85,shininess:100}));
+  water.rotation.x=-Math.PI/2;water.position.y=1.15;g.add(water);
+  const mid=new THREE.Mesh(new THREE.CylinderGeometry(0.8,1.2,2.4,10),M(0x9a958a));
+  mid.position.y=1.8;g.add(mid);
+  const top=new THREE.Mesh(new THREE.SphereGeometry(0.9,10,8),M(0x9a958a));
+  top.position.y=3.2;g.add(top);
+  g.userData.ftop=V3(x,3.4,z);
+  fountains.push({x,z});
+  return g;
+}
+function lampPost(x,z){
+  const g=new THREE.Group();
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.2,4.6,7),M(0x3c465a));
+  pole.position.y=2.3;g.add(pole);
+  const headM=new THREE.MeshLambertMaterial({color:0xfff2cc,emissive:0x000000});
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.5,8,6),headM);
+  head.position.y=4.8;g.add(head);
+  const cap=new THREE.Mesh(new THREE.ConeGeometry(0.7,0.5,6),M(0x3c465a));
+  cap.position.y=5.2;g.add(cap);
+  const li=new THREE.PointLight(0xffd9a0,0,34);li.position.y=4.9;g.add(li);
+  lampLights.push({li,mat:headM});
+  g.position.set(x,0,z);return g;
+}
+function bench(x,z,ry){
+  const g=new THREE.Group();
+  const seat=new THREE.Mesh(new THREE.BoxGeometry(2.6,0.16,0.8),M(0x8a6238));
+  seat.position.y=0.8;g.add(seat);
+  const back=new THREE.Mesh(new THREE.BoxGeometry(2.6,0.7,0.14),M(0x8a6238));
+  back.position.set(0,1.35,-0.35);back.rotation.x=-0.15;g.add(back);
+  for(const sd of[-1,1]){
+    const leg=new THREE.Mesh(new THREE.BoxGeometry(0.16,0.8,0.7),M(0x5d3f22));
+    leg.position.set(sd*1.1,0.4,0);g.add(leg);}
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function shop(x,z,ry){
+  const g=new THREE.Group();
+  const walls=new THREE.Mesh(new THREE.BoxGeometry(11,6,8),M(0xc98d5e));
+  walls.position.y=3;g.add(walls);
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(8.6,3,4),M(0x7a5432));
+  roof.position.y=7.5;roof.rotation.y=Math.PI/4;g.add(roof);
+  const awn=(()=>{const c=document.createElement('canvas');c.width=128;c.height=32;const a2=c.getContext('2d');
+    for(let i=0;i<8;i++){a2.fillStyle=i%2?'#ffffff':'#e84d4d';a2.fillRect(i*16,0,16,32);}
+    return new THREE.CanvasTexture(c);})();
+  const aw=new THREE.Mesh(new THREE.PlaneGeometry(9,2.4),new THREE.MeshLambertMaterial({map:awn,side:THREE.DoubleSide}));
+  aw.position.set(0,4.4,4.6);aw.rotation.x=-0.4;g.add(aw);
+  const sTex=(()=>{const c=document.createElement('canvas');c.width=256;c.height=64;const a2=c.getContext('2d');
+    a2.fillStyle='#4a3018';a2.fillRect(0,0,256,64);a2.fillStyle='#ffe9b0';a2.font='800 34px "Be Vietnam Pro",sans-serif';
+    a2.textAlign='center';a2.fillText('CỬA HÀNG QUÀ',128,44);return new THREE.CanvasTexture(c);})();
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(6.4,1.6),new THREE.MeshBasicMaterial({map:sTex}));
+  sign.position.set(0,5.9,4.05);g.add(sign);
+  const counter=new THREE.Mesh(new THREE.BoxGeometry(6,1.1,0.8),M(0x8a6238));
+  counter.position.set(0,1.1,4.2);g.add(counter);
+  const winM=new THREE.MeshLambertMaterial({color:0xbfe3f2,emissive:0x000000});
+  const win=new THREE.Mesh(new THREE.PlaneGeometry(3.4,2),winM);
+  win.position.set(-2.6,3.2,4.01);g.add(win);winMats.push(winM);
+  for(let i=0;i<3;i++){const cr=new THREE.Mesh(new THREE.BoxGeometry(1.2,1.2,1.2),M(0xa3794a));
+    cr.position.set(3.4+i*1.4,0.6,4.6-(i%2)*0.8);cr.rotation.y=R();g.add(cr);}
+  for(const sd of[-1,1]){const pot=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.3,0.7,8),M(0xa34d2e));
+    pot.position.set(sd*4.6,0.35,4.4);g.add(pot);
+    const fl2=new THREE.Mesh(new THREE.SphereGeometry(0.45,8,6),M(0xff8fb0));
+    fl2.position.set(sd*4.6,1,4.4);g.add(fl2);}
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function cafe(x,z,ry){
+  const g=new THREE.Group();
+  const walls=new THREE.Mesh(new THREE.BoxGeometry(13,7,9),M(0xe8c9a0));
+  walls.position.y=3.5;g.add(walls);
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(10,3.4,4),M(0xc9563c));
+  roof.position.y=8.6;roof.rotation.y=Math.PI/4;g.add(roof);
+  const sTex=(()=>{const c=document.createElement('canvas');c.width=256;c.height=64;const a2=c.getContext('2d');
+    a2.fillStyle='#3a2412';a2.fillRect(0,0,256,64);a2.fillStyle='#ffd97a';a2.font='800 36px "Be Vietnam Pro",sans-serif';
+    a2.textAlign='center';a2.fillText('CAFE SAFARI',128,45);return new THREE.CanvasTexture(c);})();
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(6.4,1.6),new THREE.MeshBasicMaterial({map:sTex}));
+  sign.position.set(0,6.2,4.55);g.add(sign);
+  for(const wx of[-3.6,3.6]){
+    const winM=new THREE.MeshLambertMaterial({color:0xbfe3f2,emissive:0x000000});
+    const win=new THREE.Mesh(new THREE.PlaneGeometry(2.8,2.2),winM);
+    win.position.set(wx,3.6,4.51);g.add(win);winMats.push(winM);}
+  const umb=(()=>{const c=document.createElement('canvas');c.width=128;c.height=32;const a2=c.getContext('2d');
+    for(let i=0;i<8;i++){a2.fillStyle=i%2?'#ffffff':'#4a90d9';a2.fillRect(i*16,0,16,32);}
+    return new THREE.CanvasTexture(c);})();
+  for(const[tx,tz]of[[-4,9],[3,10]]){
+    const tbl=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,0.18,12),M(0x8a6238));
+    tbl.position.set(tx,1.5,tz);g.add(tbl);
+    const tleg=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,1.5,6),M(0x5d3f22));
+    tleg.position.set(tx,0.75,tz);g.add(tleg);
+    const up=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,3.2,6),M(0x5d3f22));
+    up.position.set(tx,3,tz);g.add(up);
+    const um=new THREE.Mesh(new THREE.ConeGeometry(3,1.4,10),new THREE.MeshLambertMaterial({map:umb}));
+    um.position.set(tx,4.4,tz);g.add(um);
+    for(let i=0;i<3;i++){const a=i/3*Math.PI*2;
+      const st2=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.4,1,8),M(0xd97f5e));
+      st2.position.set(tx+Math.cos(a)*2.4,0.5,tz+Math.sin(a)*2.4);g.add(st2);}}
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function wc(x,z,ry){
+  const g=new THREE.Group();
+  const walls=new THREE.Mesh(new THREE.BoxGeometry(5.4,5,4.6),M(0x7ec4d8));
+  walls.position.y=2.5;g.add(walls);
+  const roof=new THREE.Mesh(new THREE.BoxGeometry(6,0.5,5.2),M(0x4a7c8f));
+  roof.position.y=5.2;g.add(roof);
+  const door=new THREE.Mesh(new THREE.BoxGeometry(1.6,3.4,0.2),M(0x4a5a68));
+  door.position.set(0,1.7,2.36);g.add(door);
+  const sTex=(()=>{const c=document.createElement('canvas');c.width=64;c.height=64;const a2=c.getContext('2d');
+    a2.fillStyle='#ffffff';a2.fillRect(0,0,64,64);a2.fillStyle='#2b6a8f';a2.font='800 40px sans-serif';
+    a2.textAlign='center';a2.fillText('WC',32,46);return new THREE.CanvasTexture(c);})();
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.2),new THREE.MeshBasicMaterial({map:sTex}));
+  sign.position.set(0,4.2,2.32);g.add(sign);
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function tower(x,z){
+  const g=new THREE.Group();
+  for(const[lx,lz]of[[-2.6,-2.6],[2.6,-2.6],[-2.6,2.6],[2.6,2.6]]){
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.4,13,7),M(0x8a6238));
+    leg.position.set(lx*0.8,6.5,lz*0.8);leg.rotation.z=lx>0?-0.1:0.1;leg.rotation.x=lz>0?0.1:-0.1;g.add(leg);}
+  const plat=new THREE.Mesh(new THREE.BoxGeometry(6.4,0.5,6.4),M(0xa3794a));
+  plat.position.y=13;g.add(plat);
+  for(const sd of[-1,1]){
+    const r1=new THREE.Mesh(new THREE.BoxGeometry(6.4,1,0.16),M(0x8a6238));r1.position.set(0,13.7,sd*3.1);g.add(r1);
+    const r2=new THREE.Mesh(new THREE.BoxGeometry(0.16,1,6.4),M(0x8a6238));r2.position.set(sd*3.1,13.7,0);g.add(r2);}
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(4.6,2.8,4),M(0xc9563c));
+  roof.position.y=16;roof.rotation.y=Math.PI/4;g.add(roof);
+  const flag=new THREE.Mesh(new THREE.PlaneGeometry(1.6,0.9),MB(0xff5d5d));
+  flag.position.set(0.9,18,0);g.add(flag);g.userData.flag=flag;
+  g.position.set(x,0,z);return g;
+}
+function barn(x,z,ry){
+  const g=new THREE.Group();
+  const walls=new THREE.Mesh(new THREE.BoxGeometry(17,8,13),M(0xa34d3a));
+  walls.position.y=4;g.add(walls);
+  const roof=new THREE.Mesh(new THREE.CylinderGeometry(9.5,9.5,18,3,1),M(0x6d4a2a));
+  roof.rotation.z=Math.PI/2;roof.rotation.x=Math.PI;roof.position.y=8;roof.scale.set(1,1,0.75);g.add(roof);
+  const door=new THREE.Mesh(new THREE.BoxGeometry(5,6,0.4),M(0x4a2f1a));
+  door.position.set(0,3,6.6);g.add(door);
+  const cross1=new THREE.Mesh(new THREE.BoxGeometry(4.6,0.4,0.2),M(0xd8d2c4));cross1.position.set(0,3,6.85);g.add(cross1);
+  const cross2=new THREE.Mesh(new THREE.BoxGeometry(0.4,5.6,0.2),M(0xd8d2c4));cross2.position.set(0,3,6.85);g.add(cross2);
+  const sTex=(()=>{const c=document.createElement('canvas');c.width=256;c.height=64;const a2=c.getContext('2d');
+    a2.fillStyle='#4a2f1a';a2.fillRect(0,0,256,64);a2.fillStyle='#ffe9b0';a2.font='800 34px "Be Vietnam Pro",sans-serif';
+    a2.textAlign='center';a2.fillText('CHUỒNG THÚ',128,44);return new THREE.CanvasTexture(c);})();
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(6,1.5),new THREE.MeshBasicMaterial({map:sTex}));
+  sign.position.set(0,7,6.65);g.add(sign);
+  for(let i=0;i<4;i++){const hay=new THREE.Mesh(new THREE.SphereGeometry(1.1,9,7),M(0xd8b84e));
+    hay.scale.y=0.7;hay.position.set(-8+ (i%2)*2,0.8+(i>1?1.2:0),7.6+(i%2)*1.4);g.add(hay);}
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function signpost(x,z){
+  const g=new THREE.Group();
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.18,4.4,7),M(0x5d3f22));
+  pole.position.y=2.2;g.add(pole);
+  const dirs=[[0xe84d4d,-0.5],[0x4a90d9,0.4],[0x4ade80,-0.2],[0xffd166,0.6]];
+  dirs.forEach(([c2,rz],i)=>{const ar=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.5,0.12),M(c2));
+    ar.position.set(0.7,3.6-i*0.7,0);ar.rotation.y=rz;g.add(ar);});
+  g.position.set(x,0,z);return g;
+}
+function buildPlayground(px,pz){
+  scene.add(swingSet(px-16,pz-8,0.4));
+  scene.add(slide3d(px+2,pz+14,-0.5));
+  scene.add(seesaw(px+20,pz-4,0.9));
+  scene.add(carousel(px-2,pz-22));
+  scene.add(trampoline(px+26,pz+16));
+  scene.add(sandbox(px-24,pz+16));
+  scene.add(ballToy(px+8,pz-2,0xff5d5d));
+  scene.add(ballToy(px-10,pz+26,0x4a90d9));
+  scene.add(ballToy(px+16,pz+28,0xffd166));
+  scene.add(bench(px-6,pz+36,Math.PI));
+  scene.add(bench(px+14,pz+36,Math.PI));
+  scene.add(lampPost(px-30,pz-20));scene.add(lampPost(px+30,pz+24));
+  scene.add(signpost(px,pz+40));
+}
+function buildVillage(px,pz){
+  scene.add(fountain(px,pz));
+  scene.add(shop(px-34,pz-14,0.9));
+  scene.add(cafe(px+36,pz-10,-0.8));
+  scene.add(wc(px+28,pz+26,-2.2));
+  scene.add(tower(px-2,pz-52));
+  scene.add(barn(px-46,pz+32,1.2));
+  scene.add(bench(px-12,pz+16,0.3));scene.add(bench(px+14,pz+14,-0.4));
+  scene.add(lampPost(px-18,pz-16));scene.add(lampPost(px+18,pz-20));
+  scene.add(lampPost(px,pz+34));
+  scene.add(signpost(px+10,pz-30));
+}
+/* ---------- pet chơi trong các zone ---------- */
+function playZones(p,dt){
+  for(const b of balls){const dx=b.g.position.x-p.x,dz=b.g.position.z-p.z,d=Math.hypot(dx,dz);
+    if(d<3.6&&p.moving&&d>0.01){b.vx=dx/d*10;b.vz=dz/d*10;
+      if(R()<0.06)toastMsg(`⚽ ${PET_DEFS[p.key].name[LANG]} ${T('đang đẩy bóng!','is pushing the ball!')}`);}}
+  p.tramp=false;
+  for(const tp of trampolines){if(Math.hypot(p.x-tp.x,p.z-tp.z)<3.6){p.tramp=true;
+    if(R()<0.03)toastMsg(`🤸 ${PET_DEFS[p.key].name[LANG]} ${T('đang nhún trên bạt!','is bouncing!')}`);}}
+  p.sand=false;
+  for(const sb2 of sandboxes){if(Math.abs(p.x-sb2.x)<sb2.w&&Math.abs(p.z-sb2.z)<sb2.d){p.sand=true;
+    if(R()<0.03)toastMsg(`🏖️ ${PET_DEFS[p.key].name[LANG]} ${T('đang đào cát!','is digging sand!')}`);}}
+  for(const f2 of fountains){if(Math.hypot(p.x-f2.x,p.z-f2.z)<7&&R()<0.04)splashAt(f2.x+(R()-0.5)*3,f2.z+(R()-0.5)*3,5);}
 }
 
 /* ---------- build world ---------- */
@@ -5396,6 +5739,12 @@ function buildWorld(){
     for(let j=0;j<4;j++){const p=new THREE.Mesh(new THREE.SphereGeometry(8+R()*8,10,8),new THREE.MeshLambertMaterial({color:0xffffff,emissive:0x888888}));
       p.position.set(j*10-15+R()*6,R()*4,R()*6);p.scale.y=0.5;g2.add(p);}
     g2.position.set((R()*2-1)*900,150+R()*60,(R()*2-1)*900);scene.add(g2);clouds.push(g2);}
+  /* khu trò chơi + làng safari */
+  buildPlayground(-420,350);
+  buildVillage(-200,-300);
+  mkPath([V3(-80,0,-140),V3(-240,0,80),V3(-380,0,290)],8);
+  mkPath([V3(-80,0,-140),V3(-140,0,-220),V3(-190,0,-268)],8);
+  mkPath([V3(240,0,-520),V3(60,0,-420),V3(-130,0,-330)],7);
   /* sao + trăng + đom đóm */
   const sg=new THREE.BufferGeometry();const sp2=[];
   for(let i=0;i<420;i++){const a=R()*Math.PI*2,ph=R()*Math.PI*0.45,r3=1000;
@@ -5437,22 +5786,46 @@ const lerpC=(a,b,f)=>new THREE.Color(a).lerp(new THREE.Color(b),f);
 function laneOk(x,z){return Math.abs(x)<HALF&&Math.abs(z)<HALF;}
 function sideOf(x,z){const d=z-rZ(x);return d<-RW?'N':d>RW?'S':'ON';}
 function newPet(key,lead,i){
-  const{g,P}=buildPet(key);
+  /* pet hiển thị đúng mẫu Thú 4D: vẽ bằng engine drawPetTo lên sprite trong world 3D */
+  const g=new THREE.Group();
+  const oc=document.createElement('canvas');oc.width=oc.height=256;
+  const octx=oc.getContext('2d');
+  const tex=new THREE.CanvasTexture(oc);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+  sp.scale.set(8.6,8.6,1);sp.position.y=2.72;g.add(sp);
   const x=lead?20:-140+i*130,z=lead?rZ(20)+RW+26:(i%2?rZ(-140+i*130)-RW-26:rZ(-140+i*130)+RW+26);
   g.position.set(x,0,z);scene.add(g);
-  return{key,lead,g,P,x,z,y:0,tx:x,tz:z,side:sideOf(x,z),tside:'S',state:'idle',idleT:1+i,facing:0,
-    phase:R()*9,seed:R()*10,sit:0,head:0,moving:false,inWater:false,label:null};
+  return{key,lead,g,P:{isSprite:1,sprite:sp,octx,tex},x,z,y:0,tx:x,tz:z,side:sideOf(x,z),tside:'S',
+    state:'idle',idleT:1+i,facing:0,slowT:R()*9,seed:R()*10,sit:0,head:0,moving:false,inWater:false,label:null};
+}
+function drawSpritePet(p,dt){
+  const P=p.P;
+  p.slowT+=dt*(p.moving?1.7:1);
+  let md=p.moving?'run':'idle';
+  if(p.trick==='jump'||p.trick==='dance')md=p.trick;
+  const st=petPose(p.key,p.slowT,md,1);
+  st.legAmp*=(1-p.sit*0.85);
+  st.headDown=p.head;st.lookX=0;
+  if(md==='jump')st.bodyY*=0.5;
+  if(p.tramp&&p.moving)st.bodyY+=Math.abs(Math.sin(t*9+p.seed))*15;
+  P.octx.clearRect(0,0,256,256);
+  drawPetTo(P.octx,p.key,128,212,1.78,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
+  P.tex.needsUpdate=true;
+  P.sprite.material.rotation=p.trick==='spin'?P.sprite.material.rotation+dt*9:0;
+  if(p.trick&&p.trick!=='spin'){p.trickT+=dt;
+    if(p.trick==='jump'&&p.trickT>0.95)p.trick=null;
+    if(p.trick==='dance'&&p.trickT>2.2)p.trick=null;}
 }
 function pickTarget(p){
   let tx=(R()*2-1)*1000,tz=(R()*2-1)*1000;
-  if(!p.lead&&R()<0.35){const sp=[[-620,-470],[240,-430],[560,330],[0,rZ(0)+RW+20],[0,rZ(0)-RW-20]];
+  if(!p.lead&&R()<0.35){const sp=[[-620,-470],[240,-430],[560,330],[0,rZ(0)+RW+20],[0,rZ(0)-RW-20],[-420,350],[-420,330],[-200,-300],[-380,320]];
     const s=sp[Math.floor(R()*sp.length)];tx=s[0]+(R()-0.5)*60;tz=s[1]+(R()-0.5)*60;}
   p.tx=tx;p.tz=tz;p.tside=sideOf(tx,tz);p.state='walk';p.behav='none';
 }
 function updPet(p,dt){
   const C=PET3D[p.key];
   p.sit+=(((mode==='rest'&&p.lead)||p.behav==='sit'?1:0)-p.sit)*Math.min(1,dt*4);
-  p.head+=((p.behav==='sniff'?1:0)-p.head)*Math.min(1,dt*4);
+  p.head+=(((p.behav==='sniff'||p.sand)?1:0)-p.head)*Math.min(1,dt*4);
   const spd=mode==='run'&&p.lead?17:8.5;
   if(p.state==='idle'){
     p.moving=false;p.phase+=dt*2;p.idleT-=dt;
@@ -5478,6 +5851,7 @@ function updPet(p,dt){
     p.g.rotation.y=Math.atan2(mx,mz);
     const s2=sideOf(p.x,p.z);
     if(s2!=='ON')p.side=s2;
+    playZones(p,dt);
     if(C.swim){const on=Math.abs(p.z-rZ(p.x))<RW-14;
       p.inWater=on;
       if(on&&R()<0.1)addRipple(p.x,p.z);}
@@ -5491,6 +5865,8 @@ function updPet(p,dt){
   }
   /* pose */
   const P=p.P,g=p.g;
+  if(P.isSprite){drawSpritePet(p,dt);}
+  else{
   const sw=p.moving?0.65:0.05;
   P.legs.forEach((l,i)=>{l.rotation.x=Math.sin(p.phase+(i%2?Math.PI:0)+(i>1?0.5:0))*sw;});
   if(P.body){P.body.position.y=(PET3D[p.key].shell?1.15:1.75)*PET3D[p.key].s-p.sit*0.7;}
@@ -5498,14 +5874,22 @@ function updPet(p,dt){
   if(P.tail){P.tail.rotation.y=Math.sin(p.phase*0.9)*0.5;}
   if(P.earL){P.earL.rotation.z=Math.sin(t*2.2+p.seed)*0.15-0.1;}
   if(P.earR){P.earR.rotation.z=-Math.sin(t*2.2+p.seed)*0.15+0.1;}
-  if(P.trunk){P.trunk.rotation.x=Math.sin(t*1.3+p.seed)*0.15;}
-  const targetY=(p.inWater?PET3D[p.key].s*-0.5-0.2:0)+p.y-p.sit*0.3;
+  if(P.trunk){P.trunk.rotation.x=Math.sin(t*1.3+p.seed)*0.15;}}
+  let targetY=(p.inWater?PET3D[p.key].s*-0.5-0.2:0)+p.y-p.sit*0.3;
+  if(p.tramp&&p.moving)targetY+=Math.abs(Math.sin(t*9+p.seed))*2.3;
+  if(p.trick&&!P.isSprite){p.trickT+=dt;
+    if(p.trick==='jump'){targetY+=Math.abs(Math.sin(Math.min(1,p.trickT/0.9)*Math.PI))*3.2;
+      if(p.trickT>0.9)p.trick=null;}
+    else if(p.trick==='spin'){p.g.rotation.y+=dt*11;if(p.trickT>1.1)p.trick=null;}
+    else if(p.trick==='dance'){targetY+=Math.abs(Math.sin(p.trickT*6))*1.1;
+      p.g.rotation.y+=dt*6;if(p.trickT>2.2)p.trick=null;}
+    else if(p.trick==='sit'){p.behav='sit';p.sitT=3;p.state='idle';p.idleT=Math.max(p.idleT,3);p.trick=null;}}
   g.position.set(p.x,targetY,p.z);
   if(P.shadow)P.shadow.visible=!p.inWater;
 }
 function arrive(p){
   if(!p.lead)return;
-  const sp=[[-620,-560,'🚪 Cổng Safari'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[0,rZ(0),'🌉 Cầu gỗ']];
+  const sp=[[-620,-560,'🚪 Cổng Safari'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[0,rZ(0),'🌉 Cầu gỗ'],[-420,350,'🎠 Khu trò chơi'],[-200,-300,'🏘️ Làng Safari'],[-200,-300,'⛲ Đài phun nước']];
   for(const s of sp){if(Math.hypot(p.x-s[0],p.z-s[1])<160){toastMsg(`${PET_DEFS[p.key].name[LANG]} ${T('đang khám phá','is exploring')} ${s[2]}!`);break}}
 }
 function addRipple(x,z){ripples.push({x,z,l:0});}
@@ -5541,6 +5925,22 @@ function frame(ts){
   /* vòng quay */
   wheel.rotation.z+=dt*0.35*(1+boost*2.2);
   gondolas.forEach((cab,i)=>{cab.rotation.z=-wheel.rotation.z+Math.sin(t*1.7+i)*0.05*(1+boost);});
+  /* khu trò chơi */
+  swings.forEach(s=>{s.piv.rotation.x=Math.sin(t*1.5+s.phase)*0.5;});
+  seesaws.forEach(s=>{s.plank.rotation.z=Math.sin(t*1.1+s.phase)*0.16;});
+  if(carouselG){carouselG.rotation.y+=dt*0.55;
+    carouselG.children.forEach(ch2=>{if(ch2.userData.bob!==undefined)ch2.position.y=1.5+Math.sin(t*2.2+ch2.userData.bob)*0.25;});}
+  fountainT-=dt;
+  if(fountainT<=0){fountainT=0.07;
+    for(const f2 of fountains)for(let i=0;i<2;i++)
+      splashes.push({x:f2.x+(R()-0.5)*1.2,y:3.4,z:f2.z+(R()-0.5)*1.2,vx:(R()-0.5)*2,vy:7+R()*3,vz:(R()-0.5)*2,l:1.1});}
+  for(const b of balls){b.g.position.x+=b.vx*dt;b.g.position.z+=b.vz*dt;
+    b.vx*=0.93;b.vz*=0.93;
+    b.g.children[0].rotation.x+=b.vz*dt*0.35;b.g.children[0].rotation.z-=b.vx*dt*0.35;
+    b.g.children[1].rotation.x=b.g.children[0].rotation.x;b.g.children[1].rotation.z=b.g.children[0].rotation.z;
+    b.g.position.x=Math.max(-HALF+16,Math.min(HALF-16,b.g.position.x));
+    b.g.position.z=Math.max(-HALF+16,Math.min(HALF-16,b.g.position.z));}
+  lampLights.forEach(L=>{L.li.intensity=(f<0.45?1.3:0);L.mat.emissive.setHex(f<0.45?0xffd9a0:0x000000);});
   /* phao trôi */
   for(const tb of tubes){tb.position.x+=dt*7;
     if(tb.position.x>HALF+40)tb.position.x=-HALF-40;
@@ -5589,7 +5989,7 @@ function frame(ts){
   for(const p of pets)updPet(p,dt);
   /* camera theo bé dẫn đầu */
   const lead=pets[0];
-  camTgt.lerp(V3(lead.x,2+lead.y,lead.z),Math.min(1,dt*3));
+  if(followCam)camTgt.lerp(V3(lead.x,2+lead.y,lead.z),Math.min(1,dt*3));
   const off=V3(camR*Math.sin(camPol)*Math.sin(camAz),camR*Math.cos(camPol),camR*Math.sin(camPol)*Math.cos(camAz));
   camPos.copy(camTgt).add(off);
   camera.position.copy(camPos);
@@ -5678,6 +6078,7 @@ function init(){
   cv.addEventListener('pointermove',onMove);
   cv.addEventListener('pointerup',onUp);
   cv.addEventListener('pointercancel',onUp);
+  renderPetChips();renderTP();
   ready=true;resize();
   requestAnimationFrame(frame);
 }
@@ -5703,7 +6104,42 @@ function refreshPets(){
   const others=own.filter(k=>k!==leadKey&&!pets.some(p=>p.key===k));
   for(const k of others){if(pets.length>=3)break;pets.push(newPet(k,false,pets.length));}
 }
+function renderPetChips(){
+  const own=get('p4own',['dolphin','pig']);
+  const el=$('sfPets');if(!el)return;
+  el.innerHTML=own.map(k=>`<button class="${pets.length&&pets[0].key===k?'sel':''}" onclick="Safari.selectPet('${k}')">${PET_DEFS[k].name[LANG]}</button>`).join('');
+}
+function renderTP(){
+  const el=$('sfTP');if(!el)return;
+  const tps=[[-620,-560,'🚪 Cổng'],[0,rZ(0)+RW+18,'🌉 Cầu'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[-420,350,'🎠 Trò chơi'],[-200,-300,'🏘️ Làng']];
+  el.innerHTML=tps.map((tp,i)=>`<button style="flex:1 1 30%" onclick="Safari.teleport(${tp[0]},${tp[1]})">${tp[2]}</button>`).join('');
+}
 return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}},
+  trick(name){if(!ready)return;const lead=pets[0];
+    if(name==='sit'){lead.behav='sit';lead.sitT=3.5;lead.state='idle';lead.idleT=3.5;lead.moving=false;
+      toastMsg(`🪑 ${PET_DEFS[lead.key].name[LANG]} ${T('ngồi nghỉ!','sits down!')}`);return}
+    lead.trick=name;lead.trickT=0;
+    const msg={jump:'🦘 Nhảy lên!',spin:'🌀 Xoay 360°!',dance:'🕺 Nhảy múa!'}[name];
+    if(msg)toastMsg(`${PET_DEFS[lead.key].name[LANG]} ${msg}`);},
+  teleport(x,z){if(!ready)return;const lead=pets[0];
+    lead.x=x;lead.z=z;lead.y=0;lead.tx=x;lead.tz=z;lead.state='idle';lead.idleT=1.6;lead.moving=false;
+    lead.side=sideOf(x,z);lead.g.position.set(x,0,z);
+    camTgt.set(x,2,z);
+    toastMsg(`🚀 ${T('Đã dịch chuyển tới địa điểm mới!','Teleported!')}`);},
+  selectPet(key){if(!ready)return;
+    const own=get('p4own',['dolphin','pig']);
+    if(!own.includes(key)||pets[0].key===key)return;
+    const old=pets[0];
+    scene.remove(old.g);
+    set('p4active',key);
+    pets[0]=newPet(key,true,0);
+    pets[0].x=old.x;pets[0].z=old.z;pets[0].g.position.set(old.x,0,old.z);
+    pets[0].g.add(makeLabel(PET_DEFS[key].name[LANG],'⭐'));
+    renderPetChips();
+    if(typeof P4!=='undefined'&&P4.main){P4.main.setKey(key);P4.syncUI();P4.renderGrid();gqRender();}
+    toastMsg(`⭐ ${PET_DEFS[key].name[LANG]} ${T('dẫn đầu đoàn!','leads the squad!')}`);},
+  setFollow(b){followCam=!!b},
+  setZoom(v){camR=Math.max(14,Math.min(85,v));const z=$('sfZoomV');if(z)z.textContent=v},
   isReady:()=>ready,refreshPets};
 })();
 </script>
