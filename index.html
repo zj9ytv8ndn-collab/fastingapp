@@ -201,7 +201,9 @@ nav button.on .ic{transform:translateY(-2px) scale(1.15)}
 .p4-title{position:absolute;top:4%;width:100%;text-align:center;pointer-events:none;font-size:clamp(20px,5vw,30px);font-weight:800;letter-spacing:2px;text-shadow:0 0 20px rgba(120,215,255,.45),0 3px 8px rgba(0,0,0,.65);z-index:5}
 .p4-title small{display:block;font-size:.4em;font-weight:700;letter-spacing:5px;margin-top:4px;opacity:.85}
 .p4-cam{position:absolute;top:15%;width:100%;text-align:center;pointer-events:none;font-size:12px;letter-spacing:3px;font-weight:800;z-index:5;opacity:.8}
-.p4-hint{position:absolute;bottom:5%;width:100%;text-align:center;pointer-events:none;font-size:11.5px;letter-spacing:.5px;z-index:5;opacity:.75;animation:hintFade 1s ease forwards 7s}
+.p4-hint{position:absolute;bottom:5%;width:100%;text-align:center;pointer-events:none;font-size:11.5px;letter-spacing:.5px;z-index:5;opacity:.75}
+/* toàn bộ chữ trên sân khấu tự ẩn sau 7s, hiện lại mỗi lần mở tab */
+.p4-title,.p4-cam,.p4-hint{animation:hintFade 1s ease forwards 7s}
 @keyframes hintFade{to{opacity:0}}
 .p4-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;background:rgba(8,20,32,.5);border:1px solid var(--line2);padding:10px 12px;border-radius:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 10px 34px rgba(0,0,0,.55);margin:12px 2px 6px}
 .p4-btn{border:none;cursor:pointer;font-weight:800;font-size:12.5px;padding:10px 13px;border-radius:14px;color:#052033;background:linear-gradient(180deg,#bfe9ff,#6cb8e8);box-shadow:0 3px 0 #2a5d88;font-family:inherit;transition:transform .08s}
@@ -722,8 +724,8 @@ function go(t,btn){
   const el=$('t-'+t);void el.offsetWidth;el.classList.add('on');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
   window.scrollTo({top:0});
-  /* chữ hướng dẫn (.p4-hint): tự ẩn sau 7s nhưng hiện lại mỗi lần mở tab */
-  el.querySelectorAll('.p4-hint').forEach(h=>{h.style.animation='none';void h.offsetWidth;h.style.animation='';});
+  /* chữ trên sân khấu (.p4-title/.p4-cam/.p4-hint): tự ẩn sau 7s, hiện lại mỗi lần mở tab */
+  el.querySelectorAll('.p4-title,.p4-cam,.p4-hint').forEach(h=>{h.style.animation='none';void h.offsetWidth;h.style.animation='';});
   P4.setMainActive(t==='pets');
   if(t==='pets')P4.resizeMain();
   if(t==='dash')P4.resizeComp();
