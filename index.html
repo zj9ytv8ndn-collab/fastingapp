@@ -5285,6 +5285,11 @@ function GiraffeGL(host){
   const tailGroup=new THREE.Group();tailGroup.position.set(0,2.42,-.88);tailGroup.rotation.x=-.55;giraffe.add(tailGroup);P.tail=tailGroup;
   const tailM=new THREE.Mesh(new THREE.CylinderGeometry(.028,.02,.85,8),creamMat);tailM.position.y=-.42;tailGroup.add(tailM);
   const tailTuft=new THREE.Mesh(new THREE.ConeGeometry(.075,.30,8),darkMat);tailTuft.position.y=-.92;tailTuft.rotation.x=Math.PI;tailGroup.add(tailTuft);
+  /* chuẩn hóa kích cỡ — đo bbox, scale về chiều cao chuẩn như đàn pet */
+  {const bb=new THREE.Box3().setFromObject(giraffe);
+   const hh=Math.max(0.1,bb.max.y-bb.min.y);
+   giraffe.scale.setScalar(2.6/hh);
+   this.camY=((bb.min.y+bb.max.y)/2)*(2.6/hh);}
   this.tm=0;this.runPh=0;this.actT=0;this.pokeT=null;this.ok=true;
   this.resize();
 }
@@ -5368,8 +5373,8 @@ GiraffeGL.prototype={
     const dist=Math.max(4,Math.min(22,9.5/(pet.zoom||1)));
     const pol=Math.max(.35,Math.min(1.5,1.18-(pet.pitch||0)));
     const az=.6;
-    this.camera.position.set(Math.sin(pol)*Math.sin(az)*dist,2.05+Math.cos(pol)*dist,Math.sin(pol)*Math.cos(az)*dist);
-    this.camera.lookAt(0,2.05,0);
+    this.camera.position.set(Math.sin(pol)*Math.sin(az)*dist,(this.camY||1.3)+Math.cos(pol)*dist,Math.sin(pol)*Math.cos(az)*dist);
+    this.camera.lookAt(0,this.camY||1.3,0);
     this.renderer.render(this.scene,this.camera);
   },
   destroy(){this.ok=false;try{this.renderer.dispose();this.renderer.forceContextLoss();this.cv.remove();}catch(e){}}
@@ -5494,6 +5499,7 @@ function buildPet(key){
     const tail=new THREE.Group();tail.position.set(0,2.42*s,-.88*s);tail.rotation.x=-.55;g.add(tail);P.tail=tail;
     const tm=new THREE.Mesh(new THREE.CylinderGeometry(.028*s,.02*s,.85*s,8),MF(C.belly));tm.position.y=-.42*s;tail.add(tm);
     const tt=new THREE.Mesh(new THREE.ConeGeometry(.075*s,.30*s,8),M(0x4b3520));tt.position.y=-.92*s;tt.rotation.x=Math.PI;tail.add(tt);
+    g.scale.setScalar(0.5);   /* đồng bộ kích cỡ với đàn pet trong safari */
     return{g,P};
   }
   /* tứ chi chung */
