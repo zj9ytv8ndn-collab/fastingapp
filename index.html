@@ -226,6 +226,25 @@ nav button.on .ic{transform:translateY(-2px) scale(1.15)}
 .gq-p canvas{width:54px;height:54px}
 .gq-p .t{font-size:9.5px;font-weight:800;margin-top:4px}
 .float-heart{position:fixed;pointer-events:none;z-index:120;font-size:24px;animation:fheart 1.7s ease-out forwards}
+/* ===== SAFARI CONTROL PANEL PRO ===== */
+#sfPanel{background:linear-gradient(170deg,color-mix(in srgb,var(--volt) 6%,transparent),transparent 40%),var(--card)}
+.sf-sec{font-size:11px;letter-spacing:2px;color:var(--sub);font-weight:800;margin:16px 0 10px;display:flex;align-items:center;gap:8px}
+.sf-sec::before{content:"";width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--volt),transparent);flex-shrink:0}
+.sf-petgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.sf-pet{position:relative;background:rgba(255,255,255,.04);border:1.5px solid var(--line2);border-radius:16px;padding:7px 2px 5px;text-align:center;cursor:pointer;transition:all .18s}
+.sf-pet:active{transform:scale(.9)}
+.sf-pet canvas{width:46px;height:46px}
+.sf-pet span{display:block;font-size:8.5px;font-weight:800;color:var(--sub);margin-top:3px;white-space:nowrap;overflow:hidden}
+.sf-pet.sel{border-color:var(--volt);background:color-mix(in srgb,var(--volt) 12%,transparent);box-shadow:0 0 0 2px color-mix(in srgb,var(--volt) 45%,transparent),0 6px 20px color-mix(in srgb,var(--volt) 25%,transparent)}
+.sf-pet.sel span{color:var(--volt)}
+.sf-pet .badge{position:absolute;top:-7px;right:-3px;font-size:7px;font-style:normal;font-weight:800;background:linear-gradient(135deg,#e6ff70,var(--volt2));color:#141a02;padding:2px 5px;border-radius:8px;display:none;letter-spacing:.3px}
+.sf-pet.sel .badge{display:block}
+.sf-mode.sel{background:linear-gradient(135deg,color-mix(in srgb,var(--volt) 30%,transparent),color-mix(in srgb,var(--volt) 10%,transparent));border-color:var(--volt);color:var(--volt)}
+.sf-stick{width:134px;height:134px;border-radius:50%;margin:8px auto 4px;position:relative;background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1.5px solid var(--line2);box-shadow:inset 0 3px 14px rgba(0,0,0,.4);touch-action:none;user-select:none;-webkit-user-select:none}
+.sf-stick::before{content:"";position:absolute;inset:19px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.15)}
+.sf-knob{position:absolute;width:54px;height:54px;border-radius:50%;left:40px;top:40px;background:linear-gradient(135deg,color-mix(in srgb,var(--volt) 65%,#fff),var(--volt2));box-shadow:0 7px 18px rgba(0,0,0,.45),inset 0 2px 5px rgba(255,255,255,.55);transition:transform .06s}
+.sf-stick.on{border-color:var(--volt);box-shadow:0 0 26px color-mix(in srgb,var(--volt) 30%,transparent),inset 0 3px 14px rgba(0,0,0,.4)}
+.sf-hintdir{position:absolute;font-size:10px;color:var(--sub2);font-weight:800;pointer-events:none}
 @keyframes fheart{0%{opacity:0;transform:translateY(0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translateY(-130px) scale(1.3) rotate(12deg)}}
 .conf{position:fixed;top:-14px;width:9px;height:15px;z-index:400;pointer-events:none;border-radius:2px;animation:confFall linear forwards}
 @keyframes confFall{to{transform:translateY(112vh) rotate(720deg);opacity:.6}}
@@ -512,32 +531,40 @@ html{scrollbar-width:none}
   </div>
   <div class="card" id="sfPanel">
     <h3>🎮 Bảng điều khiển Pet</h3>
-    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:14px 0 8px">⭐ CHỌN BÉ DẪN ĐẦU ĐOÀN</div>
-    <div class="preset" id="sfPets"></div>
-    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🎪 LỆNH ĐIỀU KHIỂN</div>
+    <div class="sf-sec">CHỌN PET — 10 BÉ 4D TRONG SAFARI</div>
+    <div class="sf-petgrid" id="sfPets"></div>
+    <div class="tgl" style="border:0;padding-bottom:0;font-size:12px"><span>✨ Hiệu ứng 3D đầy đủ cho mọi bé<br><small style="color:var(--sub2)">Tắt = bé điều khiển 3D, bé khác nhẹ máy</small></span><span class="switch"><input type="checkbox" id="sfAllGL" onchange="Safari.setAllGL(this.checked)"><i></i></span></div>
+    <div class="sf-sec">🕹️ ĐIỀU KHIỂN TRỰC TIẾP</div>
+    <div class="sf-stick" id="sfStick"><div class="sf-knob" id="sfKnob"></div><span class="sf-hintdir" style="top:5px;left:50%;transform:translateX(-50%)">▲</span><span class="sf-hintdir" style="bottom:5px;left:50%;transform:translateX(-50%)">▼</span><span class="sf-hintdir" style="left:9px;top:50%;transform:translateY(-50%)">◀</span><span class="sf-hintdir" style="right:9px;top:50%;transform:translateY(-50%)">▶</span></div>
+    <div class="sub" style="text-align:center;margin:0 0 6px">Giữ & kéo cần điều khiển để dẫn bé — hướng di chuyển theo camera</div>
+    <div class="preset">
+      <button class="btn ghost sm sf-mode" data-m="walk" style="flex:1" onclick="Safari.setMode('walk')">🚶 Dạo</button>
+      <button class="btn ghost sm sf-mode" data-m="run" style="flex:1" onclick="Safari.setMode('run')">🏃 Chạy</button>
+      <button class="btn ghost sm sf-mode" data-m="rest" style="flex:1" onclick="Safari.setMode('rest')">💤 Nghỉ</button>
+    </div>
     <div class="preset">
       <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('jump')">🦘 Nhảy</button>
       <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('spin')">🌀 Xoay</button>
     </div>
     <div class="preset">
       <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('sit')">🪑 Ngồi</button>
-      <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('dance')">🕺 Nhảy múa</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('dance')">🕺 Múa</button>
     </div>
-    <button class="btn volt sm" id="sfOrbitBtn" style="width:100%;margin:8px 0 0" onclick="Safari.orbitToggle()">🔍 Ngắm pet 360°</button>
-    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🚀 DỊCH CHUYỂN TỚI ĐỊA ĐIỂM</div>
+    <button class="btn volt sm" id="sfOrbitBtn" style="width:100%;margin:6px 0 0" onclick="Safari.orbitToggle()">🔍 Ngắm pet 360°</button>
+    <div class="sf-sec">🚀 DỊCH CHUYỂN NHANH</div>
     <div class="preset" id="sfTP"></div>
-    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🐾 TỐC ĐỘ DI CHUYỂN</div>
+    <div class="sf-sec">⚡ TỐC ĐỘ</div>
     <div class="preset">
-      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(0.5)">🐢 Chậm</button>
-      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(1)">🚶 Vừa</button>
-      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(2)">🐇 Nhanh</button>
-      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(3.5)">🚀 Siêu nhanh</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(0.5)">🐢</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(1)">🚶</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(2)">🐇</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(3.5)">🚀</button>
     </div>
     <div class="tgl"><span>⚙️ Tuỳ chỉnh (<span id="sfSpeedV">1.0×</span>)</span><input type="range" id="sfSpeed" min="0.5" max="4" step="0.1" value="1" style="width:120px" oninput="Safari.setSpeed(+this.value)"></div>
-    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🎥 CAMERA</div>
-    <div class="tgl"><span>🎯 Tự theo dõi bé dẫn đầu</span><span class="switch"><input type="checkbox" id="sfFollow" checked onchange="Safari.setFollow(this.checked)"><i></i></span></div>
+    <div class="sf-sec">🎥 CAMERA</div>
+    <div class="tgl"><span>🎯 Tự theo dõi bé</span><span class="switch"><input type="checkbox" id="sfFollow" checked onchange="Safari.setFollow(this.checked)"><i></i></span></div>
     <div class="tgl"><span>🔭 Khoảng cách (<span id="sfZoomV">32</span>m)</span><input type="range" id="sfZoom" min="6" max="85" value="32" style="width:120px" oninput="Safari.setZoom(+this.value)"></div>
-    <div class="tgl"><span>🙋 Chạm canvas = di chuyển · kéo = xoay · chụm = zoom</span></div>
+    <div class="tgl"><span>👆 Kéo canvas = xoay · chụm = zoom · chạm = điểm đến</span></div>
   </div>
   <div class="card">
     <h3>🗺️ Bản đồ khuôn viên</h3>
@@ -5107,7 +5134,8 @@ let pets=[],butterflies=[],birds=[],clouds=[],splashes=[],ripples=[],smokes=[];
 let fireflies,stars,hemi,dirL,moonL;
 let riverTex,wheel,gondolas=[],bulbs=[],torchLights=[],flames=[],winMats=[],lanternMats=[];
 let tubes=[],smokeT=0.4,birdT=4,titleT=0;
-let camAz=0.8,camPol=1.02,camR=32,followCam=true,orbitMode=false,orbitR=12,petSpdMul=1;
+let camAz=0.8,camPol=1.02,camR=32,followCam=true,orbitMode=false,orbitR=12,petSpdMul=1,glAllFlag=false;
+const steer={active:false,x:0,y:0,id:null};
 const camPos=new THREE.Vector3(),camTgt=new THREE.Vector3();
 const HALF=1150,RW=58;
 const rZ=x=>140*Math.sin(x*0.0032)+70*Math.sin(x*0.0011+2);
@@ -5913,7 +5941,7 @@ function makeGLPet(key){
   }catch(e){try{gl&&gl.cv&&gl.cv.remove()}catch(_){}try{hostEl&&hostEl.remove()}catch(_){}return null}
 }
 function newPet(key,lead,i){
-  const G=makeGLPet(key);
+  const G=(lead||glAllFlag)?makeGLPet(key):null;
   if(G){const x0=lead?20:-140+i*130,z0=lead?rZ(20)+RW+26:(i%2?rZ(-140+i*130)-RW-26:rZ(-140+i*130)+RW+26);
     G.wrap.position.set(x0,0,z0);scene.add(G.wrap);
     return{key,lead,g:G.wrap,P:{isSprite:1,isGL:1},gl4d:G,x:x0,z:z0,y:0,tx:x0,tz:z0,side:sideOf(x0,z0),tside:'S',
@@ -6169,6 +6197,16 @@ function frame(ts){
     if(r2.l>1.4){scene.remove(r2.m);ripples.splice(i,1);}}
   /* pet */
   for(const p of pets)updPet(p,dt);
+  /* joystick điều khiển trực tiếp */
+  if(steer.active&&pets.length){const lead=pets[0];
+    if(mode==='rest')setModeQuiet('walk');
+    const fx2=-Math.sin(camAz),fz2=-Math.cos(camAz);
+    const rx2=Math.cos(camAz),rz2=-Math.sin(camAz);
+    const mx2=fx2*(-steer.y)+rx2*steer.x,mz2=fz2*(-steer.y)+rz2*steer.x;
+    const l2=Math.hypot(mx2,mz2);
+    if(l2>0.18&&lead.state!=='cross'){lead.tx=lead.x+mx2/l2*80;lead.tz=lead.z+mz2/l2*80;
+      lead.tside=sideOf(lead.tx,lead.tz);lead.state='walk';lead.idleT=0;lead.behav='none';}
+    else if(lead.state==='walk'){lead.state='idle';lead.idleT=0.4;}}
   /* camera theo bé dẫn đầu */
   const lead=pets[0];
   if(followCam||orbitMode)camTgt.lerp(V3(lead.x,2.4+lead.y,lead.z),Math.min(1,dt*(orbitMode?7:3)));
@@ -6243,11 +6281,9 @@ function init(){
   rayc=new THREE.Raycaster();
   buildWorld();
   /* pet đoàn */
-  const own=get('p4own',['dolphin','pig']);
-  const leadKey=get('p4active','dolphin');
-  const others=own.filter(k=>k!==leadKey).slice(0,2);
-  pets=[leadKey,...others].map((k,i)=>newPet(k,i===0,i));
-  pets[0].g.add(makeLabel(PET_DEFS[leadKey].name[LANG],'⭐'));
+  glAllFlag=!!get('safAllGL',false);
+  const ag=$('sfAllGL');if(ag)ag.checked=glAllFlag;
+  buildRoster(false);
   pets[0].label='lead';
   /* nút */
   const selB=id=>['sfWalk','sfRun','sfRest'].forEach(b=>$(b).classList.toggle('active',b===id));
@@ -6261,6 +6297,7 @@ function init(){
   cv.addEventListener('pointermove',onMove);
   cv.addEventListener('pointerup',onUp);
   cv.addEventListener('pointercancel',onUp);
+  bindStick();
   renderPetChips();renderTP();
   ready=true;resize();
   requestAnimationFrame(frame);
@@ -6271,6 +6308,12 @@ function resize(){
   if(rect.width<10)return;
   renderer.setSize(rect.width,rect.height,false);
   camera.aspect=rect.width/rect.height;camera.updateProjectionMatrix();
+}
+function refreshPets(){
+  if(!ready)return;
+  const leadKey=get('p4active','dolphin');
+  if(pets.length===10&&pets[0].key===leadKey)return;
+  buildRoster(true);
 }
 function refreshPets(){
   if(!ready)return;
@@ -6288,11 +6331,45 @@ function refreshPets(){
   const others=own.filter(k=>k!==leadKey&&!pets.some(p=>p.key===k));
   for(const k of others){if(pets.length>=3)break;pets.push(newPet(k,false,pets.length));}
 }
-function renderPetChips(){
-  const own=get('p4own',['dolphin','pig']);
-  const el=$('sfPets');if(!el)return;
-  el.innerHTML=own.map(k=>`<button class="${pets.length&&pets[0].key===k?'sel':''}" onclick="Safari.selectPet('${k}')">${PET_DEFS[k].name[LANG]}</button>`).join('');
+function buildRoster(keepPos){
+  const prev=(keepPos&&pets.length)?{x:pets[0].x,z:pets[0].z}:null;
+  pets.forEach(p=>{if(p.gl4d){try{p.gl4d.gl.cv.remove()}catch(e){}try{p.gl4d.hostEl&&p.gl4d.hostEl.remove()}catch(e){}}scene.remove(p.g)});
+  const leadKey=get('p4active','dolphin');
+  const order=[leadKey,...Object.keys(PET_DEFS).filter(k=>k!==leadKey)];
+  pets=order.map((k,i)=>{const p=newPet(k,i===0,i);
+    if(i===0){p.g.add(makeLabel(PET_DEFS[k].name[LANG],'⭐'));
+      if(prev){p.x=prev.x;p.z=prev.z;p.tx=prev.x;p.tz=prev.z;p.side=sideOf(prev.x,prev.z);p.g.position.set(prev.x,0,prev.z);}}
+    return p;});
+  renderPetChips();renderTP();
 }
+function renderPetChips(){
+  const el=$('sfPets');if(!el)return;
+  const keys=Object.keys(PET_DEFS);
+  const lead=pets.length?pets[0].key:null;
+  el.innerHTML=keys.map(k=>`<div class="sf-pet ${k===lead?'sel':''}" onclick="Safari.selectPet('${k}')"><canvas width="96" height="96"></canvas><span>${PET_DEFS[k].name[LANG]}</span><em class="badge">ĐANG ĐIỀU KHIỂN</em></div>`).join('');
+  requestAnimationFrame(()=>{el.querySelectorAll('canvas').forEach((c,i)=>{const k=keys[i];
+    try{drawPetTo(c.getContext('2d'),k,48,58,0.5,-0.5,0.12,t,petPose(k,t,'idle',1))}catch(e){}});});
+}
+function bindStick(){
+  const st=$('sfStick'),kn=$('sfKnob');if(!st)return;
+  const R2=42;
+  const setKnob=(dx,dy)=>{kn.style.transform=`translate(${dx}px,${dy}px)`};
+  const calc=e=>{const r=st.getBoundingClientRect();
+    let dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+    const d=Math.hypot(dx,dy);if(d>R2){dx*=R2/d;dy*=R2/d}
+    setKnob(dx,dy);steer.x=dx/R2;steer.y=dy/R2;};
+  st.addEventListener('pointerdown',e=>{try{st.setPointerCapture(e.pointerId)}catch(_){}
+    steer.active=true;steer.id=e.pointerId;st.classList.add('on');calc(e);});
+  st.addEventListener('pointermove',e=>{if(steer.active&&e.pointerId===steer.id)calc(e)});
+  const end=e=>{if(e.pointerId!==steer.id)return;
+    steer.active=false;steer.x=steer.y=0;st.classList.remove('on');setKnob(0,0);};
+  st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);
+}
+function setModeQuiet(m2){mode=m2;
+  const map={walk:'sfWalk',run:'sfRun',rest:'sfRest'};
+  Object.entries(map).forEach(([mk,id])=>{const b=$(id);if(b)b.classList.toggle('active',mk===m2)});
+  document.querySelectorAll('.sf-mode').forEach(b=>b.classList.toggle('sel',b.dataset.m===m2));
+  if(pets.length){const lead=pets[0];lead.state='idle';lead.idleT=m2==='rest'?999:0.4;lead.moving=false;}}
 function renderTP(){
   const el=$('sfTP');if(!el)return;
   const tps=[[-620,-560,'🚪 Cổng'],[0,rZ(0)+RW+18,'🌉 Cầu'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[-420,350,'🎠 Trò chơi'],[-200,-300,'🏘️ Làng'],[-850,620,'🌊 Biển']];
@@ -6312,19 +6389,14 @@ return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}}
     lead.side=sideOf(x,z);lead.g.position.set(x,0,z);
     camTgt.set(x,2,z);
     toastMsg(`🚀 ${T('Đã dịch chuyển tới địa điểm mới!','Teleported!')}`);},
-  selectPet(key){if(!ready)return;
-    const own=get('p4own',['dolphin','pig']);
-    if(!own.includes(key)||pets[0].key===key)return;
-    const old=pets[0];
-    if(old.gl4d){try{old.gl4d.gl.cv.remove()}catch(e){}try{old.gl4d.hostEl&&old.gl4d.hostEl.remove()}catch(e){}}
-    scene.remove(old.g);
+  selectPet(key){if(!ready||!PET_DEFS[key]||(pets.length&&pets[0].key===key))return;
     set('p4active',key);
-    pets[0]=newPet(key,true,0);
-    pets[0].x=old.x;pets[0].z=old.z;pets[0].g.position.set(old.x,0,old.z);
-    pets[0].g.add(makeLabel(PET_DEFS[key].name[LANG],'⭐'));
-    renderPetChips();
     if(typeof P4!=='undefined'&&P4.main){P4.main.setKey(key);P4.syncUI();P4.renderGrid();gqRender();}
-    toastMsg(`⭐ ${PET_DEFS[key].name[LANG]} ${T('dẫn đầu đoàn!','leads the squad!')}`);},
+    buildRoster(true);
+    toastMsg(`\u2b50 ${PET_DEFS[key].name[LANG]} ${T('dẫn đầu đoàn!','leads the squad!')}`);},
+  setMode(m2){if(!ready)return;setModeQuiet(m2)},
+  setAllGL(b){glAllFlag=!!b;set('safAllGL',glAllFlag);if(ready){buildRoster(true);
+    toastMsg(glAllFlag?T('✨ Mọi bé dùng hiệu ứng 3D đầy đủ','✨ All pets use full 3D'):T('🍃 Chế độ nhẹ: chỉ bé điều khiển 3D','🍃 Light mode: controlled pet 3D only'));}},
   setSpeed(v){petSpdMul=Math.max(0.5,Math.min(4,v));
     const lbl=$('sfSpeedV');if(lbl)lbl.textContent=petSpdMul.toFixed(1)+'×';
     const sl=$('sfSpeed');if(sl&&+sl.value!==Math.round(petSpdMul*10)/10)sl.value=petSpdMul;
