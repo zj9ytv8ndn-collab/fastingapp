@@ -5345,10 +5345,23 @@ GiraffeGL.prototype={
       spinYaw=(pet.act==='roll'?Math.PI*4:Math.PI*2)*(k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2);
       if(k>=1){pet.act=null;this.actT=0;spinYaw=0;}
     }else this.actT=0;
+    /* di chuyển qua lại sân khấu như pet canvas — đổi hướng khi chạm mép */
+    if(!this.dir)this.dir=1;
+    if(run){
+      this.x=(this.x||0)+this.dir*dt*1.5*Math.min(spd,3);
+      if(this.x>2.4){this.x=2.4;this.dir=-1}
+      if(this.x<-2.4){this.x=-2.4;this.dir=1}
+    }else this.x=(this.x||0)*Math.max(0,1-dt*4);
+    if(Math.abs(this.x)<0.005)this.x=0;
+    /* xoay mặt theo hướng chạy (ngắn nhất, mượt) */
+    const faceT=run?(this.dir>0?Math.PI/2:-Math.PI/2):0;
+    let fd=faceT-(this.faceYaw||0);fd=Math.atan2(Math.sin(fd),Math.cos(fd));
+    this.faceYaw=(this.faceYaw||0)+fd*Math.min(1,dt*7);
     P.legs[0].rotation.x=lFL;P.legs[1].rotation.x=lFR;P.legs[2].rotation.x=lBL;P.legs[3].rotation.x=lBR;
+    m.position.x=this.x;
     m.position.y=bob+jumpY;
     m.rotation.z=bodyRz;
-    m.rotation.y=(pet.yaw||0)+(pet.yawOff||0)+spinYaw;
+    m.rotation.y=(pet.yaw||0)+(pet.yawOff||0)+spinYaw+(this.faceYaw||0);
     P.neck.rotation.x=neckRx;
     P.head.rotation.x=headRx;P.head.rotation.y=headRy;P.head.rotation.z=headRz;
     P.tail.rotation.z=tailZ;
