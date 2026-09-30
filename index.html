@@ -548,6 +548,7 @@ html{scrollbar-width:none}
     <div class="row"><span>🎡 Vòng quay lớn</span><span class="chipsmall">8 cabin · đèn nháy đêm · chạm để tăng tốc</span></div>
     <div class="row"><span>🎠 Khu trò chơi</span><span class="chipsmall">Xích đu · cầu trượt · bập bênh · đu quay · bạt nhún · bể cát · bóng đẩy</span></div>
     <div class="row"><span>🏘️ Làng Safari</span><span class="chipsmall">Cửa hàng quà · cafe · WC · tháp quan sát · chuồng thú · đài phun nước</span></div>
+    <div class="row"><span>🌊 Biển Safari</span><span class="chipsmall">Đáy cát · san hô · sao biển · 4 đàn cá màu · cá heo lặn & nhảy khỏi mặt nước</span></div>
     <div class="row"><span>💡 Tiện ích</span><span class="chipsmall">Ghế dài · đèn đường sáng đêm · biển chỉ dẫn</span></div>
     <div class="row"><span>🦋 Vườn bướm</span><span class="chipsmall">Bướm đầy màu bay lượn khắp cánh đồng</span></div>
     <div class="sub" style="margin-top:10px">🐾 Các bé 4D bạn sở hữu sẽ cùng dạo chơi trong safari — bé bạn chọn ở tab Thú 4D sẽ là bé dẫn đầu đoàn.</div>
@@ -5601,6 +5602,67 @@ function playZones(p,dt){
   for(const f2 of fountains){if(Math.hypot(p.x-f2.x,p.z-f2.z)<7&&R()<0.04)splashAt(f2.x+(R()-0.5)*3,f2.z+(R()-0.5)*3,5);}
 }
 
+/* ---------- biển safari & đàn cá ---------- */
+const fishSchools=[],bubbles=[];
+let bubbleT=0;
+function makeFish(color){
+  const f=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.SphereGeometry(0.42,10,8),M(color));
+  body.scale.set(1.7,0.85,0.6);f.add(body);
+  const belly=new THREE.Mesh(new THREE.SphereGeometry(0.36,8,6),M(0xf5f0e0));
+  belly.scale.set(1.5,0.6,0.5);belly.position.y=-0.14;f.add(belly);
+  const tail=new THREE.Mesh(new THREE.ConeGeometry(0.34,0.85,4),M(color));
+  tail.rotation.z=Math.PI/2;tail.position.x=-0.95;tail.scale.z=0.28;f.add(tail);
+  f.userData.tail=tail;
+  const top=new THREE.Mesh(new THREE.ConeGeometry(0.2,0.5,4),M(color));
+  top.position.set(0.05,0.42,0);top.scale.z=0.3;f.add(top);
+  return f;
+}
+function makeFishSchool(color,count,cx,cz,radius,lane){
+  const school=new THREE.Group();const fishes=[];
+  for(let i=0;i<count;i++){
+    const f=makeFish(color);
+    const row=Math.floor(i/3),col=i%3;
+    f.position.set(-row*1.5-((col===1)?0.7:0),(R()-0.5)*0.5,(col-1)*1.15+(R()-0.5)*0.4);
+    f.scale.setScalar(0.8+R()*0.5);
+    school.add(f);fishes.push(f);}
+  school.userData={cx,cz,radius:radius||0,lane:lane||0,a:R()*Math.PI*2,ph:R()*9,fish:fishes,spd:0.22+R()*0.18};
+  scene.add(school);fishSchools.push(school);return school;
+}
+function buildOcean(ox,oz,or){
+  const g=new THREE.Group();
+  const sand=new THREE.Mesh(new THREE.CircleGeometry(or+18,42),M(0xe8d5a0));
+  sand.rotation.x=-Math.PI/2;sand.position.y=0.06;g.add(sand);
+  for(let i=0;i<10;i++){const dune=new THREE.Mesh(new THREE.SphereGeometry(6+R()*8,9,6),M(0xddc493));
+    dune.scale.y=0.16;const a=R()*Math.PI*2,rr=R()*(or-30);
+    dune.position.set(Math.cos(a)*rr,0.1,Math.sin(a)*rr);g.add(dune);}
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(or+8,2.8,10,52),M(0xb99a63));
+  rim.rotation.x=Math.PI/2;rim.position.y=0.95;g.add(rim);
+  for(let i=0;i<30;i++){const a=i/30*Math.PI*2;const rr=or+8+(R()-0.5)*4;
+    const st=new THREE.Mesh(new THREE.SphereGeometry(1.5+R()*1.9,7,5),M(i%3?0x9a958a:0x8a857a));
+    st.scale.y=0.62;st.position.set(Math.cos(a)*rr,0.7,Math.sin(a)*rr);st.rotation.y=R()*3;g.add(st);}
+  const water=new THREE.Mesh(new THREE.CircleGeometry(or,42),
+    new THREE.MeshPhongMaterial({color:0x2f93c9,transparent:true,opacity:0.5,shininess:140,specular:0x99ddff,side:THREE.DoubleSide}));
+  water.rotation.x=-Math.PI/2;water.position.y=1.5;g.add(water);
+  window._oceanWater=water;
+  const ccols=[0xff7d9c,0xff9e4a,0xc77dff,0x4ade80,0xffd166,0x6cb4ff,0xff5d5d];
+  for(let i=0;i<18;i++){const a=R()*Math.PI*2,rr=10+R()*(or-50);
+    const cx=Math.cos(a)*rr,cz=Math.sin(a)*rr;
+    const c=new THREE.Mesh(new THREE.ConeGeometry(0.5+R()*0.7,1.6+R()*1.8,6),M(ccols[i%7]));
+    c.position.set(cx,0.9,cz);c.rotation.z=(R()-0.5)*0.2;g.add(c);
+    if(R()<0.6){const b=new THREE.Mesh(new THREE.SphereGeometry(0.5+R()*0.55,8,6),M(ccols[(i+3)%7]));
+      b.position.set(cx+1.3,0.5,cz+0.9);g.add(b);}}
+  for(let i=0;i<7;i++){const a=R()*Math.PI*2,rr=R()*(or-60);
+    const sf=new THREE.Mesh(new THREE.SphereGeometry(0.8,7,5),M(0xff9e4a));
+    sf.scale.set(1.7,0.28,1.7);sf.position.set(Math.cos(a)*rr,0.22,Math.sin(a)*rr);sf.rotation.y=R()*3;g.add(sf);}
+  for(let i=0;i<8;i++){const a=R()*Math.PI*2,rr=R()*(or-40);
+    const w=new THREE.Mesh(new THREE.ConeGeometry(0.3,2.2+R()*1.6,5),M(0x3f8a5a));
+    w.position.set(Math.cos(a)*rr,1,Math.sin(a)*rr);w.rotation.z=(R()-0.5)*0.5;g.add(w);}
+  g.position.set(ox,0,oz);scene.add(g);
+  window._ocean={x:ox,z:oz,r:or};
+}
+function inOceanAt(x,z){const O=window._ocean;return !!O&&Math.hypot(x-O.x,z-O.z)<O.r-14;}
+
 /* ---------- build world ---------- */
 function buildWorld(){
   scene=new THREE.Scene();
@@ -5649,6 +5711,12 @@ function buildWorld(){
     const ring2=new THREE.Mesh(new THREE.TorusGeometry(2.6,0.85,10,18),M([0xff8fa3,0xffd166,0x7ad3ff,0x9be89b][i]));
     ring2.rotation.x=Math.PI/2;ring2.position.y=0.5;tg.add(ring2);
     tg.position.set(-800+i*520,0.4,0);scene.add(tg);tubes.push(tg);}
+  /* biển safari + đàn cá */
+  buildOcean(-850,620,240);
+  makeFishSchool(0xff9e4a,9,-850,620,72);
+  makeFishSchool(0x6cb4ff,7,-850,620,130);
+  makeFishSchool(0xff7d9c,12,-850,620,182);
+  makeFishSchool(0x4ade80,10,-850,620,105);
   /* cầu gỗ tại x=0 */
   const brG=new THREE.Group();
   for(let i=0;i<=12;i++){const u=i/12;const z0=rZ(0)-RW-10+u*(2*RW+20);
@@ -5735,12 +5803,13 @@ function buildWorld(){
   const spots=[];
   for(let i=0;i<46;i++){const x=(R()*2-1)*1080,z=(R()*2-1)*1080;
     if(Math.abs(z-rZ(x))<RW+40)continue;
+    if(Math.hypot(x+850,z-620)<310)continue;
     if(Math.hypot(x+620,z+560)<90||Math.hypot(x-240,z+520)<90||Math.hypot(x-560,z-430)<110)continue;
     spots.push([x,z]);}
   spots.forEach(([x,z],i)=>{scene.add(i%4===3?palm(x,z,0.9+R()*0.5):acacia(x,z,0.8+R()*0.6));
     if(R()<0.6)scene.add(bush(x+8+R()*10,z+6+R()*10,0.8+R()*0.7));});
   for(let i=0;i<40;i++){const x=(R()*2-1)*1100,z=(R()*2-1)*1100;
-    if(Math.abs(z-rZ(x))<RW+15)continue;scene.add(bush(x,z,0.7+R()*0.8));}
+    if(Math.abs(z-rZ(x))<RW+15)continue;if(Math.hypot(x+850,z-620)<300)continue;scene.add(bush(x,z,0.7+R()*0.8));}
   /* cỏ + hoa — crossed planes */
   const gt2=(()=>{const c=document.createElement('canvas');c.width=32;c.height=32;const x=c.getContext('2d');
     x.strokeStyle='#5d9a44';x.lineWidth=3;
@@ -5748,13 +5817,13 @@ function buildWorld(){
     return new THREE.CanvasTexture(c);})();
   const grassMat=new THREE.MeshLambertMaterial({map:gt2,transparent:true,alphaTest:0.3,side:THREE.DoubleSide});
   for(let i=0;i<260;i++){const x=(R()*2-1)*1120,z=(R()*2-1)*1120;
-    if(Math.abs(z-rZ(x))<RW+6)continue;
+    if(Math.abs(z-rZ(x))<RW+6)continue;if(Math.hypot(x+850,z-620)<295)continue;
     const g2=new THREE.Group();
     for(const ry of[0,Math.PI/2]){const p=new THREE.Mesh(new THREE.PlaneGeometry(2.4,2),grassMat);
       p.rotation.y=ry;g2.add(p);}
     g2.position.set(x,0.9,z);g2.rotation.y=R()*3;scene.add(g2);}
   for(let i=0;i<90;i++){const x=(R()*2-1)*1120,z=(R()*2-1)*1120;
-    if(Math.abs(z-rZ(x))<RW+6)continue;
+    if(Math.abs(z-rZ(x))<RW+6)continue;if(Math.hypot(x+850,z-620)<295)continue;
     const f=new THREE.Mesh(new THREE.SphereGeometry(0.32,6,5),MB([0xff8fb0,0xffe05c,0xc77dff,0xff9e4a,0x8ef0e0][i%5]));
     f.position.set(x,0.6,z);scene.add(f);
     const st=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.6,4),M(0x4a7c33));st.position.set(x,0.3,z);scene.add(st);}
@@ -5875,7 +5944,7 @@ function drawSpritePet(p,dt){
       if(p.trick==='dance'&&p.trickT>2.2)p.trick=null;}
     if(p.trick==='spin'&&G.actSent){p.trickT+=dt;if(p.trickT>1.2){p.trick=null;p.trickT=0;}}
     G.shadow.visible=!p.inWater;
-    const tgtW=(p.inWater?-0.35:0)+p.y-p.sit*0.35;
+    const tgtW=(p.inWater?(p.inOcean?0.8:0.18):0)+p.y-p.sit*0.35;
     p.g.position.set(p.x,tgtW+(p.tramp&&p.moving?Math.abs(Math.sin(t*9+p.seed))*2.3:0),p.z);
     return;
   }
@@ -5897,7 +5966,7 @@ function drawSpritePet(p,dt){
 }
 function pickTarget(p){
   let tx=(R()*2-1)*1000,tz=(R()*2-1)*1000;
-  if(!p.lead&&R()<0.35){const sp=[[-620,-470],[240,-430],[560,330],[0,rZ(0)+RW+20],[0,rZ(0)-RW-20],[-420,350],[-420,330],[-200,-300],[-380,320]];
+  if(!p.lead&&R()<0.35){const sp=[[-620,-470],[240,-430],[560,330],[0,rZ(0)+RW+20],[0,rZ(0)-RW-20],[-420,350],[-420,330],[-200,-300],[-380,320],[-850,620],[-790,560]];
     const s=sp[Math.floor(R()*sp.length)];tx=s[0]+(R()-0.5)*60;tz=s[1]+(R()-0.5)*60;}
   p.tx=tx;p.tz=tz;p.tside=sideOf(tx,tz);p.state='walk';p.behav='none';
 }
@@ -5912,6 +5981,9 @@ function updPet(p,dt){
       if(p.behav==='sit'){p.sitT=2}else p.behav='none';
       p.idleT=1.5+R()*3;
       if(R()<0.6||p.lead)pickTarget(p);}
+    if(p.key==='dolphin'&&p.inWater&&p.state==='idle'&&R()<0.008){
+      p.trick='jump';p.trickT=0;splashAt(p.x,p.z,8);
+      toastMsg(`🐬 ${T('Cá heo nhảy khỏi mặt nước!','Dolphin breach!')}`);}
   }else if(p.state==='walk'){
     const dx=p.tx-p.x,dz=p.tz-p.z,d=Math.hypot(dx,dz);
     if(d<6){p.state='idle';p.idleT=1+R()*2;p.moving=false;arrive(p);return}
@@ -5931,8 +6003,8 @@ function updPet(p,dt){
     const s2=sideOf(p.x,p.z);
     if(s2!=='ON')p.side=s2;
     playZones(p,dt);
-    if(C.swim){const on=Math.abs(p.z-rZ(p.x))<RW-14;
-      p.inWater=on;
+    if(C.swim){const on=Math.abs(p.z-rZ(p.x))<RW-14||inOceanAt(p.x,p.z);
+      p.inWater=on;p.inOcean=on&&Math.abs(p.z-rZ(p.x))>=RW-14;
       if(on&&R()<0.1)addRipple(p.x,p.z);}
   }else if(p.state==='cross'){
     p.cp+=dt/2.6;const u=Math.min(1,p.cp);
@@ -5954,7 +6026,7 @@ function updPet(p,dt){
   if(P.earL){P.earL.rotation.z=Math.sin(t*2.2+p.seed)*0.15-0.1;}
   if(P.earR){P.earR.rotation.z=-Math.sin(t*2.2+p.seed)*0.15+0.1;}
   if(P.trunk){P.trunk.rotation.x=Math.sin(t*1.3+p.seed)*0.15;}}
-  let targetY=(p.inWater?PET3D[p.key].s*-0.5-0.2:0)+p.y-p.sit*0.3;
+  let targetY=(p.inWater?(p.inOcean?0.8:0.18):0)+p.y-p.sit*0.3;
   if(p.tramp&&p.moving)targetY+=Math.abs(Math.sin(t*9+p.seed))*2.3;
   if(p.trick&&!P.isSprite){p.trickT+=dt;
     if(p.trick==='jump'){targetY+=Math.abs(Math.sin(Math.min(1,p.trickT/0.9)*Math.PI))*3.2;
@@ -5963,12 +6035,12 @@ function updPet(p,dt){
     else if(p.trick==='dance'){targetY+=Math.abs(Math.sin(p.trickT*6))*1.1;
       p.g.rotation.y+=dt*6;if(p.trickT>2.2)p.trick=null;}
     else if(p.trick==='sit'){p.behav='sit';p.sitT=3;p.state='idle';p.idleT=Math.max(p.idleT,3);p.trick=null;}}
-  g.position.set(p.x,targetY,p.z);
+  if(!p.gl4d)g.position.set(p.x,targetY,p.z);
   if(P.shadow)P.shadow.visible=!p.inWater;
 }
 function arrive(p){
   if(!p.lead)return;
-  const sp=[[-620,-560,'🚪 Cổng Safari'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[0,rZ(0),'🌉 Cầu gỗ'],[-420,350,'🎠 Khu trò chơi'],[-200,-300,'🏘️ Làng Safari'],[-200,-300,'⛲ Đài phun nước']];
+  const sp=[[-620,-560,'🚪 Cổng Safari'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[0,rZ(0),'🌉 Cầu gỗ'],[-420,350,'🎠 Khu trò chơi'],[-200,-300,'🏘️ Làng Safari'],[-200,-300,'⛲ Đài phun nước'],[-850,620,'🌊 Biển Safari']];
   for(const s of sp){if(Math.hypot(p.x-s[0],p.z-s[1])<160){toastMsg(`${PET_DEFS[p.key].name[LANG]} ${T('đang khám phá','is exploring')} ${s[2]}!`);break}}
 }
 function addRipple(x,z){ripples.push({x,z,l:0});}
@@ -5986,11 +6058,18 @@ function frame(ts){
   boost=Math.max(0,boost-dt*0.8);
   /* ngày đêm */
   const f=skyF();
-  scene.background=lerpC(0x0a1030,0x8ecfee,f);
-  scene.fog.color=lerpC(0x0d1430,0x9fd4f2,f);
+  const bgB=lerpC(0x0a1030,0x8ecfee,f);
+  const fgB=lerpC(0x0d1430,0x9fd4f2,f);
+  scene.background=bgB;
+  scene.fog.color=fgB;
   hemi.intensity=0.22+f*0.58;
   dirL.intensity=f*1.05;dirL.color=lerpC(0xff8c42,0xfff2d8,Math.min(1,f*1.6));
   moonL.intensity=(1-f)*0.34;
+  const Oc=window._ocean;const ld=pets[0];
+  const uw=Oc&&ld&&ld.key==='dolphin'&&(ld.inWater||Math.hypot(ld.x-Oc.x,ld.z-Oc.z)<Oc.r+30)&&camR<32;
+  if(uw){bgB.lerp(new THREE.Color(0x0b4a75),0.72);fgB.lerp(new THREE.Color(0x0b4a75),0.8);}
+  scene.fog.near+=((uw?18:180)-scene.fog.near)*Math.min(1,dt*3);
+  scene.fog.far+=((uw?200:900)-scene.fog.far)*Math.min(1,dt*3);
   stars.material.opacity=1-f;
   fireflies.material.opacity=(1-f)*(0.5+0.5*Math.sin(t*2));
   if(window._moon)window._moon.visible=f<0.4;
@@ -6026,6 +6105,30 @@ function frame(ts){
     tb.position.z=rZ(tb.position.x)+Math.sin(t+tb.position.x*0.01)*8;
     tb.position.y=0.35+Math.sin(t*2+tb.position.x*0.02)*0.18;
     tb.rotation.z+=dt*0.3;}
+  /* đàn cá bơi */
+  for(const sc of fishSchools){const u=sc.userData;u.a+=dt*u.spd;
+    const dx=-Math.sin(u.a),dz=Math.cos(u.a);
+    sc.position.set(u.cx+Math.cos(u.a)*u.radius,0.95+Math.sin(t*1.4+u.ph)*0.3,u.cz+Math.sin(u.a)*u.radius);
+    sc.rotation.y=Math.atan2(-dz,dx);
+    u.fish.forEach((f,i)=>{f.userData.tail.rotation.y=Math.sin(t*9+u.ph+i*0.7)*0.55;
+      f.position.y=(R()<0.02)?(R()-0.5)*0.5:f.position.y;});}
+  /* nước biển động */
+  if(window._oceanWater){window._oceanWater.position.y=1.5+Math.sin(t*1.1)*0.07;
+    window._oceanWater.material.opacity=0.48+Math.sin(t*1.7)*0.05;}
+  /* bọt khí từ pet bơi */
+  const leadSw=pets[0];
+  if(leadSw&&leadSw.inWater&&leadSw.key==='dolphin'){bubbleT-=dt;
+    if(bubbleT<=0){bubbleT=0.16;
+      bubbles.push({x:leadSw.x+(R()-0.5)*1.2,y:(leadSw.inOcean?0.9:0.25),z:leadSw.z+(R()-0.5)*1.2,l:1.8,mesh:null});}}
+  for(let i=bubbles.length-1;i>=0;i--){const b=bubbles[i];
+    b.y+=dt*2.4;b.x+=Math.sin(t*3+b.z)*dt*0.6;b.l-=dt;
+    const top=b.y>1.42&&b.x<-650;
+    if(!b.mesh){b.mesh=new THREE.Mesh(new THREE.SphereGeometry(0.12+R()*0.1,6,5),
+      new THREE.MeshBasicMaterial({color:0xeaf6ff,transparent:true,opacity:0.75}));
+      scene.add(b.mesh);}
+    b.mesh.position.set(b.x,b.y,b.z);
+    b.mesh.material.opacity=Math.max(0,Math.min(0.75,b.l));
+    if(b.l<=0||b.y>1.42){scene.remove(b.mesh);bubbles.splice(i,1);}}
   /* mây + chim + bướm */
   for(const c of clouds){c.position.x+=dt*2.2;if(c.position.x>1000)c.position.x=-1000;}
   for(const b of birds){b.position.x+=b.userData.vx*dt;
@@ -6192,7 +6295,7 @@ function renderPetChips(){
 }
 function renderTP(){
   const el=$('sfTP');if(!el)return;
-  const tps=[[-620,-560,'🚪 Cổng'],[0,rZ(0)+RW+18,'🌉 Cầu'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[-420,350,'🎠 Trò chơi'],[-200,-300,'🏘️ Làng']];
+  const tps=[[-620,-560,'🚪 Cổng'],[0,rZ(0)+RW+18,'🌉 Cầu'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[-420,350,'🎠 Trò chơi'],[-200,-300,'🏘️ Làng'],[-850,620,'🌊 Biển']];
   el.innerHTML=tps.map((tp,i)=>`<button style="flex:1 1 30%" onclick="Safari.teleport(${tp[0]},${tp[1]})">${tp[2]}</button>`).join('');
 }
 return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}},
