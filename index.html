@@ -228,6 +228,28 @@ nav button.on .ic{transform:translateY(-2px) scale(1.15)}
 .float-heart{position:fixed;pointer-events:none;z-index:120;font-size:24px;animation:fheart 1.7s ease-out forwards}
 /* ===== SAFARI CONTROL PANEL PRO ===== */
 #sfPanel{background:linear-gradient(170deg,color-mix(in srgb,var(--volt) 6%,transparent),transparent 40%),var(--card)}
+/* ===== PANEL NÚT GỌN · LỊCH SỰ ===== */
+#sfPanel{padding:16px 18px}
+#sfPanel .preset{gap:5px;margin:4px 0}
+#sfPanel .preset button{padding:6px 1px!important;font-size:10.5px!important;border-radius:9px!important;min-height:0;white-space:nowrap;letter-spacing:0;font-weight:700!important;border-width:1px!important;line-height:1.15}
+#sfPanel #sfOrbitBtn{padding:7px!important;font-size:11px!important;letter-spacing:.3px;margin-top:5px!important;border-radius:10px!important}
+#sfPanel .sf-sec{margin:9px 0 5px;font-size:9px;letter-spacing:1.6px}
+#sfPanel .tgl{padding:6px 0;font-size:11px}
+#sfPanel .sub{font-size:10.5px}
+#sfPanel .sf-petgrid{gap:5px}
+#sfPanel h3{font-size:12px;margin-bottom:2px}
+#sfTP{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.sf-tp{padding:6px 1px!important;font-size:10px!important;white-space:nowrap;border-radius:9px!important;font-weight:700!important;border-width:1px!important;line-height:1.15;background:var(--card2);border-style:solid;border-color:var(--line2);color:var(--txt);cursor:pointer;font-family:inherit;transition:all .15s}
+.sf-tp:active{transform:scale(.94)}
+.sf-tp .e{font-size:11px;margin-right:1px}
+#sfPanel .sf-pet{padding:4px 1px 3px;border-radius:11px}
+#sfPanel .sf-pet canvas{width:34px;height:34px}
+#sfPanel .sf-pet span{font-size:7.5px;margin-top:1px}
+#sfPanel .sf-pet .badge{font-size:6px;padding:1px 4px;top:-5px}
+#sfPanel input[type=range]{width:96px;height:18px}
+#sfPanel .tgl .switch{transform:scale(.78)}
+#sfPanel .card{margin:0}
+#sfPanel .tgl .switch{transform:scale(.88)}
 .sf-sec{font-size:11px;letter-spacing:2px;color:var(--sub);font-weight:800;margin:16px 0 10px;display:flex;align-items:center;gap:8px}
 .sf-sec::before{content:"";width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--volt),transparent);flex-shrink:0}
 .sf-petgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
@@ -6875,7 +6897,7 @@ function setModeQuiet(m2){mode=m2;
 function renderTP(){
   const el=$('sfTP');if(!el)return;
   const tps=[[-620,-560,'🚪 Cổng'],[0,rZ(0)+RW+18,'🌉 Cầu'],[240,-520,'🏠 Nhà gỗ'],[560,430,'🎡 Vòng quay'],[-420,350,'🎠 Trò chơi'],[-200,-300,'🏘️ Làng'],[-850,620,'🌊 Biển'],[-585,-536,'🚂 Ga tàu'],[-480,-380,'🍽️ Trạm ăn']];
-  el.innerHTML=tps.map((tp,i)=>`<button style="flex:1 1 30%" onclick="Safari.teleport(${tp[0]},${tp[1]})">${tp[2]}</button>`).join('');
+  el.innerHTML=tps.map((tp,i)=>`<button class="sf-tp" onclick="Safari.teleport(${tp[0]},${tp[1]})">${tp[2]}</button>`).join('');
 }
 return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}},
   trick(name){if(!ready)return;const lead=pets[0];
