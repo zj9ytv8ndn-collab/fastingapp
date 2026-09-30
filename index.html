@@ -3127,6 +3127,7 @@ function KoalaGL(host){
     const ring=new THREE.Mesh(new THREE.SphereGeometry(0.1,14,10).scale(0.5,0.65,1),
       std(FUR_D));
     ring.position.set(0.28,0.14,z);head.add(ring);});
+  pig.add(head);
 
   /* chân trước — bàn chân dài ôm cây, có móng */
   this.legs=[];
@@ -5942,7 +5943,8 @@ function makeGLPet(key){
 }
 function newPet(key,lead,i){
   const G=(lead||glAllFlag)?makeGLPet(key):null;
-  if(G){const x0=lead?20:-140+i*130,z0=lead?rZ(20)+RW+26:(i%2?rZ(-140+i*130)-RW-26:rZ(-140+i*130)+RW+26);
+  if(G){const ang=i*0.7+1.3,rad=lead?0:14+(i%4)*9;
+    const x0=lead?20:20+Math.cos(ang)*rad,z0=lead?rZ(20)+RW+26:rZ(20)+RW+26+Math.sin(ang)*rad;
     G.wrap.position.set(x0,0,z0);scene.add(G.wrap);
     return{key,lead,g:G.wrap,P:{isSprite:1,isGL:1},gl4d:G,x:x0,z:z0,y:0,tx:x0,tz:z0,side:sideOf(x0,z0),tside:'S',
       state:'idle',idleT:1+i,facing:0,slowT:R()*9,seed:R()*10,sit:0,head:0,moving:false,inWater:false,label:null};}
@@ -5953,7 +5955,8 @@ function newPet(key,lead,i){
   const tex=new THREE.CanvasTexture(oc);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
   sp.scale.set(8.6,8.6,1);sp.position.y=2.72;g.add(sp);
-  const x=lead?20:-140+i*130,z=lead?rZ(20)+RW+26:(i%2?rZ(-140+i*130)-RW-26:rZ(-140+i*130)+RW+26);
+  const ang2=i*0.7+1.3,rad2=lead?0:14+(i%4)*9;
+  const x=lead?20:20+Math.cos(ang2)*rad2,z=lead?rZ(20)+RW+26:rZ(20)+RW+26+Math.sin(ang2)*rad2;
   g.position.set(x,0,z);scene.add(g);
   return{key,lead,g,P:{isSprite:1,sprite:sp,octx,tex},x,z,y:0,tx:x,tz:z,side:sideOf(x,z),tside:'S',
     state:'idle',idleT:1+i,facing:0,slowT:R()*9,seed:R()*10,sit:0,head:0,moving:false,inWater:false,label:null};
@@ -5994,8 +5997,11 @@ function drawSpritePet(p,dt){
 }
 function pickTarget(p){
   let tx=(R()*2-1)*1000,tz=(R()*2-1)*1000;
-  if(!p.lead&&R()<0.35){const sp=[[-620,-470],[240,-430],[560,330],[0,rZ(0)+RW+20],[0,rZ(0)-RW-20],[-420,350],[-420,330],[-200,-300],[-380,320],[-850,620],[-790,560]];
-    const s=sp[Math.floor(R()*sp.length)];tx=s[0]+(R()-0.5)*60;tz=s[1]+(R()-0.5)*60;}
+  if(!p.lead){const L=pets[0];
+    if(L&&R()<0.72){const a2=R()*Math.PI*2,r2=10+R()*34;
+      tx=L.x+Math.cos(a2)*r2;tz=L.z+Math.sin(a2)*r2;}
+    else{const sp=[[-620,-470],[240,-430],[560,330],[-420,350],[-200,-300],[-850,620]];
+      const s=sp[Math.floor(R()*sp.length)];tx=s[0]+(R()-0.5)*60;tz=s[1]+(R()-0.5)*60;}}
   p.tx=tx;p.tz=tz;p.tside=sideOf(tx,tz);p.state='walk';p.behav='none';
 }
 function updPet(p,dt){
@@ -6005,6 +6011,9 @@ function updPet(p,dt){
   const spd=(mode==='run'&&p.lead?17:8.5)*petSpdMul;
   if(p.state==='idle'){
     p.moving=false;p.phase+=dt*2;p.idleT-=dt;
+    if(!p.lead&&pets[0]&&Math.hypot(p.x-pets[0].x,p.z-pets[0].z)>130&&R()<0.3){
+      const a3=R()*Math.PI*2;p.tx=pets[0].x+Math.cos(a3)*(12+R()*26);p.tz=pets[0].z+Math.sin(a3)*(12+R()*26);
+      p.tside=sideOf(p.tx,p.tz);p.state='walk';p.idleT=0;}
     if(p.idleT<=0){p.behav=R()<0.3?'sniff':(R()<0.22?'sit':'none');
       if(p.behav==='sit'){p.sitT=2}else p.behav='none';
       p.idleT=1.5+R()*3;
