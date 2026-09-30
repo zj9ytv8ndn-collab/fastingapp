@@ -722,6 +722,8 @@ function go(t,btn){
   const el=$('t-'+t);void el.offsetWidth;el.classList.add('on');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
   window.scrollTo({top:0});
+  /* chữ hướng dẫn (.p4-hint): tự ẩn sau 7s nhưng hiện lại mỗi lần mở tab */
+  el.querySelectorAll('.p4-hint').forEach(h=>{h.style.animation='none';void h.offsetWidth;h.style.animation='';});
   P4.setMainActive(t==='pets');
   if(t==='pets')P4.resizeMain();
   if(t==='dash')P4.resizeComp();
