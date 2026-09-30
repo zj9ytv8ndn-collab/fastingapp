@@ -523,11 +523,20 @@ html{scrollbar-width:none}
       <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('sit')">🪑 Ngồi</button>
       <button class="btn ghost sm" style="flex:1" onclick="Safari.trick('dance')">🕺 Nhảy múa</button>
     </div>
+    <button class="btn volt sm" id="sfOrbitBtn" style="width:100%;margin:8px 0 0" onclick="Safari.orbitToggle()">🔍 Ngắm pet 360°</button>
     <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🚀 DỊCH CHUYỂN TỚI ĐỊA ĐIỂM</div>
     <div class="preset" id="sfTP"></div>
+    <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🐾 TỐC ĐỘ DI CHUYỂN</div>
+    <div class="preset">
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(0.5)">🐢 Chậm</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(1)">🚶 Vừa</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(2)">🐇 Nhanh</button>
+      <button class="btn ghost sm" style="flex:1" onclick="Safari.setSpeed(3.5)">🚀 Siêu nhanh</button>
+    </div>
+    <div class="tgl"><span>⚙️ Tuỳ chỉnh (<span id="sfSpeedV">1.0×</span>)</span><input type="range" id="sfSpeed" min="0.5" max="4" step="0.1" value="1" style="width:120px" oninput="Safari.setSpeed(+this.value)"></div>
     <div style="font-size:11.5px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 8px">🎥 CAMERA</div>
     <div class="tgl"><span>🎯 Tự theo dõi bé dẫn đầu</span><span class="switch"><input type="checkbox" id="sfFollow" checked onchange="Safari.setFollow(this.checked)"><i></i></span></div>
-    <div class="tgl"><span>🔭 Khoảng cách (<span id="sfZoomV">32</span>m)</span><input type="range" id="sfZoom" min="14" max="85" value="32" style="width:120px" oninput="Safari.setZoom(+this.value)"></div>
+    <div class="tgl"><span>🔭 Khoảng cách (<span id="sfZoomV">32</span>m)</span><input type="range" id="sfZoom" min="6" max="85" value="32" style="width:120px" oninput="Safari.setZoom(+this.value)"></div>
     <div class="tgl"><span>🙋 Chạm canvas = di chuyển · kéo = xoay · chụm = zoom</span></div>
   </div>
   <div class="card">
@@ -5097,7 +5106,7 @@ let pets=[],butterflies=[],birds=[],clouds=[],splashes=[],ripples=[],smokes=[];
 let fireflies,stars,hemi,dirL,moonL;
 let riverTex,wheel,gondolas=[],bulbs=[],torchLights=[],flames=[],winMats=[],lanternMats=[];
 let tubes=[],smokeT=0.4,birdT=4,titleT=0;
-let camAz=0.8,camPol=1.02,camR=32,followCam=true;
+let camAz=0.8,camPol=1.02,camR=32,followCam=true,orbitMode=false,orbitR=12,petSpdMul=1;
 const camPos=new THREE.Vector3(),camTgt=new THREE.Vector3();
 const HALF=1150,RW=58;
 const rZ=x=>140*Math.sin(x*0.0032)+70*Math.sin(x*0.0011+2);
@@ -5105,26 +5114,45 @@ const V3=(x,y,z)=>new THREE.Vector3(x,y,z);
 const M=(c,e=0x000000)=>new THREE.MeshLambertMaterial({color:c,emissive:e});
 const MB=c=>new THREE.MeshBasicMaterial({color:c});
 const R=Math.random;
+/* lông 3D với gradient giống phong cách bé 4D trong tab Thú 4D */
+const _furCache={};
+function furTex(hex){
+  if(_furCache[hex])return _furCache[hex];
+  const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');
+  const col='#'+hex.toString(16).padStart(6,'0');
+  x.fillStyle=col;x.fillRect(0,0,128,128);
+  const g=x.createRadialGradient(44,34,6,64,70,95);
+  g.addColorStop(0,'rgba(255,255,255,.30)');g.addColorStop(0.55,'rgba(255,255,255,0)');
+  x.fillStyle=g;x.fillRect(0,0,128,128);
+  const g2=x.createRadialGradient(64,150,26,64,64,95);
+  g2.addColorStop(0,'rgba(0,0,0,.20)');g2.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=g2;x.fillRect(0,0,128,128);
+  x.globalAlpha=0.10;x.fillStyle='#ffffff';
+  for(let i=0;i<40;i++)x.fillRect(R()*128,R()*128,2,2);
+  x.globalAlpha=1;
+  const tx=new THREE.CanvasTexture(c);_furCache[hex]=tx;return tx;
+}
+const MF=hex=>new THREE.MeshLambertMaterial({map:furTex(hex)});
 
 /* ---------- pet 3D low-poly factory ---------- */
 const PET3D={
- dolphin:{body:0x5b87a8,belly:0xdbe9f2,s:1.0,swim:1,dolphin:1},
- pig:{body:0xefA8b0,belly:0xf7d3d8,s:0.82,snout:0xd97f8c,floppy:1,curly:1},
- koala:{body:0x8f8a83,belly:0xe7e2d8,s:0.78,roundEar:1,bigNose:1},
- frog:{body:0x57a75e,belly:0xdfeec8,s:0.72,bigEye:1},
- turtle:{body:0x6f8f52,belly:0xd9c98f,s:0.8,shell:1},
+ dolphin:{body:0x4f7391,mid:0x6e97b4,belly:0xdbe9f2,s:1.0,swim:1,dolphin:1},
+ pig:{body:0xeaa7b0,dark:0xd38590,belly:0xf6cdd3,s:0.82,snout:0xd38590,floppy:1,curly:1},
+ koala:{body:0x8f8a83,dark:0x7c756c,belly:0xe7e2d8,s:0.78,roundEar:1,bigNose:1},
+ frog:{body:0x4f9e58,mid:0x8cc47a,belly:0xe2eed2,s:0.72,bigEye:1},
+ turtle:{body:0x6f8f52,dark:0x5d7a44,belly:0xd9c98f,s:0.8,shell:1},
  panda:{body:0xf4f3ef,belly:0xe9e8e2,s:0.88,panda:1},
- fox:{body:0xc2612c,belly:0xf5ead9,s:0.82,pointEar:1,bigTail:1},
- deer:{body:0xc49a67,belly:0xf2e7d2,s:0.92,pointEar:1,antler:1,spots:1,thin:1},
- lion:{body:0xcaa15e,belly:0xe8cf9f,s:1.0,mane:1,tuft:1},
- elephant:{body:0x8f959e,belly:0xa3a9b2,s:1.18,trunk:1,bigEar:1,tusk:1},
+ fox:{body:0xc2612c,dark:0xa84e20,belly:0xf5ead9,s:0.82,pointEar:1,bigTail:1},
+ deer:{body:0xc49a67,dark:0xb5884a,belly:0xf2e7d2,s:0.92,pointEar:1,antler:1,spots:1,thin:1},
+ lion:{body:0xcaa15e,maneC:0x6e4520,maneC2:0x7d5228,belly:0xe8cf9f,s:1.0,mane:1,tuft:1},
+ elephant:{body:0x8f959e,dark:0x7d838d,belly:0xa3a9b2,s:1.18,trunk:1,bigEar:1,tusk:1},
 };
 function buildPet(key){
   const C=PET3D[key],s=C.s,g=new THREE.Group(),P={legs:[],head:null,tail:null,earL:null,earR:null,body:null};
   const sph=(r,m,w=18,hh=14)=>new THREE.Mesh(new THREE.SphereGeometry(r,w,hh),m);
   if(C.dolphin){
-    const b=sph(1.5,M(C.body));b.scale.set(0.85,0.8,1.7);b.position.y=1.4;g.add(b);P.body=b;
-    const bel=sph(1.3,M(C.belly));bel.scale.set(0.8,0.7,1.55);bel.position.set(0,-0.25,0.1);b.add(bel);
+    const b=sph(1.5,MF(C.body));b.scale.set(0.85,0.8,1.7);b.position.y=1.4;g.add(b);P.body=b;
+    const bel=sph(1.3,MF(C.belly));bel.scale.set(0.8,0.7,1.55);bel.position.set(0,-0.25,0.1);b.add(bel);
     const hd=sph(0.8,M(C.body));hd.position.set(0,0.35,2.2);b.add(hd);P.head=hd;
     const bk=new THREE.Mesh(new THREE.ConeGeometry(0.34,1.1,10),M(C.body));
     bk.rotation.x=Math.PI/2;bk.position.set(0,0.1,3.1);hd.add(bk);
@@ -5140,12 +5168,12 @@ function buildPet(key){
     g.userData.swimY=-0.55;return{g,P};
   }
   /* tứ chi chung */
-  const b=sph(1.5,M(C.body));b.scale.set(1,0.9,1.3);b.position.y=1.75*s;g.add(b);P.body=b;
-  const bel=sph(1.32,M(C.belly));bel.scale.set(0.92,0.8,1.16);bel.position.set(0,-0.28*s,0.18);b.add(bel);
+  const b=sph(1.5,MF(C.body));b.scale.set(1,0.9,1.3);b.position.y=1.75*s;g.add(b);P.body=b;
+  const bel=sph(1.32,MF(C.belly));bel.scale.set(0.92,0.8,1.16);bel.position.set(0,-0.28*s,0.18);b.add(bel);
   /* đầu */
   const hd=new THREE.Group();hd.position.set(0,2.35*s,1.75*s);g.add(hd);P.head=hd;
-  const skull=sph(0.82*s,M(C.body));hd.add(skull);
-  const sn=sph(0.45*s,M(C.belly));sn.position.set(0,-0.18*s,0.62*s);sn.scale.set(0.9,0.75,1);hd.add(sn);
+  const skull=sph(0.82*s,MF(C.body));hd.add(skull);
+  const sn=sph(0.45*s,MF(C.belly));sn.position.set(0,-0.18*s,0.62*s);sn.scale.set(0.9,0.75,1);hd.add(sn);
   if(C.snout){const sn2=sph(0.34*s,M(C.snout));sn2.position.set(0,-0.12*s,0.78*s);sn2.scale.set(1,0.8,0.6);hd.add(sn2);
     for(const sd of[-1,1]){const n2=sph(0.06*s,MB(0x5e2f36));n2.position.set(sd*0.12*s,0,1.06*s);hd.add(n2);}}
   if(C.bigNose){const n2=sph(0.3*s,M(0x332a2b));n2.position.set(0,0.02*s,0.78*s);n2.scale.set(0.9,1.15,0.9);hd.add(n2);}
@@ -5172,7 +5200,7 @@ function buildPet(key){
   /* chân */
   const legLen=(C.thin?1.35:1.05)*s,legR=(C.thin?0.15:0.24)*s;
   for(const[lx,lz]of[[-0.75,0.85],[0.75,0.85],[-0.75,-0.85],[0.75,-0.85]]){
-    const leg=new THREE.Mesh(new THREE.CylinderGeometry(legR,legR*0.85,legLen,8),M(C.panda&&lx*lz>0?0x20201f:C.body));
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(legR,legR*0.85,legLen,8),C.panda&&lx*lz>0?M(0x20201f):MF(C.body));
     leg.position.set(lx*s,legLen/2,lz*s);g.add(leg);P.legs.push(leg);
     if(C.thin){const hf=sph(0.16*s,M(0x2e2620));hf.position.set(0,-legLen/2+0.06,0.05);leg.add(hf);}
   }
@@ -5191,9 +5219,9 @@ function buildPet(key){
     b.position.y=1.15*s;b.scale.set(0.8,0.6,1.1);P.legs.forEach(l=>{l.position.y=0.5;l.scale.set(0.8,0.6,0.8);});
     hd.position.set(0,1.4*s,1.9*s);}
   if(C.mane){for(let i=0;i<9;i++){const a=i/9*Math.PI*2;
-    const m=sph(0.55*s,M(i%2?0x6e4520:0x7d5228));m.position.set(Math.cos(a)*0.75*s,Math.sin(a)*0.75*s,-0.25*s);
+    const m=sph(0.55*s,MF(i%2?C.maneC:C.maneC2));m.position.set(Math.cos(a)*0.75*s,Math.sin(a)*0.75*s,-0.25*s);
     m.scale.set(1,1,0.6);hd.add(m);}
-    const mk=sph(0.95*s,M(0x6e4520));mk.position.z=-0.35*s;mk.scale.set(1,1,0.6);hd.add(mk);}
+    const mk=sph(0.95*s,MF(C.maneC));mk.position.z=-0.35*s;mk.scale.set(1,1,0.6);hd.add(mk);}
   if(C.antler)for(const sd of[-1,1])for(let i=0;i<2;i++){
     const an=new THREE.Mesh(new THREE.CylinderGeometry(0.05*s,0.07*s,0.9*s-i*0.25,5),M(0x8a6a42));
     an.position.set(sd*(0.3+i*0.25)*s,0.95*s,-0.1*s);an.rotation.z=sd*(0.3+i*0.4);an.rotation.x=-0.3;hd.add(an);}
@@ -5785,8 +5813,43 @@ const lerpC=(a,b,f)=>new THREE.Color(a).lerp(new THREE.Color(b),f);
 /* ---------- pet logic ---------- */
 function laneOk(x,z){return Math.abs(x)<HALF&&Math.abs(z)<HALF;}
 function sideOf(x,z){const d=z-rZ(x);return d<-RW?'N':d>RW?'S':'ON';}
+const RIGMAP={dolphin:['DolphinGL','dolphin'],pig:['PigGL','pig'],fox:['FoxGL','fox'],frog:['FrogGL','frog'],koala:['KoalaGL','pig'],panda:['PandaGL','pig'],deer:['DeerGL','pig'],turtle:['TurtleGL','pig'],lion:['LionGL','pig'],elephant:['ElephantGL','pig']};
+function makeGLPet(key){
+  const m=RIGMAP[key];if(!m||!window[m[0]])return null;
+  let gl=null,hostEl=null;
+  try{
+    hostEl=document.createElement('div');
+    hostEl.style.cssText='position:fixed;width:2px;height:2px;overflow:hidden;left:0;top:0;pointer-events:none;z-index:-1';
+    document.body.appendChild(hostEl);
+    gl=new window[m[0]](hostEl);
+    gl.cv.style.cssText='position:absolute;left:0;top:0;width:2px;height:2px;display:block';
+    gl.renderer.render=function(){};
+    const model=gl[m[1]];
+    if(!model||!model.isObject3D)return null;
+    const wrap=new THREE.Group(),inner=new THREE.Group();
+    inner.add(model);
+    inner.rotation.y=-Math.PI/2;
+    wrap.add(inner);
+    const box=new THREE.Box3().setFromObject(model);
+    const hh=Math.max(0.05,box.max.y-box.min.y);
+    inner.scale.setScalar(3.1/hh);
+    const box2=new THREE.Box3().setFromObject(inner);
+    inner.position.y=-box2.min.y;
+    const shadow=new THREE.Mesh(new THREE.CircleGeometry(1.6,20),
+      new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.25}));
+    shadow.rotation.x=-Math.PI/2;shadow.position.y=0.04;wrap.add(shadow);
+    return{gl,wrap,inner,model,shadow,hostEl,
+      fake:{yaw:0,yawOff:0,pitch:0.25,zoom:1,speed:1,mode:'idle',act:null},
+      actSent:false};
+  }catch(e){try{gl&&gl.cv&&gl.cv.remove()}catch(_){}try{hostEl&&hostEl.remove()}catch(_){}return null}
+}
 function newPet(key,lead,i){
-  /* pet hiển thị đúng mẫu Thú 4D: vẽ bằng engine drawPetTo lên sprite trong world 3D */
+  const G=makeGLPet(key);
+  if(G){const x0=lead?20:-140+i*130,z0=lead?rZ(20)+RW+26:(i%2?rZ(-140+i*130)-RW-26:rZ(-140+i*130)+RW+26);
+    G.wrap.position.set(x0,0,z0);scene.add(G.wrap);
+    return{key,lead,g:G.wrap,P:{isSprite:1,isGL:1},gl4d:G,x:x0,z:z0,y:0,tx:x0,tz:z0,side:sideOf(x0,z0),tside:'S',
+      state:'idle',idleT:1+i,facing:0,slowT:R()*9,seed:R()*10,sit:0,head:0,moving:false,inWater:false,label:null};}
+  /* fallback: vẽ bằng engine drawPetTo lên sprite trong world 3D */
   const g=new THREE.Group();
   const oc=document.createElement('canvas');oc.width=oc.height=256;
   const octx=oc.getContext('2d');
@@ -5800,6 +5863,22 @@ function newPet(key,lead,i){
 }
 function drawSpritePet(p,dt){
   const P=p.P;
+  if(P.isGL){const G=p.gl4d;
+    G.fake.speed=Math.min(3,Math.max(0.6,petSpdMul));
+    G.fake.mode=p.trick==='dance'?'dance':(p.trick==='jump'?'jump':(p.moving?'run':'idle'));
+    if((p.trick==='spin'||p.trick==='roll')&&!G.actSent){G.fake.act=p.trick;G.actSent=true}
+    if(p.trick!=='spin'&&p.trick!=='roll')G.actSent=false;
+    try{G.gl.frame(dt,G.fake)}catch(e){}
+    G.model.position.x=0;G.model.position.z=0;G.model.rotation.y=0;
+    if(p.trick&&p.trick!=='spin'&&p.trick!=='roll'){p.trickT+=dt;
+      if(p.trick==='jump'&&p.trickT>0.9)p.trick=null;
+      if(p.trick==='dance'&&p.trickT>2.2)p.trick=null;}
+    if(p.trick==='spin'&&G.actSent){p.trickT+=dt;if(p.trickT>1.2){p.trick=null;p.trickT=0;}}
+    G.shadow.visible=!p.inWater;
+    const tgtW=(p.inWater?-0.35:0)+p.y-p.sit*0.35;
+    p.g.position.set(p.x,tgtW+(p.tramp&&p.moving?Math.abs(Math.sin(t*9+p.seed))*2.3:0),p.z);
+    return;
+  }
   p.slowT+=dt*(p.moving?1.7:1);
   let md=p.moving?'run':'idle';
   if(p.trick==='jump'||p.trick==='dance')md=p.trick;
@@ -5826,7 +5905,7 @@ function updPet(p,dt){
   const C=PET3D[p.key];
   p.sit+=(((mode==='rest'&&p.lead)||p.behav==='sit'?1:0)-p.sit)*Math.min(1,dt*4);
   p.head+=(((p.behav==='sniff'||p.sand)?1:0)-p.head)*Math.min(1,dt*4);
-  const spd=mode==='run'&&p.lead?17:8.5;
+  const spd=(mode==='run'&&p.lead?17:8.5)*petSpdMul;
   if(p.state==='idle'){
     p.moving=false;p.phase+=dt*2;p.idleT-=dt;
     if(p.idleT<=0){p.behav=R()<0.3?'sniff':(R()<0.22?'sit':'none');
@@ -5847,7 +5926,7 @@ function updPet(p,dt){
     }
     p.x+=mx*spd*dt;p.z+=mz*spd*dt;p.x=Math.max(-HALF+10,Math.min(HALF-10,p.x));
     p.z=Math.max(-HALF+10,Math.min(HALF-10,p.z));
-    p.moving=true;p.phase+=dt*(mode==='run'&&p.lead?11:7);
+    p.moving=true;p.phase+=dt*(mode==='run'&&p.lead?11:7)*Math.min(2.2,Math.max(0.6,petSpdMul));
     p.g.rotation.y=Math.atan2(mx,mz);
     const s2=sideOf(p.x,p.z);
     if(s2!=='ON')p.side=s2;
@@ -5989,7 +6068,8 @@ function frame(ts){
   for(const p of pets)updPet(p,dt);
   /* camera theo bé dẫn đầu */
   const lead=pets[0];
-  if(followCam)camTgt.lerp(V3(lead.x,2+lead.y,lead.z),Math.min(1,dt*3));
+  if(followCam||orbitMode)camTgt.lerp(V3(lead.x,2.4+lead.y,lead.z),Math.min(1,dt*(orbitMode?7:3)));
+  if(orbitMode){camAz+=dt*0.55;camPol+=(1.08-camPol)*Math.min(1,dt*2.5);camR+=(orbitR-camR)*Math.min(1,dt*2.5);}
   const off=V3(camR*Math.sin(camPol)*Math.sin(camAz),camR*Math.cos(camPol),camR*Math.sin(camPol)*Math.cos(camAz));
   camPos.copy(camTgt).add(off);
   camera.position.copy(camPos);
@@ -6018,7 +6098,7 @@ function onMove(e){
   if(pts.size===1){camAz-=dx*0.006;camPol=Math.max(0.35,Math.min(1.35,camPol-dy*0.005));}
   p.x=e.clientX;p.y=e.clientY;
   if(pts.size===2){const a=[...pts.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
-    if(pinchD)camR=Math.max(14,Math.min(85,camR*pinchD/d));pinchD=d;}
+    if(pinchD){camR=Math.max(6,Math.min(85,camR*pinchD/d));if(orbitMode)orbitR=camR;}pinchD=d;}
 }
 function onUp(e){
   pts.delete(e.pointerId);pinchD=0;
@@ -6094,6 +6174,7 @@ function refreshPets(){
   const leadKey=get('p4active','dolphin');
   if(pets[0].key!==leadKey){
     const old=pets[0];
+    if(old.gl4d){try{old.gl4d.gl.cv.remove()}catch(e){}try{old.gl4d.hostEl&&old.gl4d.hostEl.remove()}catch(e){}}
     scene.remove(old.g);
     pets[0]=newPet(leadKey,true,0);
     pets[0].x=old.x;pets[0].z=old.z;pets[0].g.position.set(old.x,0,old.z);
@@ -6117,8 +6198,10 @@ function renderTP(){
 return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}},
   trick(name){if(!ready)return;const lead=pets[0];
     if(name==='sit'){lead.behav='sit';lead.sitT=3.5;lead.state='idle';lead.idleT=3.5;lead.moving=false;
+      if(lead.gl4d){lead.sit=1;setTimeout(()=>{lead.sit=0;lead.behav='none';lead.idleT=0.5},2200);}
       toastMsg(`🪑 ${PET_DEFS[lead.key].name[LANG]} ${T('ngồi nghỉ!','sits down!')}`);return}
     lead.trick=name;lead.trickT=0;
+    if(lead.gl4d&&lead.gl4d.fake)lead.gl4d.fake.act=null;
     const msg={jump:'🦘 Nhảy lên!',spin:'🌀 Xoay 360°!',dance:'🕺 Nhảy múa!'}[name];
     if(msg)toastMsg(`${PET_DEFS[lead.key].name[LANG]} ${msg}`);},
   teleport(x,z){if(!ready)return;const lead=pets[0];
@@ -6130,6 +6213,7 @@ return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}}
     const own=get('p4own',['dolphin','pig']);
     if(!own.includes(key)||pets[0].key===key)return;
     const old=pets[0];
+    if(old.gl4d){try{old.gl4d.gl.cv.remove()}catch(e){}try{old.gl4d.hostEl&&old.gl4d.hostEl.remove()}catch(e){}}
     scene.remove(old.g);
     set('p4active',key);
     pets[0]=newPet(key,true,0);
@@ -6138,8 +6222,22 @@ return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}}
     renderPetChips();
     if(typeof P4!=='undefined'&&P4.main){P4.main.setKey(key);P4.syncUI();P4.renderGrid();gqRender();}
     toastMsg(`⭐ ${PET_DEFS[key].name[LANG]} ${T('dẫn đầu đoàn!','leads the squad!')}`);},
-  setFollow(b){followCam=!!b},
-  setZoom(v){camR=Math.max(14,Math.min(85,v));const z=$('sfZoomV');if(z)z.textContent=v},
+  setSpeed(v){petSpdMul=Math.max(0.5,Math.min(4,v));
+    const lbl=$('sfSpeedV');if(lbl)lbl.textContent=petSpdMul.toFixed(1)+'×';
+    const sl=$('sfSpeed');if(sl&&+sl.value!==Math.round(petSpdMul*10)/10)sl.value=petSpdMul;
+    if(pets.length){pets.forEach(p=>{if(p.state==='idle')p.idleT=Math.min(p.idleT,0.5);});}},
+  setFollow(b){followCam=!!b;if(!b&&orbitMode)Safari&&this.orbitExit&&this.orbitExit();},
+  orbitToggle(){if(!ready)return;orbitMode=!orbitMode;
+    const b=$('sfOrbitBtn');
+    if(orbitMode){prevCamR=camR;orbitR=13;camR=Math.min(camR,15);camPol=1.08;followCam=true;
+      const L=pets[0];L.state='idle';L.idleT=999;L.moving=false;L.trick=null;L.behav='none';
+      const f=$('sfFollow');if(f)f.checked=true;
+      if(b){b.classList.add('sel');b.textContent='✕ Thoát ngắm 360°';}
+      toastMsg(`🔍 ${T('Xoay 360° ngắm','Orbiting 360° to admire')} ${PET_DEFS[pets[0].key].name[LANG]} — ${T('kéo chỉnh góc, chụm zoom','drag to tilt, pinch to zoom')}`);}
+    else{camR=prevCamR;if(b){b.classList.remove('sel');b.textContent='🔍 Ngắm pet 360°';}
+      const L=pets[0];L.idleT=0.5;}},
+  orbitExit(){orbitMode=false;const b=$('sfOrbitBtn');if(b){b.classList.remove('sel');b.textContent='🔍 Ngắm pet 360°';}},
+  setZoom(v){camR=Math.max(6,Math.min(85,v));if(orbitMode)orbitR=camR;const z=$('sfZoomV');if(z)z.textContent=v},
   isReady:()=>ready,refreshPets};
 })();
 </script>
