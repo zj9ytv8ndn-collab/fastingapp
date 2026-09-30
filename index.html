@@ -524,7 +524,7 @@ html{scrollbar-width:none}
     </div>
   </div>
   <div class="card">
-    <h3>🦁 Sở thú 4D <span class="hint" id="p4Count">1/11 · chạm để chọn / mở khóa</span></h3>
+    <h3>🦁 Sở thú 4D <span class="hint" id="p4Count">1/10 · chạm để chọn / mở khóa</span></h3>
     <div class="p4-grid" id="p4Grid"></div>
     <div class="sub" style="margin-top:10px" id="p4Note"></div>
   </div>
@@ -1128,12 +1128,11 @@ function renderDex(){
   const own=get('p4own',['dolphin','pig']);
   $('gqDex').innerHTML=Object.entries(PET_DEFS).map(([k,d])=>{const o=own.includes(k);
     return `<div class="gq-p ${o?'':'lk'}"><canvas data-pet="${k}" width="108" height="108"></canvas><div class="t">${d.name[LANG]}</div></div>`}).join('');
-  $('gqDexNote').textContent=T(`Đã sưu tầm ${own.length}/${Object.keys(PET_DEFS).length} bé 4D — mở khóa thêm ở tab Thú 4D bằng 🪙!`,`Collected ${own.length}/${Object.keys(PET_DEFS).length} 4D pets — unlock more in the 4D Pets tab with coins!`);
+  $('gqDexNote').textContent=T(`Đã sưu tầm ${own.length}/10 bé 4D — mở khóa thêm ở tab Thú 4D bằng 🪙!`,`Collected ${own.length}/10 4D pets — unlock more in the 4D Pets tab with coins!`);
   /* paint tiny stills */
   requestAnimationFrame(()=>{document.querySelectorAll('#gqDex canvas').forEach(c=>{
     const ctx=c.getContext('2d');
-    const kz=c.dataset.pet==='giraffe'?0.4:0.62,ky=c.dataset.pet==='giraffe'?74:66;
-    drawPetTo(ctx,c.dataset.pet,54,ky,kz,-0.5,0.1,0,petPose(c.dataset.pet,0,'idle',1));
+    drawPetTo(ctx,c.dataset.pet,54,66,0.62,-0.5,0.1,0,petPose(c.dataset.pet,0,'idle',1));
   })});
 }
 function toastMsg(m){const t=$('gqToast');t.textContent=m;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2200)}
@@ -1157,7 +1156,6 @@ const PET_DEFS={
   deer:{name:{vi:'Hươu con',en:'Deer'},cost:400,hab:'meadow'},
   lion:{name:{vi:'Sư tử con',en:'Lion cub'},cost:400,hab:'savanna'},
   elephant:{name:{vi:'Voi con',en:'Elephant'},cost:500,hab:'plains'},
-  giraffe:{name:{vi:'Hươu cao cổ',en:'Giraffe'},cost:600,hab:'savanna'},
 };
 const HAB_BG={ocean:['#082438','#0e3a55'],farm:['#241f14','#342b1a'],tree:['#15251a','#213a26'],pond:['#0e2b35','#16414e'],bamboo:['#1b2c17','#2a4122'],den:['#261f25','#362d34'],meadow:['#1e2c17','#2d4121'],savanna:['#2e2415','#41331e'],plains:['#27231b','#383427']};
 function sh(c,f){const n=parseInt(c.slice(1),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
@@ -1180,14 +1178,15 @@ function legR(P,st,lx,lz,off,o){
   const A=st.legAmp,ph=st.phase;
   const swing=Math.sin(ph+off)*A*(o.stride||16);
   const lift=Math.max(0,Math.sin(ph+off))*A*(o.lift||12);
-  const fxp=lx+swing*0.9,fyp=2+lift;
-  const kxp=(lx+fxp)/2+o.kneeF*(swing>=0?1:-0.5),kyp=(o.hipY+fyp)/2+o.kneeUp;
-  P.push({k:'c',a:[lx,o.hipY,lz],b:[kxp,kyp,lz],w:o.w,c:o.c1});
-  P.push({k:'c',a:[kxp,kyp,lz],b:[fxp,fyp,lz],w:o.w*0.72,c:o.c2||o.c1});
-  if(o.hoof)P.push({k:'e',x:fxp+2,y:fyp-0.5,z:lz,rx:o.hoof,ry:o.hoof*0.6,c:o.hoofC,grad:false});
-  if(o.toe)for(let ti=-1;ti<=1;ti++)P.push({k:'e',x:fxp+3.5,y:fyp-0.5,z:lz+ti*o.toe,rx:2.6,ry:1.9,c:o.toeC,grad:false});
-  if(o.sock)P.push({k:'c',a:[kxp,kyp,lz],b:[fxp,fyp+6,lz],w:o.w*0.78,c:o.sock});
-  if(o.claw)for(let ti=-1;ti<=1;ti++)P.push({k:'l',a:[fxp+5,fyp+1,lz+ti*o.toe],b:[fxp+8.5,fyp-0.5,lz+ti*o.toe],w:1,c:'#1e1a16'});
+  const hip={x:lx,y:o.hipY,z:lz};
+  const foot={x:lx+swing*0.9,y:2+lift,z:lz};
+  const kn={x:(hip.x+foot.x)/2+o.kneeF*(swing>=0?1:-0.5),y:(hip.y+foot.y)/2+o.kneeUp,z:lz};
+  P.push({k:'c',a:hip,b:kn,w:o.w,c:o.c1});
+  P.push({k:'c',a:kn,b:foot,w:o.w*0.72,c:o.c2||o.c1});
+  if(o.hoof)P.push({k:'e',x:foot.x+2,y:foot.y-0.5,z:lz,rx:o.hoof,ry:o.hoof*0.6,c:o.hoofC,grad:false});
+  if(o.toe)for(let ti=-1;ti<=1;ti++)P.push({k:'e',x:foot.x+3.5,y:foot.y-0.5,z:lz+ti*o.toe,rx:2.6,ry:1.9,c:o.toeC,grad:false});
+  if(o.sock)P.push({k:'c',a:[kn.x,kn.y,kn.z],b:[foot.x,foot.y+6,lz],w:o.w*0.78,c:o.sock});
+  if(o.claw)for(let ti=-1;ti<=1;ti++)P.push({k:'l',a:[foot.x+5,foot.y+1,lz+ti*o.toe],b:[foot.x+8.5,foot.y-0.5,lz+ti*o.toe],w:1,c:'#1e1a16'});
 }
 /* ================= CÁC LOÀI — GIẢI PHẪU + HÀNH VI SINH ĐỘNG ================= */
 const PET_BUILD={
@@ -1464,54 +1463,6 @@ elephant:st=>{
   const wag=Math.sin(t*2.8)*3;
   P.push({k:'c',a:[-46,52,0],b:[-56,44+wag,0],w:2.6,c:gy2});
   E(-57,42+wag,0,3.4,3.4,'#4a4238');
-  return P;
-},
-giraffe:st=>{
-  const P=[],t=st.t;
-  const E=(x,y,z,rx,ry,c,fl,rot)=>P.push({k:'e',x,y,z,rx,ry,c,grad:!fl,rot:rot||0});
-  const L=(a,b,w,c)=>P.push({k:'l',a,b,w,c});
-  const tan='#e3b57e',tan2='#d3a066',cream='#f3ddb2',patch='#a96a30',patch2='#8f5526',mane='#6e4423',dark='#3a2f24';
-  const bend=Math.sin(t*1.1)*2.6+Math.sin(t*0.37)*1.4;    /* cổ uốn mềm theo nhịp */
-  const bob=Math.sin(t*1.6)*1.2;
-  const br=st.breath;
-  /* thân nâu vàng — nền giống ảnh thật */
-  E(-2,60,0,38*br,21,tan,0,0);
-  E(26,62,0,22,19,tan,0,0);
-  E(-30,60,0,20,17,tan,0,0);
-  E(0,50,0.2,30,10,cream,0,0);
-  /* đốm da bản đồ — đa giác mềm xen kẽ 2 tông nâu */
-  const spots=[[-16,64,10,7.5,.4],[0,68,12,8,-.3],[16,58,9,7,.8],[-6,56,8,6,.2],[26,64,8,6,-.6],[-28,58,7,6,1.1],[10,48,7,5,.5],[-18,48,6,5,-.9]];
-  for(let i=0;i<spots.length;i++){const s=spots[i];
-    E(s[0],s[1],0.1,s[2],s[3],i%2?patch:patch2,0,s[4]);}
-  /* cổ dài 6 đốt nối mượt + bờm nâu dọc gáy + đốm cổ */
-  const neck=[[30+bend,72,9,12],[33+bend*1.2,86,8.5,11.5],[36+bend*1.4,100,8,11],[39+bend*1.6,114,7.5,10.5],[42+bend*1.8,128,7,10],[45+bend*2,141,6.5,9.5]];
-  for(let i=0;i<neck.length;i++){const nx=neck[i][0],ny=neck[i][1];
-    E(nx-6,ny+2,-0.5,3.2,6.5,mane,0,0.2);
-    E(nx,ny,0,neck[i][2],neck[i][3],tan);
-    if(i%2===0)E(nx+2,ny+3,0.1,neck[i][2]*0.62,neck[i][3]*0.55,i%4?patch:patch2,0,i*0.7);
-  }
-  /* đầu với mõm kem, mắt to có lông mi */
-  const hx=49+bend*2.2,hy=152+bob-(st.headDown||0)*10;
-  E(hx,hy,0.3,13,10.5,tan,0,0);
-  E(hx+11,hy-2,0.4,7.5,6,cream,0,0);
-  E(hx+15,hy-1,0.6,1.6,1.3,dark,1);E(hx+15,hy+2,0.6,1.4,1.1,dark,1);
-  L([hx+9,hy+3,0.4],[hx-1,hy+5,0.4],1.2,'rgba(70,45,25,.85)');
-  for(const s of[1,-1]){
-    E(hx-6,hy+9,s*8.5,8,4.8,tan2,0,s*0.55);
-    E(hx-6,hy+9,s*10,4.5,2.6,cream,1,s*0.55);
-    L([hx-2,hy+9,s*3.4],[hx-3,hy+17,s*4.5],2.6,tan2);   /* sừng ossicone */
-    E(hx-3,hy+19,s*4.8,3.4,3.8,dark,0);
-    E(hx-3,hy+19,s*4.8,1.6,1.8,'#201812',1);
-    eye3(P,hx+5,hy+1,s*9,3,'#4a3018',1,st.lookX);
-  }
-  /* đuôi phất cụm lông đen */
-  const tw=Math.sin(t*2.6)*4+Math.sin(t*6.1)*1.4;
-  P.push({k:'c',a:[-42,60,0],b:[-52,44+tw,0],w:2.4,c:tan2});
-  P.push({k:'c',a:[-52,44+tw,0],b:[-55,32+tw*1.5,0],w:2,c:tan2});
-  E(-55,28+tw*1.6,0,3.6,5.5,dark,0,0.3);
-  /* 4 chân dài thanh mảnh, đầu gối tách rõ, guốc đen */
-  for(const[lx,lz,off]of[[28,12,0],[28,-12,Math.PI],[-24,12,Math.PI],[-24,-12,0]])
-    legR(P,st,lx,lz,off,{hipY:52,stride:15,lift:11,kneeF:6,kneeUp:7,w:6.5,c1:tan,c2:cream,sock:cream,hoof:5,hoofC:'#33291f'});
   return P;
 },
 };
@@ -1818,9 +1769,9 @@ const P4={
         ${o?'<span class="p4-free">4D</span>':`<span class="p4-lock">🔒 ${d.cost}🪙</span>`}
         <canvas data-pet="${k}" width="144" height="130"></canvas>
         <div class="nm">${d.name[LANG]}</div></div>`}).join('');
-    $('p4Count').textContent=`${own.length}/${Object.keys(PET_DEFS).length} · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
-    $('p4Note').innerHTML=own.length<Object.keys(PET_DEFS).length
-      ?T(`💡 Thu thập 🪙 từ nhiệm vụ ngày để mở khóa <b style="color:var(--gold)">${Object.keys(PET_DEFS).length-own.length}</b> bé còn lại — mỗi bé đều có cử động 4D riêng!`,`💡 Earn coins from daily quests to unlock the remaining <b style="color:var(--gold)">${Object.keys(PET_DEFS).length-own.length}</b> pets — each with its own 4D motion!`)
+    $('p4Count').textContent=`${own.length}/10 · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
+    $('p4Note').innerHTML=own.length<10
+      ?T(`💡 Thu thập 🪙 từ nhiệm vụ ngày để mở khóa <b style="color:var(--gold)">${10-own.length}</b> bé còn lại — mỗi bé đều có cử động 4D riêng!`,`💡 Earn coins from daily quests to unlock the remaining <b style="color:var(--gold)">${10-own.length}</b> pets — each with its own 4D motion!`)
       :T('🏆 Bộ sưu tập 4D đã hoàn chỉnh!','🏆 Your 4D collection is complete!');
     this.paintGrid();
   },
@@ -1828,8 +1779,7 @@ const P4={
     document.querySelectorAll('#p4Grid canvas').forEach((c,i)=>{
       const ctx=c.getContext('2d');ctx.clearRect(0,0,144,130);
       const st=petPose(c.dataset.pet,this.main.t+i*0.7,'idle',1);
-      const kz=c.dataset.pet==='giraffe'?0.44:0.62,ky=c.dataset.pet==='giraffe'?100:92;  /* hươu cao cổ thu nhỏ vừa ô */
-      drawPetTo(ctx,c.dataset.pet,72,ky,kz,-0.5+Math.sin(this.main.t*0.4+i)*0.12,0.1,this.main.t+i*0.7,st);
+      drawPetTo(ctx,c.dataset.pet,72,92,0.62,-0.5+Math.sin(this.main.t*0.4+i)*0.12,0.1,this.main.t+i*0.7,st);
     });
   },
   pick(k){
@@ -5254,7 +5204,6 @@ const PET3D={
  deer:{body:0xc49a67,dark:0xb5884a,belly:0xf2e7d2,s:0.92,pointEar:1,antler:1,spots:1,thin:1},
  lion:{body:0xcaa15e,maneC:0x6e4520,maneC2:0x7d5228,belly:0xe8cf9f,s:1.0,mane:1,tuft:1},
  elephant:{body:0x8f959e,dark:0x7d838d,belly:0xa3a9b2,s:1.18,trunk:1,bigEar:1,tusk:1},
- giraffe:{body:0xe3b57e,dark:0xd3a066,belly:0xf3ddb2,s:1.05,longNeck:1,thin:1},
 };
 function buildPet(key){
   const C=PET3D[key],s=C.s,g=new THREE.Group(),P={legs:[],head:null,tail:null,earL:null,earR:null,body:null};
@@ -6484,8 +6433,7 @@ function newPet(key,lead,i){
   const octx=oc.getContext('2d');
   const tex=new THREE.CanvasTexture(oc);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
-  const gscale=key==='giraffe'?13.2:8.6;                       /* hươu cao cổ to hơn để cổ dài hiện trọn */
-  sp.scale.set(gscale,gscale,1);sp.position.y=key==='giraffe'?4.1:2.72;g.add(sp);
+  sp.scale.set(8.6,8.6,1);sp.position.y=2.72;g.add(sp);
   const ang2=i*0.7+1.3,rad2=lead?0:14+(i%4)*9;
   const x=lead?20:20+Math.cos(ang2)*rad2,z=lead?rZ(20)+RW+26:rZ(20)+RW+26+Math.sin(ang2)*rad2;
   g.position.set(x,0,z);scene.add(g);
@@ -6519,8 +6467,7 @@ function drawSpritePet(p,dt){
   if(md==='jump')st.bodyY*=0.5;
   if(p.tramp&&p.moving)st.bodyY+=Math.abs(Math.sin(t*9+p.seed))*15;
   P.octx.clearRect(0,0,256,256);
-  const gzp=p.key==='giraffe'?{z:1.15,cy:230}:{z:1.78,cy:212};   /* thu nhỏ vừa canvas 256 cho cổ dài */
-  drawPetTo(P.octx,p.key,128,gzp.cy,gzp.z,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
+  drawPetTo(P.octx,p.key,128,212,1.78,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
   P.tex.needsUpdate=true;
   P.sprite.material.rotation=p.trick==='spin'?P.sprite.material.rotation+dt*9:0;
   if(p.trick&&p.trick!=='spin'){p.trickT+=dt;
@@ -6888,9 +6835,21 @@ function resize(){
 function refreshPets(){
   if(!ready)return;
   const leadKey=get('p4active','dolphin');
+  if(pets.length===10&&pets[0].key===leadKey)return;
+  buildRoster(true);
+}
+function refreshPets(){
+  if(!ready)return;
+  const leadKey=get('p4active','dolphin');
+  if(pets[0].key!==leadKey){
+    const old=pets[0];
+    if(old.gl4d){try{old.gl4d.gl.cv.remove()}catch(e){}try{old.gl4d.hostEl&&old.gl4d.hostEl.remove()}catch(e){}}
+    scene.remove(old.g);
+    pets[0]=newPet(leadKey,true,0);
+    pets[0].x=old.x;pets[0].z=old.z;pets[0].g.position.set(old.x,0,old.z);
+    pets[0].g.add(makeLabel(PET_DEFS[leadKey].name[LANG],'⭐'));
+  }
   const own=get('p4own',['dolphin','pig']);
-  /* rebuild toàn bộ khi đổi bé dẫn đầu HOẶC danh sách loài thay đổi (vd mở khóa pet mới) */
-  if(pets.length!==Object.keys(PET_DEFS).length||!pets.length||pets[0].key!==leadKey){buildRoster(true);return;}
   pets=pets.filter(p=>p.lead||own.includes(p.key));
   const others=own.filter(k=>k!==leadKey&&!pets.some(p=>p.key===k));
   for(const k of others){if(pets.length>=3)break;pets.push(newPet(k,false,pets.length));}
@@ -6913,8 +6872,7 @@ function renderPetChips(){
   const lead=pets.length?pets[0].key:null;
   el.innerHTML=keys.map(k=>`<div class="sf-pet ${k===lead?'sel':''}" onclick="Safari.selectPet('${k}')"><canvas width="96" height="96"></canvas><span>${PET_DEFS[k].name[LANG]}</span><em class="badge">ĐANG ĐIỀU KHIỂN</em></div>`).join('');
   requestAnimationFrame(()=>{el.querySelectorAll('canvas').forEach((c,i)=>{const k=keys[i];
-    const gzc=k==='giraffe'?{z:0.32,cy:76}:{z:0.5,cy:58};
-    try{drawPetTo(c.getContext('2d'),k,48,gzc.cy,gzc.z,-0.5,0.12,t,petPose(k,t,'idle',1))}catch(e){}});});
+    try{drawPetTo(c.getContext('2d'),k,48,58,0.5,-0.5,0.12,t,petPose(k,t,'idle',1))}catch(e){}});});
 }
 function bindStick(){
   const st=$('sfStick'),kn=$('sfKnob');if(!st)return;
