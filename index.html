@@ -521,6 +521,7 @@ html{scrollbar-width:none}
       <div class="p4-title" id="sfTitle">SAFARI WORLD 3D<small>WEBGL THỰC SỰ · MAP GẤP 3 · KÉO XOAY · CHỤM ZOOM</small></div>
       <div class="p4-cam" id="sfStatus">🌤️ TRỜI ĐẸP · BÉ ĐANG DẠO CHƠI</div>
       <div class="p4-hint">👆 Kéo xoay camera · chụm zoom · chạm đất → bé đi · chạm sông/vòng quay/bướm → tương tác · 2 lần = nhảy</div>
+    <div class="sf-stick" id="sfStick" style="position:absolute;left:12px;bottom:12px;margin:0;width:112px;height:112px;opacity:.85;z-index:6"><div class="sf-knob" id="sfKnob" style="width:46px;height:46px;left:33px;top:33px"></div><span class="sf-hintdir" style="top:4px;left:50%;transform:translateX(-50%)">▲</span><span class="sf-hintdir" style="bottom:4px;left:50%;transform:translateX(-50%)">▼</span><span class="sf-hintdir" style="left:8px;top:50%;transform:translateY(-50%)">◀</span><span class="sf-hintdir" style="right:8px;top:50%;transform:translateY(-50%)">▶</span></div>
     </div>
     <div class="p4-controls">
       <button class="p4-btn active" id="sfWalk">🚶 Dạo chơi</button>
@@ -534,9 +535,8 @@ html{scrollbar-width:none}
     <div class="sf-sec">CHỌN PET — 10 BÉ 4D TRONG SAFARI</div>
     <div class="sf-petgrid" id="sfPets"></div>
     <div class="tgl" style="border:0;padding-bottom:0;font-size:12px"><span>✨ Hiệu ứng 3D đầy đủ cho mọi bé<br><small style="color:var(--sub2)">Tắt = bé điều khiển 3D, bé khác nhẹ máy</small></span><span class="switch"><input type="checkbox" id="sfAllGL" onchange="Safari.setAllGL(this.checked)"><i></i></span></div>
-    <div class="sf-sec">🕹️ ĐIỀU KHIỂN TRỰC TIẾP</div>
-    <div class="sf-stick" id="sfStick"><div class="sf-knob" id="sfKnob"></div><span class="sf-hintdir" style="top:5px;left:50%;transform:translateX(-50%)">▲</span><span class="sf-hintdir" style="bottom:5px;left:50%;transform:translateX(-50%)">▼</span><span class="sf-hintdir" style="left:9px;top:50%;transform:translateY(-50%)">◀</span><span class="sf-hintdir" style="right:9px;top:50%;transform:translateY(-50%)">▶</span></div>
-    <div class="sub" style="text-align:center;margin:0 0 6px">Giữ & kéo cần điều khiển để dẫn bé — hướng di chuyển theo camera</div>
+    <div class="sf-sec">🕹️ ĐIỀU KHIỂN</div>
+    <div class="sub" style="margin:0 0 8px;line-height:1.6">🎮 Cần <b style="color:var(--volt)">joystick nổi góc trái màn hình</b> — giữ & kéo để dẫn bé, vừa điều khiển vừa ngắm map. Hướng di chuyển theo camera.</div>
     <div class="preset">
       <button class="btn ghost sm sf-mode" data-m="walk" style="flex:1" onclick="Safari.setMode('walk')">🚶 Dạo</button>
       <button class="btn ghost sm sf-mode" data-m="run" style="flex:1" onclick="Safari.setMode('run')">🏃 Chạy</button>
@@ -576,6 +576,7 @@ html{scrollbar-width:none}
     <div class="row"><span>🎠 Khu trò chơi</span><span class="chipsmall">Xích đu · cầu trượt · bập bênh · đu quay · bạt nhún · bể cát · bóng đẩy</span></div>
     <div class="row"><span>🏘️ Làng Safari</span><span class="chipsmall">Cửa hàng quà · cafe · WC · tháp quan sát · chuồng thú · đài phun nước</span></div>
     <div class="row"><span>🌊 Biển Safari</span><span class="chipsmall">Đáy cát · san hô · sao biển · 4 đàn cá màu · cá heo lặn & nhảy khỏi mặt nước</span></div>
+    <div class="row"><span>🏕️ Chi tiết thế giới</span><span class="chipsmall">Xe jeep safari · cắm trại + lửa trại sáng đêm · vịt sông · nấm · gốc cây mục · cây bao báp</span></div>
     <div class="row"><span>💡 Tiện ích</span><span class="chipsmall">Ghế dài · đèn đường sáng đêm · biển chỉ dẫn</span></div>
     <div class="row"><span>🦋 Vườn bướm</span><span class="chipsmall">Bướm đầy màu bay lượn khắp cánh đồng</span></div>
     <div class="sub" style="margin-top:10px">🐾 Các bé 4D bạn sở hữu sẽ cùng dạo chơi trong safari — bé bạn chọn ở tab Thú 4D sẽ là bé dẫn đầu đoàn.</div>
@@ -5691,6 +5692,123 @@ function buildOcean(ox,oz,or){
   window._ocean={x:ox,z:oz,r:or};
 }
 function inOceanAt(x,z){const O=window._ocean;return !!O&&Math.hypot(x-O.x,z-O.z)<O.r-14;}
+function shorePoint(x,z,key){
+  if(PET3D[key]&&PET3D[key].swim)return[x,z];
+  if(inOceanAt(x,z)){const O=window._ocean;const a=Math.atan2(z-O.z,x-O.x);
+    return[O.x+Math.cos(a)*(O.r+26),O.z+Math.sin(a)*(O.r+26)];}
+  if(Math.abs(z-rZ(x))<RW+4){const s=z<rZ(x)?-1:1;return[x,rZ(x)+s*(RW+14)];}
+  return[x,z];
+}
+
+/* ---------- chi tiết safari: jeep · cắm trại · vịt · nấm · bao báp ---------- */
+function safariJeep(x,z,ry){
+  const g=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.BoxGeometry(4.6,1.15,2.5),M(0x5a7d3a));
+  body.position.y=1.25;g.add(body);
+  const hood=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.5,2.3),M(0x5a7d3a));
+  hood.position.set(1.9,1.85,0);g.add(hood);
+  const cab=new THREE.Mesh(new THREE.BoxGeometry(2.3,1.05,2.3),M(0x6b8f4a));
+  cab.position.set(-0.4,2.35,0);g.add(cab);
+  const win=new THREE.Mesh(new THREE.BoxGeometry(2.34,0.7,2.34),M(0xbfe3f2));
+  win.position.set(-0.4,2.4,0);g.add(win);
+  for(const[wx,wz]of[[1.5,1.25],[1.5,-1.25],[-1.5,1.25],[-1.5,-1.25]]){
+    const wh=new THREE.Mesh(new THREE.CylinderGeometry(0.62,0.62,0.5,12),M(0x22201e));
+    wh.rotation.x=Math.PI/2;wh.position.set(wx,0.62,wz);g.add(wh);
+    const hub=new THREE.Mesh(new THREE.CylinderGeometry(0.26,0.26,0.54,8),M(0x9a958a));
+    hub.rotation.x=Math.PI/2;hub.position.set(wx,0.62,wz);g.add(hub);}
+  const spare=new THREE.Mesh(new THREE.CylinderGeometry(0.6,0.6,0.4,12),M(0x22201e));
+  spare.rotation.z=Math.PI/2;spare.position.set(-2.5,1.5,0);g.add(spare);
+  for(const sd of[-1,1]){const hl=new THREE.Mesh(new THREE.SphereGeometry(0.16,8,6),M(0xffe9a8,0x574a20));
+    hl.position.set(2.65,1.5,sd*0.8);g.add(hl);}
+  const rack=new THREE.Mesh(new THREE.BoxGeometry(2,0.14,2),M(0x4a3d2a));
+  rack.position.set(-0.4,3,0);g.add(rack);
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function tent(x,z,ry,c){
+  const g=new THREE.Group();
+  const t=new THREE.Mesh(new THREE.CylinderGeometry(0.1,2.6,2.6,4),M(c));
+  t.position.y=1.3;t.rotation.y=Math.PI/4;g.add(t);
+  const door=new THREE.Mesh(new THREE.CircleGeometry(0.9,3),M(0x2b2118));
+  door.position.set(0,0.95,1.85);g.add(door);
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function campfire(x,z){
+  const g=new THREE.Group();
+  for(let i=0;i<7;i++){const a=i/7*Math.PI*2;
+    const st=new THREE.Mesh(new THREE.SphereGeometry(0.4,7,5),M(0x8a857a));
+    st.position.set(Math.cos(a)*1.3,0.2,Math.sin(a)*1.3);g.add(st);}
+  for(let i=0;i<4;i++){const a=i/4*Math.PI;
+    const lg=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.16,1.6,6),M(0x5d3f22));
+    lg.rotation.z=Math.PI/2;lg.rotation.y=a;lg.position.y=0.25;g.add(lg);}
+  const fire=new THREE.Mesh(new THREE.ConeGeometry(0.55,1.3,7),MB(0xff9d2e));
+  fire.position.y=0.9;g.add(fire);flames.push(fire);
+  const fire2=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.8,6),MB(0xffe27a));
+  fire2.position.y=0.75;g.add(fire2);flames.push(fire2);
+  const li=new THREE.PointLight(0xffa040,0,42);li.position.y=1.6;g.add(li);torchLights.push(li);
+  g.position.set(x,0,z);window._campfire={x,z};return g;
+}
+function baobab(x,z,s){
+  const g=new THREE.Group();
+  const tr=new THREE.Mesh(new THREE.CylinderGeometry(1.5*s,2.4*s,10*s,9),M(0x8a6a4a));
+  tr.position.y=5*s;g.add(tr);
+  const tr2=new THREE.Mesh(new THREE.CylinderGeometry(1.1*s,1.6*s,4*s,8),M(0x9a7a55));
+  tr2.position.y=11*s;g.add(tr2);
+  const cols=[0x4a7c33,0x5d9a44,0x3f6a2c];
+  for(let i=0;i<4;i++){const c=new THREE.Mesh(new THREE.SphereGeometry((2.6-i*0.4)*s,10,7),M(cols[i%3]));
+    c.scale.y=0.5;c.position.set((R()-0.5)*3*s,(13+i*0.8)*s,(R()-0.5)*3*s);g.add(c);}
+  g.position.set(x,0,z);return g;
+}
+function mushroom(x,z,s){
+  const g=new THREE.Group();
+  const stem=new THREE.Mesh(new THREE.CylinderGeometry(0.16*s,0.22*s,0.7*s,7),M(0xf0e6d2));
+  stem.position.y=0.35*s;g.add(stem);
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(0.5*s,10,7),M(0xd94f4f));
+  cap.scale.y=0.55;cap.position.y=0.75*s;g.add(cap);
+  for(let i=0;i<3;i++){const dot=new THREE.Mesh(new THREE.SphereGeometry(0.07*s,5,4),MB(0xffffff));
+    dot.position.set((R()-0.5)*0.6*s,(0.85+R()*0.1)*s,(R()-0.5)*0.6*s);g.add(dot);}
+  g.position.set(x,0,z);return g;
+}
+function logFallen(x,z,ry){
+  const g=new THREE.Group();
+  const lg=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.62,5,8),M(0x6d4a2a));
+  lg.rotation.z=Math.PI/2;lg.position.y=0.5;g.add(lg);
+  for(const sd of[-2.4,2.4]){const ring=new THREE.Mesh(new THREE.CylinderGeometry(0.52,0.52,0.1,8),M(0xa3794a));
+    ring.rotation.z=Math.PI/2;ring.position.set(sd,0.5,0);g.add(ring);}
+  const moss=new THREE.Mesh(new THREE.SphereGeometry(0.4,7,5),M(0x5d9a44));
+  moss.scale.set(1.6,0.4,1);moss.position.set(0.4,0.95,0);g.add(moss);
+  g.position.set(x,0,z);g.rotation.y=ry;return g;
+}
+function makeDuck(x){
+  const g=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.SphereGeometry(0.5,10,8),M(0xf5f0e0));
+  body.scale.set(1.35,0.8,0.9);body.position.y=0.4;g.add(body);
+  const hd=new THREE.Mesh(new THREE.SphereGeometry(0.28,9,7),M(0x3f7a46));
+  hd.position.set(0.55,0.85,0);g.add(hd);
+  const bk=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.3,6),M(0xff9e2e));
+  bk.rotation.z=-Math.PI/2;bk.position.set(0.85,0.82,0);g.add(bk);
+  const tail=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.4,5),M(0xe8e2d0));
+  tail.rotation.z=Math.PI/2.4;tail.position.set(-0.62,0.55,0);g.add(tail);
+  g.position.set(x,0.32,rZ(x)+12);
+  scene.add(g);ducks.push({g,dir:R()<0.5?1:-1,ph:R()*9});
+}
+function buildDetails(){
+  scene.add(safariJeep(-560,-430,0.6));
+  scene.add(tent(-350,-470,0.4,0xc9563c));
+  scene.add(tent(-306,-436,-0.5,0x4a7c8f));
+  scene.add(campfire(-328,-452));
+  scene.add(baobab(700,-320,1));
+  scene.add(baobab(830,-190,0.85));
+  scene.add(baobab(640,-540,1.1));
+  scene.add(logFallen(120,180,0.7));
+  scene.add(logFallen(-520,90,-0.4));
+  scene.add(logFallen(420,240,1.9));
+  scene.add(logFallen(80,-260,0.2));
+  for(let i=0;i<12;i++){const x=(R()*2-1)*1000,z=(R()*2-1)*1000;
+    if(Math.abs(z-rZ(x))<RW+8)continue;if(Math.hypot(x+850,z-620)<300)continue;
+    scene.add(mushroom(x,z,0.8+R()*0.9));}
+  makeDuck(-540);makeDuck(120);makeDuck(640);
+}
+const ducks=[];
 
 /* ---------- build world ---------- */
 function buildWorld(){
@@ -5740,6 +5858,7 @@ function buildWorld(){
     const ring2=new THREE.Mesh(new THREE.TorusGeometry(2.6,0.85,10,18),M([0xff8fa3,0xffd166,0x7ad3ff,0x9be89b][i]));
     ring2.rotation.x=Math.PI/2;ring2.position.y=0.5;tg.add(ring2);
     tg.position.set(-800+i*520,0.4,0);scene.add(tg);tubes.push(tg);}
+  buildDetails();
   /* biển safari + đàn cá */
   buildOcean(-850,620,240);
   makeFishSchool(0xff9e4a,9,-850,620,72);
@@ -6142,6 +6261,17 @@ function frame(ts){
     tb.position.z=rZ(tb.position.x)+Math.sin(t+tb.position.x*0.01)*8;
     tb.position.y=0.35+Math.sin(t*2+tb.position.x*0.02)*0.18;
     tb.rotation.z+=dt*0.3;}
+  /* vịt bơi sông */
+  for(const d of ducks){d.g.position.x+=d.dir*dt*3.2;
+    const dx2=d.g.position.x;
+    if(dx2>880||dx2<-880)d.dir*=-1;
+    d.g.position.z=rZ(dx2)+12+Math.sin(t*0.8+d.ph)*2.5;
+    d.g.position.y=0.32+Math.sin(t*2.1+d.ph)*0.09;
+    d.g.rotation.y=d.dir>0?0:Math.PI;}
+  /* khói lửa trại */
+  if(window._campfire&&R()<0.03){const sp2=new THREE.Sprite(new THREE.SpriteMaterial({map:smokeTex(),transparent:true,opacity:0.3,depthWrite:false}));
+    sp2.position.set(window._campfire.x+(R()-0.5),1.6,window._campfire.z+(R()-0.5));
+    sp2.scale.set(1.4,1.4,1);sp2.userData={l:0};scene.add(sp2);smokes.push(sp2);}
   /* đàn cá bơi */
   for(const sc of fishSchools){const u=sc.userData;u.a+=dt*u.spd;
     const dx=-Math.sin(u.a),dz=Math.cos(u.a);
@@ -6347,7 +6477,8 @@ function buildRoster(keepPos){
   const order=[leadKey,...Object.keys(PET_DEFS).filter(k=>k!==leadKey)];
   pets=order.map((k,i)=>{const p=newPet(k,i===0,i);
     if(i===0){p.g.add(makeLabel(PET_DEFS[k].name[LANG],'⭐'));
-      if(prev){p.x=prev.x;p.z=prev.z;p.tx=prev.x;p.tz=prev.z;p.side=sideOf(prev.x,prev.z);p.g.position.set(prev.x,0,prev.z);}}
+      if(prev){const sp=shorePoint(prev.x,prev.z,k);
+        p.x=sp[0];p.z=sp[1];p.tx=sp[0];p.tz=sp[1];p.side=sideOf(sp[0],sp[1]);p.g.position.set(sp[0],0,sp[1]);}}
     return p;});
   renderPetChips();renderTP();
 }
@@ -6361,15 +6492,15 @@ function renderPetChips(){
 }
 function bindStick(){
   const st=$('sfStick'),kn=$('sfKnob');if(!st)return;
-  const R2=42;
+  const R2=32;
   const setKnob=(dx,dy)=>{kn.style.transform=`translate(${dx}px,${dy}px)`};
   const calc=e=>{const r=st.getBoundingClientRect();
     let dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
     const d=Math.hypot(dx,dy);if(d>R2){dx*=R2/d;dy*=R2/d}
     setKnob(dx,dy);steer.x=dx/R2;steer.y=dy/R2;};
-  st.addEventListener('pointerdown',e=>{try{st.setPointerCapture(e.pointerId)}catch(_){}
+  st.addEventListener('pointerdown',e=>{e.stopPropagation();try{st.setPointerCapture(e.pointerId)}catch(_){}
     steer.active=true;steer.id=e.pointerId;st.classList.add('on');calc(e);});
-  st.addEventListener('pointermove',e=>{if(steer.active&&e.pointerId===steer.id)calc(e)});
+  st.addEventListener('pointermove',e=>{e.stopPropagation();if(steer.active&&e.pointerId===steer.id)calc(e)});
   const end=e=>{if(e.pointerId!==steer.id)return;
     steer.active=false;steer.x=steer.y=0;st.classList.remove('on');setKnob(0,0);};
   st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);
@@ -6394,6 +6525,7 @@ return{init,resize,setActive(b){active=b;if(b){resize();last=performance.now()}}
     const msg={jump:'🦘 Nhảy lên!',spin:'🌀 Xoay 360°!',dance:'🕺 Nhảy múa!'}[name];
     if(msg)toastMsg(`${PET_DEFS[lead.key].name[LANG]} ${msg}`);},
   teleport(x,z){if(!ready)return;const lead=pets[0];
+    const sp=shorePoint(x,z,lead.key);x=sp[0];z=sp[1];
     lead.x=x;lead.z=z;lead.y=0;lead.tx=x;lead.tz=z;lead.state='idle';lead.idleT=1.6;lead.moving=false;
     lead.side=sideOf(x,z);lead.g.position.set(x,0,z);
     camTgt.set(x,2,z);
