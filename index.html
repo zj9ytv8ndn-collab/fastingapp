@@ -5254,6 +5254,7 @@ const PET3D={
  deer:{body:0xc49a67,dark:0xb5884a,belly:0xf2e7d2,s:0.92,pointEar:1,antler:1,spots:1,thin:1},
  lion:{body:0xcaa15e,maneC:0x6e4520,maneC2:0x7d5228,belly:0xe8cf9f,s:1.0,mane:1,tuft:1},
  elephant:{body:0x8f959e,dark:0x7d838d,belly:0xa3a9b2,s:1.18,trunk:1,bigEar:1,tusk:1},
+ giraffe:{body:0xe3b57e,dark:0xd3a066,belly:0xf3ddb2,s:1.05,longNeck:1,thin:1},
 };
 function buildPet(key){
   const C=PET3D[key],s=C.s,g=new THREE.Group(),P={legs:[],head:null,tail:null,earL:null,earR:null,body:null};
@@ -6483,7 +6484,8 @@ function newPet(key,lead,i){
   const octx=oc.getContext('2d');
   const tex=new THREE.CanvasTexture(oc);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
-  sp.scale.set(8.6,8.6,1);sp.position.y=2.72;g.add(sp);
+  const gscale=key==='giraffe'?13.2:8.6;                       /* hươu cao cổ to hơn để cổ dài hiện trọn */
+  sp.scale.set(gscale,gscale,1);sp.position.y=key==='giraffe'?4.1:2.72;g.add(sp);
   const ang2=i*0.7+1.3,rad2=lead?0:14+(i%4)*9;
   const x=lead?20:20+Math.cos(ang2)*rad2,z=lead?rZ(20)+RW+26:rZ(20)+RW+26+Math.sin(ang2)*rad2;
   g.position.set(x,0,z);scene.add(g);
@@ -6517,7 +6519,8 @@ function drawSpritePet(p,dt){
   if(md==='jump')st.bodyY*=0.5;
   if(p.tramp&&p.moving)st.bodyY+=Math.abs(Math.sin(t*9+p.seed))*15;
   P.octx.clearRect(0,0,256,256);
-  drawPetTo(P.octx,p.key,128,212,1.78,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
+  const gzp=p.key==='giraffe'?{z:1.15,cy:230}:{z:1.78,cy:212};   /* thu nhỏ vừa canvas 256 cho cổ dài */
+  drawPetTo(P.octx,p.key,128,gzp.cy,gzp.z,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
   P.tex.needsUpdate=true;
   P.sprite.material.rotation=p.trick==='spin'?P.sprite.material.rotation+dt*9:0;
   if(p.trick&&p.trick!=='spin'){p.trickT+=dt;
@@ -6885,21 +6888,9 @@ function resize(){
 function refreshPets(){
   if(!ready)return;
   const leadKey=get('p4active','dolphin');
-  if(pets.length===10&&pets[0].key===leadKey)return;
-  buildRoster(true);
-}
-function refreshPets(){
-  if(!ready)return;
-  const leadKey=get('p4active','dolphin');
-  if(pets[0].key!==leadKey){
-    const old=pets[0];
-    if(old.gl4d){try{old.gl4d.gl.cv.remove()}catch(e){}try{old.gl4d.hostEl&&old.gl4d.hostEl.remove()}catch(e){}}
-    scene.remove(old.g);
-    pets[0]=newPet(leadKey,true,0);
-    pets[0].x=old.x;pets[0].z=old.z;pets[0].g.position.set(old.x,0,old.z);
-    pets[0].g.add(makeLabel(PET_DEFS[leadKey].name[LANG],'⭐'));
-  }
   const own=get('p4own',['dolphin','pig']);
+  /* rebuild toàn bộ khi đổi bé dẫn đầu HOẶC danh sách loài thay đổi (vd mở khóa pet mới) */
+  if(pets.length!==Object.keys(PET_DEFS).length||!pets.length||pets[0].key!==leadKey){buildRoster(true);return;}
   pets=pets.filter(p=>p.lead||own.includes(p.key));
   const others=own.filter(k=>k!==leadKey&&!pets.some(p=>p.key===k));
   for(const k of others){if(pets.length>=3)break;pets.push(newPet(k,false,pets.length));}
@@ -6922,7 +6913,8 @@ function renderPetChips(){
   const lead=pets.length?pets[0].key:null;
   el.innerHTML=keys.map(k=>`<div class="sf-pet ${k===lead?'sel':''}" onclick="Safari.selectPet('${k}')"><canvas width="96" height="96"></canvas><span>${PET_DEFS[k].name[LANG]}</span><em class="badge">ĐANG ĐIỀU KHIỂN</em></div>`).join('');
   requestAnimationFrame(()=>{el.querySelectorAll('canvas').forEach((c,i)=>{const k=keys[i];
-    try{drawPetTo(c.getContext('2d'),k,48,58,0.5,-0.5,0.12,t,petPose(k,t,'idle',1))}catch(e){}});});
+    const gzc=k==='giraffe'?{z:0.32,cy:76}:{z:0.5,cy:58};
+    try{drawPetTo(c.getContext('2d'),k,48,gzc.cy,gzc.z,-0.5,0.12,t,petPose(k,t,'idle',1))}catch(e){}});});
 }
 function bindStick(){
   const st=$('sfStick'),kn=$('sfKnob');if(!st)return;
