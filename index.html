@@ -1187,7 +1187,7 @@ function legR(P,st,lx,lz,off,o){
   if(o.hoof)P.push({k:'e',x:fxp+2,y:fyp-0.5,z:lz,rx:o.hoof,ry:o.hoof*0.6,c:o.hoofC,grad:false});
   if(o.toe)for(let ti=-1;ti<=1;ti++)P.push({k:'e',x:fxp+3.5,y:fyp-0.5,z:lz+ti*o.toe,rx:2.6,ry:1.9,c:o.toeC,grad:false});
   if(o.sock)P.push({k:'c',a:[kxp,kyp,lz],b:[fxp,fyp+6,lz],w:o.w*0.78,c:o.sock});
-  if(o.claw)for(let ti=-1;ti<=1;ti++)P.push({k:'l',a:[foot.x+5,foot.y+1,lz+ti*o.toe],b:[foot.x+8.5,foot.y-0.5,lz+ti*o.toe],w:1,c:'#1e1a16'});
+  if(o.claw)for(let ti=-1;ti<=1;ti++)P.push({k:'l',a:[fxp+5,fyp+1,lz+ti*o.toe],b:[fxp+8.5,fyp-0.5,lz+ti*o.toe],w:1,c:'#1e1a16'});
 }
 /* ================= CÁC LOÀI — GIẢI PHẪU + HÀNH VI SINH ĐỘNG ================= */
 const PET_BUILD={
