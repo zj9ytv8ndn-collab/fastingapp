@@ -9497,7 +9497,7 @@ function buildChristmas(){
     const mx=-700+i*260+R()*60,mz=-1005+R()*40,H=90+R()*55,Rr=130+R()*40;
     const cone=new THREE.Mesh(new THREE.ConeGeometry(Rr,H,7),M(0x8fa8c8));
     cone.position.set(mx,H/2-6,mz);scene.add(cone);
-    const cap=new THREE.Mesh(new THREE.ConeGeometry(Rr*0.42,H*0.42,7),M(0xffffff));
+    const cap=new THREE.Mesh(new THREE.ConeGeometry(Rr*0.42,H*0.42,7),new THREE.MeshPhongMaterial({color:0xffffff,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
     cap.position.set(mx,H-H*0.21-6,mz);scene.add(cap);
     /* đèn chuỗi quanh đỉnh — ban đêm sáng rực */
     for(let j=0;j<10;j++){const a=j/10*Math.PI*2;
@@ -9505,7 +9505,7 @@ function buildChristmas(){
     bulb(mx,H+1.5,mz,0xffe066);
     /* vệt trượt: 2 vạch trắng chạy từ đỉnh xuống chân núi */
     for(const sd of[-1,1]){
-      const trail=new THREE.Mesh(new THREE.BoxGeometry(3.4,1.2,H*0.86),M(0xf4f9ff));
+      const trail=new THREE.Mesh(new THREE.BoxGeometry(3.4,1.2,H*0.86),new THREE.MeshPhongMaterial({color:0xf4f9ff,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
       trail.position.set(mx+sd*Rr*0.22,H*0.44,mz+Rr*0.36);trail.rotation.x=0.5;scene.add(trail);}
     /* ngườI trượt tuyết tự động lao xuống sườn núi */
     const sk=new THREE.Group();
@@ -9869,7 +9869,11 @@ function drawSpritePet(p,dt){
   P.octx.clearRect(0,0,256,256);
   const _zs=P.spr||{zoom:1.78,cy:212};
   const _auto=((PET_DEFS[p.key]&&PET_DEFS[p.key].dy)||0)*_zs.zoom;   /* drawPetTo tự cộng dy — trừ lại để tâm tùy chỉnh chuẩn xác */
-  drawPetTo(P.octx,p.key,128,_zs.cy-_auto,_zs.zoom,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
+  try{drawPetTo(P.octx,p.key,128,_zs.cy-_auto,_zs.zoom,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);}
+  catch(e){if(!p._drawErr){p._drawErr=1;toastMsg('⚠️ Pet "'+p.key+'" vẽ lỗi — dùng hình dự phòng');}
+    P.octx.fillStyle='#c9a06b';P.octx.beginPath();P.octx.ellipse(128,142,64,48,0,0,7);P.octx.fill();
+    P.octx.fillStyle='#fff';P.octx.beginPath();P.octx.arc(104,116,8,0,7);P.octx.arc(152,116,8,0,7);P.octx.fill();
+    P.octx.fillStyle='#222';P.octx.beginPath();P.octx.arc(104,116,3.5,0,7);P.octx.arc(152,116,3.5,0,7);P.octx.fill();}
   P.tex.needsUpdate=true;
   P.sprite.material.rotation=p.trick==='spin'?P.sprite.material.rotation+dt*9:0;
   if(p.trick&&p.trick!=='spin'){p.trickT+=dt;
