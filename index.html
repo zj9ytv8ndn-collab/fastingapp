@@ -541,7 +541,7 @@ html{scrollbar-width:none}
     </div>
   </div>
   <div class="card">
-    <h3>🦁 Sở thú 4D <span class="hint" id="p4Count">1/10 · chạm để chọn / mở khóa</span></h3>
+    <h3>🦁 Sở thú 4D <span class="hint" id="p4Count">1/11 · chạm để chọn / mở khóa</span></h3>
     <div class="p4-grid" id="p4Grid"></div>
     <div class="sub" style="margin-top:10px" id="p4Note"></div>
   </div>
@@ -571,7 +571,7 @@ html{scrollbar-width:none}
   </div>
   <div class="card" id="sfPanel">
     <h3>🎮 Bảng điều khiển Pet</h3>
-    <div class="sf-sec">CHỌN PET — 10 BÉ 4D TRONG SAFARI</div>
+    <div class="sf-sec">CHỌN PET — 11 BÉ 4D TRONG SAFARI</div>
     <div class="sf-petgrid" id="sfPets"></div>
     <div class="tgl" style="border:0;padding-bottom:0;font-size:12px"><span>✨ Hiệu ứng 3D đầy đủ cho mọi bé<br><small style="color:var(--sub2)">Tắt = bé điều khiển 3D, bé khác nhẹ máy</small></span><span class="switch"><input type="checkbox" id="sfAllGL" onchange="Safari.setAllGL(this.checked)"><i></i></span></div>
     <div class="sf-sec">🕹️ ĐIỀU KHIỂN</div>
@@ -1147,7 +1147,7 @@ function renderDex(){
   const own=get('p4own',['dolphin','pig']);
   $('gqDex').innerHTML=Object.entries(PET_DEFS).map(([k,d])=>{const o=own.includes(k);
     return `<div class="gq-p ${o?'':'lk'}"><canvas data-pet="${k}" width="108" height="108"></canvas><div class="t">${d.name[LANG]}</div></div>`}).join('');
-  $('gqDexNote').textContent=T(`Đã sưu tầm ${own.length}/10 bé 4D — mở khóa thêm ở tab Thú 4D bằng 🪙!`,`Collected ${own.length}/10 4D pets — unlock more in the 4D Pets tab with coins!`);
+  $('gqDexNote').textContent=T(`Đã sưu tầm ${own.length}/11 bé 4D — mở khóa thêm ở tab Thú 4D bằng 🪙!`,`Collected ${own.length}/11 4D pets — unlock more in the 4D Pets tab with coins!`);
   /* paint tiny stills */
   requestAnimationFrame(()=>{document.querySelectorAll('#gqDex canvas').forEach(c=>{
     const ctx=c.getContext('2d');
@@ -1175,6 +1175,7 @@ const PET_DEFS={
   deer:{name:{vi:'Hươu con',en:'Deer'},cost:400,hab:'meadow'},
   lion:{name:{vi:'Sư tử con',en:'Lion cub'},cost:400,hab:'savanna'},
   elephant:{name:{vi:'Voi con',en:'Elephant'},cost:500,hab:'plains'},
+  giraffe:{name:{vi:'Hươu cao cổ',en:'Giraffe'},cost:600,hab:'savanna',dy:40},
 };
 const HAB_BG={ocean:['#082438','#0e3a55'],farm:['#241f14','#342b1a'],tree:['#15251a','#213a26'],pond:['#0e2b35','#16414e'],bamboo:['#1b2c17','#2a4122'],den:['#261f25','#362d34'],meadow:['#1e2c17','#2d4121'],savanna:['#2e2415','#41331e'],plains:['#27231b','#383427']};
 function sh(c,f){const n=parseInt(c.slice(1),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
@@ -1484,6 +1485,61 @@ elephant:st=>{
   E(-57,42+wag,0,3.4,3.4,'#4a4238');
   return P;
 },
+giraffe:st=>{
+  const P=[],t=st.t;
+  const E=(x,y,z,rx,ry,c,fl,fur)=>P.push({k:'e',x,y,z,rx,ry,c,grad:!fl,fur:fur||0});
+  const L=(a,b,w,c)=>P.push({k:'l',a,b,w,c});
+  const C=(a,b,w,c)=>P.push({k:'c',a,b,w,c});
+  const PL=(pts,c)=>P.push({k:'p',pts,c});
+  const fur='#f3c886',furD='#dfa958',spot='#b06a28',muzzle='#f8dda4',mane='#7c4a22',hoofC='#54453a';
+  const hd=st.headDown||0;                                  /* cúi cổ — ăn lá / khám phá */
+  const br=st.breath;
+  /* thân + bụng sáng màu */
+  E(-2,46,0,36*br,21,fur,0,0.5);E(24,48,0,19,17,fur,0,0.4);E(-28,46,0,17,14,fur,0,0.4);
+  E(0,35,0,29,11,muzzle);
+  /* đốm đặc trưng hươu cao cổ */
+  [[-16,56,9,7],[4,60,-8,6],[-27,50,-10,5],[15,54,11,5.5],[-5,50,12,4.5],[25,58,6,4]].forEach(p=>E(p[0],p[1],p[2],p[3],p[3]*0.8,spot,1));
+  /* 4 chân cao */
+  for(const[lx,lz,off]of[[26,10,0],[26,-10,Math.PI],[-24,10,Math.PI],[-24,-10,0]])
+    legR(P,st,lx,lz,off,{hipY:30,stride:15,lift:11,kneeF:6,kneeUp:5,w:6.5,c1:fur,c2:furD,hoof:5,hoofC});
+  /* đuôi ngắn quẩy */
+  const wag=Math.sin(t*3)*3+Math.sin(t*7.1)*1.2;
+  C([-36,50,0],[-47,40+wag,0],3,furD);
+  E(-49,37+wag,0,3.4,5,hoofC);
+  /* cổ dài — cong mềm xuống khi cúi đầu (ăn lá) */
+  const hx=58+st.look*1.2+hd*6,hy=116+Math.sin(t*1.6)*1.2-hd*58;
+  const qB=(a,c,b,u)=>(1-u)*(1-u)*a+2*(1-u)*u*c+u*u*b;
+  const nA=[30,52],nC=[44+hd*24,(52+hy-6)/2+hd*4],nB=[hx-7,hy-6];
+  const bez=u=>[qB(nA[0],nC[0],nB[0],u),qB(nA[1],nC[1],nB[1],u)];
+  let prev=[...nA];
+  [13,11.5,10,8.5].forEach((w,i)=>{const pt=[...bez((i+1)/4),0];C([...prev,0],pt,w,fur);prev=pt;});
+  /* bờm dọc gáy cổ */
+  for(let i=0;i<6;i++){const p=bez(0.16+i*0.14);
+    PL([[p[0]-3,p[1]+3],[p[0]-11,p[1]-1],[p[0]-2,p[1]-5]],mane);}
+  /* đốm trên cổ */
+  const s1=bez(0.42),s2=bez(0.68);
+  E(s1[0],s1[1],5,3.4,2.6,spot,1);E(s2[0],s2[1],-5,3,2.3,spot,1);
+  /* đầu */
+  E(hx,hy,0,13,11,fur,0,0.5);
+  E(hx+9,hy-3,0,8.5,6.5,muzzle);
+  E(hx+15,hy-4,6,1.5,2,'#7a5230',1);E(hx+15,hy-4,-6,1.5,2,'#7a5230',1);
+  L([hx+6,hy+1,0],[hx-2,hy+3,0],1.2,'rgba(90,60,30,.8)');
+  for(const s of[1,-1]){
+    eye3(P,hx+4,hy+3,s*10,2.5,'#4a2f1a',st.lookX);
+    const ew=Math.sin(t*3.4+s)*1.6;                       /* tai vẫy độc lập */
+    E(hx-3,hy+11+ew,s*12,7,3.5,furD);E(hx-3,hy+11+ew,s*14,4,2,muzzle,1);
+    L([hx+s*4-2,hy+9,0],[hx+s*4-3,hy+17,0],2.2,'#caa06a');/* ossicone */
+    E(hx+s*4-3,hy+19,0,2.6,2.6,'#6b4423');
+  }
+  E(hx+7,hy-5,9,3,2,'rgba(242,160,160,.4)',1);E(hx+7,hy-5,-9,3,2,'rgba(242,160,160,.4)',1);
+  /* ăn lá khi cúi cổ */
+  if(hd>0.35){
+    E(hx+17,hy-6,0,4,2.2,'#7fae5c',1);
+    E(hx+19+Math.sin(t*5)*2,hy-1,4,2.6,1.5,'#8fca62',1);
+    E(hx+20,hy-9+Math.cos(t*4)*2,-4,2.2,1.3,'#9ad06a',1);
+  }
+  return P;
+},
 };
 function petPose(key,t,mode,speed){
   const run=mode==='run';
@@ -1498,6 +1554,7 @@ function petPose(key,t,mode,speed){
 }
 function drawPetTo(ctx,key,cx,cy,zoom,yaw,pitch,t,st){
   const F=860,by=st.bodyY||0;
+  cy+=(PET_DEFS[key].dy||0)*zoom;   /* vật thể cao (hươu cao cổ...) được nâng tâm vẽ riêng */
   const pr=(x,y,z)=>{const cy0=Math.cos(yaw),sy=Math.sin(yaw);const x1=x*cy0+z*sy,z1=-x*sy+z*cy0;
     const cp=Math.cos(pitch),sp=Math.sin(pitch);const y1=y*cp-z1*sp,z2=y*sp+z1*cp;
     const s=F/(F+z2);return[cx+x1*zoom*s,cy-y1*zoom*s,s,z2]};
@@ -1788,8 +1845,8 @@ const P4={
         ${o?'<span class="p4-free">4D</span>':`<span class="p4-lock">🔒 ${d.cost}🪙</span>`}
         <canvas data-pet="${k}" width="144" height="130"></canvas>
         <div class="nm">${d.name[LANG]}</div></div>`}).join('');
-    $('p4Count').textContent=`${own.length}/10 · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
-    $('p4Note').innerHTML=own.length<10
+    $('p4Count').textContent=`${own.length}/11 · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
+    $('p4Note').innerHTML=own.length<11
       ?T(`💡 Thu thập 🪙 từ nhiệm vụ ngày để mở khóa <b style="color:var(--gold)">${10-own.length}</b> bé còn lại — mỗi bé đều có cử động 4D riêng!`,`💡 Earn coins from daily quests to unlock the remaining <b style="color:var(--gold)">${10-own.length}</b> pets — each with its own 4D motion!`)
       :T('🏆 Bộ sưu tập 4D đã hoàn chỉnh!','🏆 Your 4D collection is complete!');
     this.paintGrid();
