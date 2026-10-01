@@ -6509,11 +6509,13 @@ function newPet(key,lead,i){
   const octx=oc.getContext('2d');
   const tex=new THREE.CanvasTexture(oc);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
-  sp.scale.set(8.6,8.6,1);sp.position.y=2.72;g.add(sp);
+  const _dy=(PET_DEFS[key]&&PET_DEFS[key].dy)||0;   /* pet cao (hươu cao cổ): zoom nhỏ hơn, tâm vẽ thấp hơn, sprite lớn hơn */
+  const spr=_dy?{zoom:1.3,cy:240,ss:7.4}:null;
+  sp.scale.set(spr?spr.ss:8.6,spr?spr.ss:8.6,1);sp.position.y=spr?(spr.cy-128)*spr.ss/256:2.72;g.add(sp);
   const ang2=i*0.7+1.3,rad2=lead?0:14+(i%4)*9;
   const x=lead?20:20+Math.cos(ang2)*rad2,z=lead?rZ(20)+RW+26:rZ(20)+RW+26+Math.sin(ang2)*rad2;
   g.position.set(x,0,z);scene.add(g);
-  return{key,lead,g,P:{isSprite:1,sprite:sp,octx,tex},x,z,y:0,tx:x,tz:z,side:sideOf(x,z),tside:'S',
+  return{key,lead,g,P:{isSprite:1,sprite:sp,octx,tex,spr},x,z,y:0,tx:x,tz:z,side:sideOf(x,z),tside:'S',
     state:'idle',idleT:1+i,facing:0,slowT:R()*9,seed:R()*10,sit:0,head:0,moving:false,inWater:false,label:null};
 }
 function drawSpritePet(p,dt){
@@ -6543,7 +6545,9 @@ function drawSpritePet(p,dt){
   if(md==='jump')st.bodyY*=0.5;
   if(p.tramp&&p.moving)st.bodyY+=Math.abs(Math.sin(t*9+p.seed))*15;
   P.octx.clearRect(0,0,256,256);
-  drawPetTo(P.octx,p.key,128,212,1.78,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
+  const _zs=P.spr||{zoom:1.78,cy:212};
+  const _auto=((PET_DEFS[p.key]&&PET_DEFS[p.key].dy)||0)*_zs.zoom;   /* drawPetTo tự cộng dy — trừ lại để tâm tùy chỉnh chuẩn xác */
+  drawPetTo(P.octx,p.key,128,_zs.cy-_auto,_zs.zoom,-0.55+Math.sin(p.slowT*0.35+p.seed)*0.1,0.12,p.slowT,st);
   P.tex.needsUpdate=true;
   P.sprite.material.rotation=p.trick==='spin'?P.sprite.material.rotation+dt*9:0;
   if(p.trick&&p.trick!=='spin'){p.trickT+=dt;
