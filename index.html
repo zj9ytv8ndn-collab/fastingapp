@@ -412,6 +412,11 @@ html{scrollbar-width:none}
     <div id="dailyPrompt" style="font-size:14px;line-height:1.55;font-weight:500"></div>
   </div>
 
+  <div class="card" style="padding:16px 20px;border-color:color-mix(in srgb,var(--purple) 42%,transparent)">
+    <h3>🍽️ Bữa ăn hôm nay <span class="hint">bỏ bữa → +3💎 mua đồ ăn cho pet</span></h3>
+    <div id="mealList"></div>
+  </div>
+
   <div class="tiles">
     <div class="tile"><div class="ic r">❤️</div><div class="val" id="mHR">—</div><div class="lbl">Nhịp tim nghỉ</div><div class="upd" id="mHRt">chưa có dữ liệu</div></div>
     <div class="tile"><div class="ic p">🧠</div><div class="val" id="mHRV">—</div><div class="lbl">HRV · baseline</div><div class="upd" id="mHRVt">cần 7+ ngày</div></div>
@@ -555,6 +560,7 @@ html{scrollbar-width:none}
       <div style="font-size:34px;font-weight:800;color:var(--volt)">LV <span id="gqLevel">1</span></div>
       <div style="flex:1"><div class="pbar" style="margin-top:0;height:10px"><i id="gqXpFill" style="width:0%"></i></div><div class="sub" style="margin-top:5px;font-size:11px"><span id="gqXpTxt">0/60 XP</span></div></div>
       <div style="text-align:right;font-size:13px;font-weight:800;color:var(--gold)">🪙 <span id="gqCoins">0</span><div class="sub" style="font-size:10.5px">🔥 <span id="gqStreak">0</span> <span class="chipsmall">chuỗi ngày</span></div></div>
+      <div style="text-align:right;font-size:13px;font-weight:800;color:var(--purple)">💎 <span id="gqDia">0</span><div class="sub" style="font-size:10.5px">kim cương</div></div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
       <div class="pbar" style="flex:1;height:8px;margin-top:0"><i id="gqDayFill" style="width:0%;background:linear-gradient(90deg,var(--cyan),var(--volt))"></i></div>
@@ -564,6 +570,14 @@ html{scrollbar-width:none}
   </div>
   <div id="gqList"></div>
   <button class="btn volt" style="margin-top:14px" onclick="submitDay()">📩 <span id="gqSubmitLbl">Nộp ngày — nhận thưởng</span></button>
+  <div class="card" style="border-color:color-mix(in srgb,var(--cyan) 45%,transparent)"><h3>🗓️ Pet của tuần <span class="hint">mỗi tuần 1 bé mới</span></h3><div id="weekPetBox"></div></div>
+  <div class="card" style="border-color:color-mix(in srgb,var(--purple) 45%,transparent)"><h3>💎 Cách kiếm Kim cương</h3><div class="sub" style="line-height:2.05;font-weight:500">
+    • ⏭ <b>Bỏ bữa ăn</b> (sáng/trưa/tối ở tab Tổng quan): <b style="color:var(--purple)">+3💎</b> mỗi bữa — tiết kiệm cho pet<br>
+    • 📩 Nộp ngày đủ 5 nhiệm vụ: <b style="color:var(--purple)">+1💎</b> · đủ 5 ngày/tuần → <b>pet tuần MIễN PHÍ</b><br>
+    • 🌍 Làm 3 nhiệm vụ Safari mỗi ngày: <b style="color:var(--purple)">+3💎</b><br>
+    • 🎁 Kho báu xuất hiện ngẫu nhiên trong Safari: cơ hội nhặt <b style="color:var(--purple)">💎</b><br>
+    • 🔥 Chuỗi 7 ngày nộp liên tiếp: <b style="color:var(--purple)">+10💎</b><br>
+    • 💎 Dùng mua <b>thức ăn cho pet</b> ở tab Thú 4D — pet no nê, vui vẻ hơn!</div></div>
   <div class="sub" style="margin-top:10px">⚡ XP chỉ thưởng cho kỷ luật & thói quen an toàn — không thưởng cho fast dài.</div>
   <div class="card"><h3>🎁 Rương bí ẩn</h3><div id="gqChest"></div></div>
   <div class="card"><h3>🔍 Bạn có biết?</h3><div class="gq-fact" id="gqFact"></div></div>
@@ -594,6 +608,13 @@ html{scrollbar-width:none}
     <div class="p4-grid" id="p4Grid"></div>
     <div class="sub" style="margin-top:10px" id="p4Note"></div>
   </div>
+  <div class="card" style="border-color:color-mix(in srgb,var(--purple) 42%,transparent)">
+    <h3>🛒 Cửa hàng thức ăn pet <span class="hint">mua bằng 💎 kim cương</span></h3>
+    <div id="foodShop"></div>
+    <div style="font-size:11px;letter-spacing:1.6px;color:var(--sub);font-weight:800;margin:16px 0 4px">CHĂM SÓC PET — CHO ĂN KHI ĐÓI</div>
+    <div id="petCare"></div>
+  </div>
+
   <div class="card">
     <h3>📖 Bộ sưu tập 4D</h3>
     <div class="gq-dex" id="gqDex"></div>
@@ -606,6 +627,7 @@ html{scrollbar-width:none}
   <div class="card" style="padding:0;overflow:hidden;margin-top:14px">
     <div class="p4-stage" id="sfStage" style="height:min(58vh,470px);min-height:330px">
       <canvas id="sfCanvas"></canvas>
+      <div id="sfTreasure" onclick="sfTreasureTap(event)" style="display:none;position:absolute;z-index:7;font-size:32px;cursor:pointer;filter:drop-shadow(0 0 10px rgba(255,220,80,.95));animation:floaty 1.1s ease-in-out infinite;user-select:none;-webkit-user-select:none"></div>
       <div class="p4-title" id="sfTitle">SAFARI WORLD 3D<small>WEBGL THỰC SỰ · MAP GẤP 3 · KÉO XOAY · CHỤM ZOOM</small></div>
       <div class="p4-cam" id="sfStatus">🌤️ TRỜI ĐẸP · BÉ ĐANG DẠO CHƠI</div>
       <div class="p4-hint">👆 Kéo xoay camera · chụm zoom · chạm đất → bé đi · chạm sông/vòng quay/bướm → tương tác · 2 lần = nhảy</div>
@@ -617,6 +639,11 @@ html{scrollbar-width:none}
       <button class="p4-btn purple" id="sfRest">💤 Nghỉ</button>
       <button class="p4-btn cyan" id="sfDayNight">🌙 Đêm</button>
     </div>
+  </div>
+  <div class="card" style="border-color:color-mix(in srgb,var(--cyan) 45%,transparent)">
+    <h3>🗺️ Nhiệm vụ Safari <span class="hint">mỗi ngày — nhận 💎 cho pet</span></h3>
+    <div id="sfQuestBox"></div>
+    <div class="sub" style="margin-top:8px;font-size:11px">🎁 Kho báu 💎/🪙 xuất hiện ngẫu nhiên trên bản đồ — chạm nhanh trước khi nó biến mất!</div>
   </div>
   <div class="card" id="sfPanel">
     <h3>🎮 Bảng điều khiển Pet</h3>
@@ -793,7 +820,7 @@ function go(t,btn){
   P4.setMainActive(t==='pets');
   if(t==='pets')P4.resizeMain();
   if(t==='dash')P4.resizeComp();
-  if(typeof Safari!=='undefined'){Safari.setActive(t==='safari');if(t==='safari')setTimeout(()=>Safari.resize(),60);}
+  if(typeof Safari!=='undefined'){Safari.setActive(t==='safari');if(t==='safari'){setTimeout(()=>Safari.resize(),60);sfMark('visit');sfTreasureLoop();}else{clearTimeout(sfTreTimer);const te=$('sfTreasure');if(te){te.dataset.on='';te.style.display='none'}}}
 }
 function openSheet(id){$(id).classList.add('on')}
 function closeSheet(id){$(id).classList.remove('on')}
@@ -1092,7 +1119,7 @@ const GQ_TASKS=[
   {id:'move',n:[T('Ghi nhận vận động hôm nay','Log today\u2019s activity'),T('Ghi nhận vận động hôm nay','Log today\u2019s activity')],xp:10,coin:5,ck:()=>!!get('intensity',{})[new Date().toDateString()]},
   {id:'edu',n:[T('Đọc 1 bài khoa học','Read 1 science note'),T('Đọc 1 bài khoa học','Read 1 science note')],xp:10,coin:5,ck:()=>get('eduToday','')===new Date().toDateString()},
 ];
-function gq(){return get('gq',{xp:0,coins:0,streak:0,lastDay:'',login:{},chestDay:'',ach:{}})}
+function gq(){const g=get('gq',{xp:0,coins:0,streak:0,lastDay:'',login:{},chestDay:'',ach:{}});if(g.dia==null)g.dia=0;return g}
 function gqSave(g){set('gq',g)}
 function gqLevel(xp){return Math.floor(Math.sqrt(xp/60))+1}
 function gqAdd(xp,coin,msg){
@@ -1118,10 +1145,13 @@ function submitDay(){
   if(get('gqSubmit','')===today){toastMsg(T('Đã nộp hôm nay rồi!','Already submitted today!'));return}
   if(!allDone){toastMsg(T('⚠️ Hoàn thành hết nhiệm vụ trước đã!','⚠️ Complete all tasks first!'));return}
   set('gqSubmit',today);gqAdd(25,15,T('📩 Nộp ngày hoàn thành!','📩 Day submitted!'));
+  const ws=weekState();ws.subs=Math.min(6,ws.subs+1);gqSave(gq());gqDia(1);
   /* streak */
   const yest=new Date(Date.now()-864e5).toDateString();
   g.streak=(g.lastDay===yest||g.lastDay===today)?(g.lastDay===today?g.streak:g.streak+1):1;
-  g.lastDay=today;gqSave(g);gqRender();
+  g.lastDay=today;gqSave(g);
+  if(g.streak>0&&g.streak%7===0)gqDia(10,T(`🔥 Chuỗi ${g.streak} ngày!`,'🔥 '+g.streak+'-day streak!'));
+  gqRender();
 }
 function openChest(){
   const today=new Date().toDateString(),g=gq();
@@ -1166,6 +1196,7 @@ function gqRender(){
   $('gqLevel').textContent=lv;$('gqXpFill').style.width=pct+'%';
   $('gqXpTxt').textContent=`${g.xp-prevXp}/${nextXp-prevXp} XP · ${T('tổng','total')} ${g.xp}`;
   $('gqCoins').textContent=g.coins;$('gqCoins3')&&($('gqCoins3').textContent=g.coins);
+  $('gqDia')&&($('gqDia').textContent=g.dia||0);
   $('gqStreak').textContent=g.streak;
   const done=GQ_TASKS.filter(t=>gqTaskDone(t.id)).length;
   $('gqDayFill').style.width=(done/GQ_TASKS.length*100)+'%';
@@ -1204,6 +1235,91 @@ function renderDex(){
   })});
 }
 function toastMsg(m){const t=$('gqToast');t.textContent=m;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ================= ECONOMY 2.0 — DIAMOND · BỮA ĂN · CỬA HÀNG THỨC ĂN · PET TUẦN · SAFARI QUESTS ================= */
+function weekNum(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+3-((d.getDay()+6)%7));const w1=new Date(d.getFullYear(),0,4);return d.getFullYear()*100+(1+Math.round(((d-w1)/864e5-3+((w1.getDay()+6)%7))/7))}
+function weekPet(){const ks=Object.keys(PET_DEFS);return ks[weekNum()%ks.length]}
+function weekState(){const g=gq();if(!g.week||g.week.wk!==weekNum()){g.week={wk:weekNum(),subs:0,claimed:false};gqSave(g)}return g.week}
+function gqDia(n,msg){const g=gq();g.dia=(g.dia||0)+n;gqSave(g);if(msg)toastMsg(msg);ecoRender();gqRender()}
+const GQ_FOODS=[
+  {id:'carrot',e:'🥕',p:3},{id:'fish',e:'🐟',p:4},{id:'bamboo',e:'🎋',p:4},{id:'milk',e:'🥛',p:3},
+  {id:'berry',e:'🫐',p:3},{id:'honey',e:'🍯',p:5},{id:'pizza',e:'🍕',p:6},{id:'cake',e:'🍰',p:7}];
+function foodBag(){return get('bag',{})}
+function buyFood(id){const g=gq(),f=GQ_FOODS.find(x=>x.id===id);if(!f)return;
+  if((g.dia||0)<f.p){toastMsg(T(`⚠️ Cần ${f.p}💎 — cách kiếm ở tab Nhiệm vụ!`,`⚠️ Need ${f.p}💎 — how to earn in Quest tab!`));return}
+  g.dia-=f.p;gqSave(g);const b=foodBag();b[id]=(b[id]||0)+1;set('bag',b);
+  toastMsg(`${f.e} ${T('đã mua — vào túi!','bought — into bag!')}`);ecoRender()}
+function hungerOf(k){const f=get('pfed',{})[k];if(!f)return 100;const hrs=(Date.now()-f)/36e5;return Math.max(0,Math.round(100-hrs*10))}
+function feedPet(k){const b=foodBag(),ids=Object.keys(b).filter(x=>b[x]>0);
+  if(!ids.length){toastMsg(T('⚠️ Túi trống — mua thức ăn bằng 💎 ở cửa hàng bên trên!','⚠️ Bag empty — buy food with 💎 above!'));return}
+  const id=ids[0];b[id]--;if(!b[id])delete b[id];set('bag',b);
+  const pf=get('pfed',{});pf[k]=Date.now();set('pfed',pf);
+  gqAdd(5,2,'');
+  toastMsg(`${GQ_FOODS.find(f=>f.id===id).e} → ${PET_DEFS[k].name[LANG]} 💕 ${T('no nê rồi!','full & happy!')}`);ecoRender()}
+const MEALS=[['s','☀️'],['t','🍜'],['c','🌙']];
+function mealAct(id,act){const today=new Date().toDateString();const m=get('meals',{});if(m[today+id])return;
+  m[today+id]=act;set('meals',m);
+  if(act==='skip')gqDia(3,'💎 +3 — '+T('bỏ bữa, tiết kiệm cho pet!','meal skipped, savings for pet!'));
+  else{gqAdd(5,2,'');toastMsg(T('🍽 Đã ghi nhận bữa ăn!','🍽 Meal logged!'))}}
+function sfMark(tag){const today=new Date().toDateString();const q=get('sfq',{});if(q.d!==today){q.d=today;q.visit=0;q.play=0;q.tr=0}
+  q[tag]=(q[tag]||0)+1;set('sfq',q);ecoRender()}
+function claimSfQ(){const q=get('sfq',{});if(q.done||!(q.visit>=1&&q.play>=1&&q.tr>=2))return;
+  q.done=true;set('sfq',q);gqDia(3,'💎 +3 — Safari!')}
+function claimWeekPet(){const k=weekPet(),ws=weekState(),own=get('p4own',['dolphin','pig']);
+  if(ws.subs<5||ws.claimed||own.includes(k))return;
+  ws.claimed=true;gqSave(gq());own.push(k);set('p4own',own);confetti();
+  toastMsg(`🎉 ${PET_DEFS[k].name[LANG]} — ${T('MIỄN PHÍ!','FREE!')}`);P4.renderGrid();ecoRender()}
+let sfTreTimer=null;
+function sfTreasureLoop(){clearTimeout(sfTreTimer);const el=$('sfTreasure');if(!el)return;
+  if(!el.dataset.on){sfTreTimer=setTimeout(()=>{const dia=Math.random()<0.3;
+    el.textContent=dia?'💎':'🎁';el.dataset.on='1';el.dataset.dia=dia?'1':'';
+    el.style.left=(8+Math.random()*72)+'%';el.style.top=(14+Math.random()*58)+'%';
+    el.style.display='block';sfTreasureLoop()},9000+Math.random()*14000)}
+  else{sfTreTimer=setTimeout(()=>{el.dataset.on='';el.style.display='none';sfTreasureLoop()},4000)}}
+function sfTreasureTap(ev){const el=$('sfTreasure');if(!el||!el.dataset.on)return;
+  const dia=el.dataset.dia==='1';el.dataset.on='';el.style.display='none';sfMark('tr');
+  if(dia)gqDia(1,'💎 +1!');else gqAdd(0,4,'🪙 +4!');
+  sfTreasureLoop();if(ev&&ev.stopPropagation)ev.stopPropagation()}
+function ecoRender(){
+  const g=gq(),d=$('gqDia');if(d)d.textContent=g.dia||0;
+  const today=new Date().toDateString(),m=get('meals',{});
+  const el=$('mealList');if(el)el.innerHTML=MEALS.map(([id,e])=>{
+    const st=m[today+id]||'';
+    const nm={s:[T('Bữa sáng','Breakfast'),'06–10h'],t:[T('Bữa trưa','Lunch'),'11–14h'],c:[T('Bữa tối','Dinner'),'18–21h']}[id];
+    return `<div class="gq-q ${st?'gq-done':''}" style="gap:8px"><div style="font-size:20px">${e}</div>
+      <div style="flex:1"><b style="font-size:13.5px">${nm[0]}</b><div class="sub" style="font-size:10.5px">${nm[1]}</div></div>
+      ${st==='eat'?`<b style="color:var(--green);font-size:12px">✓ ${T('Đã ăn','Eaten')}</b>`
+        :st==='skip'?`<b style="color:var(--purple);font-size:12px">💎 +3</b>`
+        :`<button class="btn ghost sm" style="margin:0;width:auto;padding:7px 10px;font-size:11.5px" onclick="mealAct('${id}','eat')">🍽 ${T('Ăn','Eat')}</button>
+          <button class="btn ghost sm" style="margin:0;width:auto;padding:7px 10px;font-size:11.5px;color:var(--purple);border-color:var(--purple)" onclick="mealAct('${id}','skip')">⏭ +💎</button>`}</div>`}).join('');
+  const wp=$('weekPetBox');if(wp){const k=weekPet(),ws=weekState(),own=get('p4own',['dolphin','pig']);
+    const pct=Math.min(5,ws.subs),free=pct>=5&&!ws.claimed;
+    wp.innerHTML=`<div style="display:flex;align-items:center;gap:12px">
+      <canvas id="weekPetCv" width="96" height="96" style="width:64px;height:64px;background:rgba(255,255,255,.04);border-radius:14px;border:1px solid var(--line2)"></canvas>
+      <div style="flex:1"><b style="font-size:14px">${PET_DEFS[k].name[LANG]}</b>
+      <div class="sub" style="font-size:11px;margin-top:3px">${T('Nộp đủ 5 ngày tuần này → MIỄN PHÍ · không thì giảm 50%','Submit 5 days this week → FREE · else 50% off')}</div>
+      <div class="pbar" style="margin-top:6px;height:7px"><i style="width:${pct/5*100}%"></i></div>
+      <div class="sub" style="font-size:10.5px;margin-top:3px">${T('Đã nộp','Submitted')} ${pct}/5 ${free?`· <b style="color:var(--volt)">${T('ĐƯỢC NHẬN MIỄN PHÍ!','CLAIM FREE!')}</b>`:''}</div></div>
+      ${own.includes(k)?`<b style="color:var(--green);font-size:11.5px">✓</b>`:free?`<button class="btn volt sm" style="margin:0;width:auto;padding:9px 12px;font-size:11.5px" onclick="claimWeekPet()">🎁 ${T('Nhận','Claim')}</button>`:`<b style="color:var(--gold);font-size:12px">${Math.round(PET_DEFS[k].cost/2)}🪙</b>`}</div>`;
+    const cv=$('weekPetCv');if(cv){const c2=cv.getContext('2d');c2.clearRect(0,0,96,96);
+      try{drawPetTo(c2,k,48,72,0.52,-0.5,0.1,0,petPose(k,0,'idle',1))}catch(e){}}}
+  const shop=$('foodShop');if(shop){const b=foodBag();
+    shop.innerHTML=`<div class="gq-ach" style="grid-template-columns:repeat(4,1fr)">${GQ_FOODS.map(f=>`<div class="gq-a" style="cursor:pointer" onclick="buyFood('${f.id}')"><div class="e">${f.e}</div><div class="t">${f.p}💎${b[f.id]?` ·×${b[f.id]}`:''}</div></div>`).join('')}</div>
+    <div class="sub" style="margin-top:8px;font-size:11px">💎 <b style="color:var(--purple)">${g.dia||0}</b> · ${T('chạm món để mua → vào túi → cho pet ăn bên dưới','tap to buy → bag → feed pets below')}</div>`;
+    const own=get('p4own',['dolphin','pig']);const pc=$('petCare');
+    if(pc){pc.innerHTML=own.map(k=>{const h=hungerOf(k);
+      return `<div class="gq-q" style="gap:10px"><canvas data-pet="${k}" width="72" height="72" style="width:44px;height:44px"></canvas>
+        <div style="flex:1"><b style="font-size:13px">${PET_DEFS[k].name[LANG]}</b>
+        <div class="pbar" style="margin-top:5px;height:6px"><i style="width:${h}%;background:${h>50?'var(--green)':h>25?'var(--orange)':'var(--red)'}"></i></div></div>
+        <b style="font-size:11px;width:34px;text-align:right;color:${h>50?'var(--green)':h>25?'var(--orange)':'var(--red)'}">${h}%</b>
+        <button class="btn ghost sm" style="margin:0;width:auto;padding:8px 11px;font-size:11.5px" onclick="feedPet('${k}')">🍽 ${T('Cho ăn','Feed')}</button></div>`}).join('');
+      requestAnimationFrame(()=>{pc.querySelectorAll('canvas').forEach(c=>{const c2=c.getContext('2d');c2.clearRect(0,0,72,72);
+        try{drawPetTo(c2,c.dataset.pet,36,56,0.42,-0.5,0.1,0,petPose(c.dataset.pet,0,'idle',1))}catch(e){}})})}}
+  const sfq=$('sfQuestBox');if(sfq){const q=get('sfq',{});if(q.d!==today){q.d=today;q.visit=0;q.play=0;q.tr=0;q.done=false;set('sfq',q)}
+    const items=[[T('Ghé thăm Safari','Visit Safari'),q.visit>=1],[T('Đổi pet trong Safari','Switch pet in Safari'),q.play>=1],[T('Nhặt 2 kho báu','Collect 2 treasures'),q.tr>=2]];
+    sfq.innerHTML=items.map(([n,done])=>`<div class="gq-q ${done?'gq-done':''}"><div class="gq-chk">${done?'✓':''}</div><div class="gq-n" style="font-size:13px;flex:1">${n}</div><span class="gq-xp">+1💎</span></div>`).join('')
+      +(items.every(i=>i[1])?(q.done?`<div class="sub" style="text-align:center;color:var(--volt);font-weight:700;margin-top:6px">✓ ${T('Đã nhận +3💎 hôm nay','Claimed +3💎 today')}</div>`:`<button class="btn volt sm" style="margin:10px auto 0;width:auto" onclick="claimSfQ()">🎁 ${T('Nhận thưởng +3💎','Claim +3💎')}</button>`):'');}}
+}
 
 /* ================= SETTINGS ================= */
 function setTheme(t){document.body.dataset.theme=t==='volt'?'':t;set('theme',t);document.querySelectorAll('#swatches .sw').forEach(s=>s.classList.toggle('sel',s.classList.contains(t===''?'volt':t)))}
@@ -2331,7 +2447,8 @@ const P4={
   pick(k){
     const own=get('p4own',['dolphin','pig']),g=gq();
     if(!own.includes(k)){
-      const cost=PET_DEFS[k].cost;
+      let cost=PET_DEFS[k].cost;
+      if(k===weekPet())cost=Math.round(cost/2);   /* pet tuần này giảm 50% */
       if(g.coins<cost){toastMsg(T(`⚠️ Cần ${cost} 🪙 — làm nhiệm vụ ngay!`,`⚠️ Need ${cost} coins — do quests!`));return}
       if(!confirm(T(`Mở khóa ${PET_DEFS[k].name.vi} với ${cost} 🪙?`,`Unlock ${PET_DEFS[k].name.en} for ${cost} coins?`)))return;
       g.coins-=cost;gqSave(g);own.push(k);set('p4own',own);
@@ -9707,7 +9824,7 @@ function renderPetChips(){
   const el=$('sfPets');if(!el)return;
   const keys=Object.keys(PET_DEFS);
   const lead=pets.length?pets[0].key:null;
-  el.innerHTML=keys.map(k=>`<div class="sf-pet ${k===lead?'sel':''}" onclick="Safari.selectPet('${k}')"><canvas width="96" height="96"></canvas><span>${PET_DEFS[k].name[LANG]}</span><em class="badge">ĐANG ĐIỀU KHIỂN</em></div>`).join('');
+  el.innerHTML=keys.map(k=>`<div class="sf-pet ${k===lead?'sel':''}" onclick="Safari.selectPet('${k}');sfMark('play')"><canvas width="96" height="96"></canvas><span>${PET_DEFS[k].name[LANG]}</span><em class="badge">ĐANG ĐIỀU KHIỂN</em></div>`).join('');
   requestAnimationFrame(()=>{el.querySelectorAll('canvas').forEach((c,i)=>{const k=keys[i];
     try{drawPetTo(c.getContext('2d'),k,48,58,0.5,-0.5,0.12,t,petPose(k,t,'idle',1))}catch(e){}});});
 }
