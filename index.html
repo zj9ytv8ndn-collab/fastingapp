@@ -9885,6 +9885,10 @@ const SAFARI_SPOTS=[[-620,-470],[240,-430],[560,330],[-420,350],[-200,-300],[-85
   [-900,-150],[820,-260],[700,520],[-700,260],[60,-560],[420,-80],[-260,520],[940,80],[-520,40],[160,640],[-40,120]];
 function pickTarget(p){
   let tx=(R()*2-1)*1000,tz=(R()*2-1)*1000;
+  if(p.lead&&PET3D[p.key]&&PET3D[p.key].swim&&window._ocean&&R()<0.75){
+    const O=window._ocean,a=R()*Math.PI*2,rr=R()*(O.r-50);
+    tx=O.x+Math.cos(a)*rr;tz=O.z+Math.sin(a)*rr;
+  }
   if(!p.lead){const L=pets[0];
     if(L&&R()<0.16){const a2=R()*Math.PI*2,r2=14+R()*30;
       /* thỉnh thoảng ghé gần bé dẫn đoàn chơi cùng */
@@ -10233,6 +10237,18 @@ function init(){
   const ag=$('sfAllGL');if(ag)ag.checked=glAllFlag;
   buildRoster(false);
   pets[0].label='lead';
+  /* ===== MAC DINH: ca heo boi trong bien Safari ===== */
+  if(pets[0].key==='dolphin'&&window._ocean){
+    const O=window._ocean;
+    pets[0].x=O.x;pets[0].z=O.z;
+    pets[0].tx=O.x;pets[0].tz=O.z;
+    pets[0].side=sideOf(O.x,O.z);pets[0].tside=pets[0].side;
+    pets[0].state='idle';pets[0].idleT=1.2;
+    pets[0].inWater=true;pets[0].inOcean=true;
+    pets[0].g.position.set(O.x,0.8,O.z);
+    camTgt.set(O.x,2.4,O.z);
+    if($('sfStatus'))$('sfStatus').textContent='\u{1F42C} '+T('CA HEO DANG BOI TRONG BIEN SAFARI!','DOLPHIN SWIMMING IN SAFARI SEA!');
+  }
   /* nút */
   const selB=id=>['sfWalk','sfRun','sfRest'].forEach(b=>$(b).classList.toggle('active',b===id));
   $('sfWalk').onclick=()=>{mode='walk';selB('sfWalk');pets[0].state='idle';pets[0].idleT=0.4};
@@ -10271,7 +10287,17 @@ function refreshPets(){
     if(old.gl4d){try{old.gl4d.gl.cv.remove()}catch(e){}try{old.gl4d.hostEl&&old.gl4d.hostEl.remove()}catch(e){}}
     scene.remove(old.g);
     pets[0]=newPet(leadKey,true,0);
-    pets[0].x=old.x;pets[0].z=old.z;pets[0].g.position.set(old.x,0,old.z);
+    if(PET3D[leadKey]&&PET3D[leadKey].swim&&window._ocean){
+      /* pet bơi: thả xuống lòng biển thay vì đứng trên cạn */
+      const O=window._ocean,a=R()*Math.PI*2,rr=R()*(O.r-60);
+      const sx=O.x+Math.cos(a)*rr,sz=O.z+Math.sin(a)*rr;
+      pets[0].x=sx;pets[0].z=sz;pets[0].tx=sx;pets[0].tz=sz;
+      pets[0].side=sideOf(sx,sz);pets[0].tside=pets[0].side;
+      pets[0].inWater=true;pets[0].inOcean=true;
+      pets[0].g.position.set(sx,0.8,sz);
+    }else{
+      pets[0].x=old.x;pets[0].z=old.z;pets[0].g.position.set(old.x,0,old.z);
+    }
     pets[0].g.add(makeLabel(PET_DEFS[leadKey].name[LANG],'⭐'));
   }
   const own=get('p4own',['dolphin','pig']);
