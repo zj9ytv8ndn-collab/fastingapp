@@ -541,7 +541,7 @@ html{scrollbar-width:none}
     </div>
   </div>
   <div class="card">
-    <h3>🦁 Sở thú 4D <span class="hint" id="p4Count">1/13 · chạm để chọn / mở khóa</span></h3>
+    <h3>🦁 Sở thú 4D <span class="hint" id="p4Count">1/14 · chạm để chọn / mở khóa</span></h3>
     <div class="p4-grid" id="p4Grid"></div>
     <div class="sub" style="margin-top:10px" id="p4Note"></div>
   </div>
@@ -571,7 +571,7 @@ html{scrollbar-width:none}
   </div>
   <div class="card" id="sfPanel">
     <h3>🎮 Bảng điều khiển Pet</h3>
-    <div class="sf-sec">CHỌN PET — 13 BÉ 4D TRONG SAFARI</div>
+    <div class="sf-sec">CHỌN PET — 14 BÉ 4D TRONG SAFARI</div>
     <div class="sf-petgrid" id="sfPets"></div>
     <div class="tgl" style="border:0;padding-bottom:0;font-size:12px"><span>✨ Hiệu ứng 3D đầy đủ cho mọi bé<br><small style="color:var(--sub2)">Tắt = bé điều khiển 3D, bé khác nhẹ máy</small></span><span class="switch"><input type="checkbox" id="sfAllGL" onchange="Safari.setAllGL(this.checked)"><i></i></span></div>
     <div class="sf-sec">🕹️ ĐIỀU KHIỂN</div>
@@ -1147,7 +1147,7 @@ function renderDex(){
   const own=get('p4own',['dolphin','pig']);
   $('gqDex').innerHTML=Object.entries(PET_DEFS).map(([k,d])=>{const o=own.includes(k);
     return `<div class="gq-p ${o?'':'lk'}"><canvas data-pet="${k}" width="108" height="108"></canvas><div class="t">${d.name[LANG]}</div></div>`}).join('');
-  $('gqDexNote').textContent=T(`Đã sưu tầm ${own.length}/13 bé 4D — mở khóa thêm ở tab Thú 4D bằng 🪙!`,`Collected ${own.length}/13 4D pets — unlock more in the 4D Pets tab with coins!`);
+  $('gqDexNote').textContent=T(`Đã sưu tầm ${own.length}/14 bé 4D — mở khóa thêm ở tab Thú 4D bằng 🪙!`,`Collected ${own.length}/14 4D pets — unlock more in the 4D Pets tab with coins!`);
   /* paint tiny stills */
   requestAnimationFrame(()=>{document.querySelectorAll('#gqDex canvas').forEach(c=>{
     const ctx=c.getContext('2d');
@@ -1178,6 +1178,7 @@ const PET_DEFS={
   giraffe:{name:{vi:'Hươu cao cổ',en:'Giraffe'},cost:600,hab:'savanna',dy:40},
   monkey:{name:{vi:'Khỉ con',en:'Monkey'},cost:650,hab:'tree'},
   trex:{name:{vi:'Khủng long Disco',en:'Disco T-Rex'},cost:700,hab:'disco'},
+  croc:{name:{vi:'Cá sấu con',en:'Baby Croc'},cost:750,hab:'pond'},
 };
 const HAB_BG={ocean:['#082438','#0e3a55'],farm:['#241f14','#342b1a'],tree:['#15251a','#213a26'],pond:['#0e2b35','#16414e'],bamboo:['#1b2c17','#2a4122'],den:['#261f25','#362d34'],meadow:['#1e2c17','#2d4121'],savanna:['#2e2415','#41331e'],plains:['#27231b','#383427'],disco:['#150b26','#241242']};
 function sh(c,f){const n=parseInt(c.slice(1),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
@@ -1695,6 +1696,84 @@ trex:st=>{
   E(hx+12,hy-18-jaw,0,9,4,mir);
   return P;
 },
+croc:st=>{
+  const P=[],t=st.t;
+  const E=(x,y,z,rx,ry,c,fl,fur)=>P.push({k:'e',x,y,z,rx,ry,c,grad:!fl,fur:fur||0});
+  const L=(a,b,w,c)=>P.push({k:'l',a,b,w,c});
+  const C=(a,b,w,c)=>P.push({k:'c',a,b,w,c});
+  const PL=(pts,c)=>P.push({k:'p',pts,c});
+  const body='#5f6b45',bodyD='#46523a',belly='#b8c28c',armor='#39422c',spike='#454e36',dark='#232a1a',eyeC='#d4b93f';
+  const br=st.breath;
+  /* ===== ĐUÔI — dài bằng nửa thân, 2 gờ gai chạy dọc ===== */
+  const tw=Math.sin(t*1.8)*3;
+  C([-38,26,0],[-60,22+tw*0.3,0],8,body);
+  C([-60,22+tw*0.3,0],[-80,16+tw,0],5.5,bodyD);
+  C([-80,16+tw,0],[-94,10+tw*1.4,0],3,bodyD);
+  E(-97,9+tw*1.4,0,2.6,1.8,bodyD);
+  for(let i=0;i<9;i++){const gx=-38-i*6.5,gy=31-i*2.1+tw*0.25;
+    PL([[gx-2.6,gy],[gx,gy+5.5],[gx+2.6,gy]],armor);
+    PL([[gx-3.2,gy-2.6],[gx-0.6,gy+1.6],[gx+2,gy-2.6]],armor);}   /* gờ gai thứ 2 */
+  /* ===== THÂN — dẹt dài, lưng gồ ghề ===== */
+  E(-4,26,0,38*br,13.5,body,0,0.4);
+  E(-4,20.5,0,35,7,belly);
+  /* đường gai lưng 2 gờ liền mạch — từ cổ tới đuôi */
+  for(let i=0;i<9;i++){const sx=-30+i*7.4,sy=37-Math.abs(i-4)*0.8;
+    PL([[sx-3,sy],[sx,sy+7],[sx+3,sy]],spike);
+    PL([[sx-2.2,sy-2.6],[sx,sy+4],[sx+2.2,sy-2.6]],armor);}
+  /* vảy lưng hình vuông nổi — hàng giữa */
+  for(let i=0;i<11;i++){const sx=-33+i*6.4,sy=33-Math.abs(i-5)*0.55;
+    E(sx,sy,0,3.2,2,i%2?armor:bodyD,1);}
+  /* bụng chia múi vảy */
+  for(let i=0;i<8;i++){const bx=-28+i*7;
+    L([bx,15,12],[bx+1.5,24,12],1,'rgba(60,70,40,.45)');}
+  /* ===== 4 CHÂN — khớp gập sát sườn + ngón cong có móng ===== */
+  for(const s of[1,-1]){
+    C([14,22,s*13],[20,14,s*15],6.5,body);             /* đùi trước */
+    C([20,14,s*15],[26,9,s*15],4.5,bodyD);             /* cẳng */
+    E(29,7,s*15,6,3.2,belly);                          /* bàn chân */
+    for(let f2=0;f2<5;f2++)E(34,6.5,s*15+(f2-2)*3.2,1.9,2.3,'#e8e4d0');
+    C([-28,22,s*14],[-22,13,s*16],7.5,body);           /* đùi sau to */
+    C([-22,13,s*16],[-16,8,s*16],5,bodyD);
+    E(-13,6.5,s*16,6.5,3.4,belly);
+    for(let f2=0;f2<4;f2++)E(-8,6,s*16+(f2-1.5)*3.8,2,2.4,'#e8e4d0');
+  }
+  /* ===== ĐẦU — tách rõ thân, cổ nếp gấp ===== */
+  const hx=32+st.look*1.2,hy=30+Math.sin(t*1.5)*0.8-(st.headDown||0)*9;
+  C([24,26,0],[30,27,0],7,body);                        /* cổ nối */
+  L([26,20,11],[28,25,11],1.2,'rgba(40,48,30,.6)');     /* nếp cổ 1 */
+  L([23,19,11],[26,24,11],1.2,'rgba(40,48,30,.6)');     /* nếp cổ 2 */
+  E(hx,hy,0,12,8.5,body,0,0.4);                         /* sọ đầu gồ */
+  E(hx+3,hy+5,0,8,3.5,armor);                           /* gồ sọ trước mắt */
+  /* mõm V dài nhọn — đặc trưng cá sấu */
+  E(hx+13,hy-1,0,14,5,body);                            /* xương mõm trên */
+  E(hx+12,hy+1.5,0,12,2.8,belly);                       /* đế mõm sáng */
+  E(hx+24,hy-0.5,0,3.5,2,bodyD);                        /* đầu mũi nhọn */
+  E(hx+25,hy+1,4,1.3,1.6,dark);E(hx+25,hy+1,-4,1.3,1.6,dark); /* lỗ mũi */
+  /* mắt trên đỉnh: mí gồ chắn + vàng + đồng tử dọc */
+  for(const s of[1,-1]){
+    const lk=(st.lookX||0)*1.2;
+    PL([[hx-6,hy+9,s*8],[hx-1,hy+12.5,s*8.5],[hx+4,hy+9,s*8]],armor);  /* mí gồ chắn */
+    E(hx-1,hy+8.5,s*7,3.6,3.2,eyeC);
+    E(hx-0.5+lk,hy+9,s*7.6,1.7,2.3,dark);               /* đồng tử khe dọc */
+    E(hx-2+lk,hy+10,s*8,0.7,0.8,'#fff',1);
+  }
+  /* vảy giáp má + sau mắt */
+  E(hx+6,hy+6,6,2.6,1.8,armor,1);E(hx+10,hy+5,-6,2.4,1.7,armor,1);
+  E(hx-8,hy+4,7,2.2,1.6,armor,1);
+  /* ===== MIỆNG — khe dài, răng lộ ngoài xen kẽ ===== */
+  const jaw=1.2+Math.max(0,Math.sin(t*1.1))*1.8;        /* ngậm mở chậm */
+  L([hx+2,hy-4.5,10],[hx+22,hy-5,10],1.6,dark);        /* khe miệng dài */
+  E(hx+12,hy-4-jaw*0.4,0,12,2.2,'#6e4034');
+  E(hx+12,hy-5-jaw*0.4,0,9,1.4,'#a8625e');              /* lưỡi */
+  E(hx+12,hy-7-jaw,0,14,3,bodyD);                       /* hàm dưới dẹt */
+  /* răng trên lộ ra ngoài — 8 chiếc chỉa xuống */
+  for(let i=0;i<8;i++){const tx2=hx+2+i*3.4;
+    PL([[tx2,hy-3],[tx2+1.3,hy-6.5],[tx2+2.6,hy-3]],'#f2ecd8');}
+  /* răng dưới chỉa lên xen kẽ — 7 chiếc */
+  for(let i=0;i<7;i++){const tx2=hx+3.5+i*3.6;
+    PL([[tx2,hy-4.5-jaw],[tx2+1.4,hy-1.5-jaw],[tx2+2.8,hy-4.5-jaw]],'#f2ecd8');}
+  return P;
+},
 };
 function petPose(key,t,mode,speed){
   const run=mode==='run';
@@ -1863,7 +1942,7 @@ class Pet{
   setKey(k){this.key=k;this.envHab=''}
   poke(){if(this.gl){this.gl.poke();return}this.react=Math.random()<0.5?'hop':'nod';this.reactT=0}
   frame(dt){
-    const RIG={dolphin:'DolphinGL',pig:'PigGL',fox:'FoxGL',frog:'FrogGL',koala:'KoalaGL',panda:'PandaGL',deer:'DeerGL',turtle:'TurtleGL',lion:'LionGL',elephant:'ElephantGL',giraffe:'GiraffeGL',monkey:'MonkeyGL',trex:'TrexGL'}[this.key];   /* bé WebGL thật */
+    const RIG={dolphin:'DolphinGL',pig:'PigGL',fox:'FoxGL',frog:'FrogGL',koala:'KoalaGL',panda:'PandaGL',deer:'DeerGL',turtle:'TurtleGL',lion:'LionGL',elephant:'ElephantGL',giraffe:'GiraffeGL',monkey:'MonkeyGL',trex:'TrexGL',croc:'CrocGL'}[this.key];   /* bé WebGL thật */
     if(RIG&&window.THREE){
       if(this.gl&&this.gl.constructor.name!==RIG){this.gl.destroy();this.gl=null;}
       if(!this.gl&&!this.glFail){try{this.gl=new window[RIG](this.cv);}catch(e){this.glFail=true;}}
@@ -2000,8 +2079,8 @@ const P4={
         ${o?'<span class="p4-free">4D</span>':`<span class="p4-lock">🔒 ${d.cost}🪙</span>`}
         <canvas data-pet="${k}" width="144" height="130"></canvas>
         <div class="nm">${d.name[LANG]}</div></div>`}).join('');
-    $('p4Count').textContent=`${own.length}/13 · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
-    $('p4Note').innerHTML=own.length<13
+    $('p4Count').textContent=`${own.length}/14 · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
+    $('p4Note').innerHTML=own.length<14
       ?T(`💡 Thu thập 🪙 từ nhiệm vụ ngày để mở khóa <b style="color:var(--gold)">${10-own.length}</b> bé còn lại — mỗi bé đều có cử động 4D riêng!`,`💡 Earn coins from daily quests to unlock the remaining <b style="color:var(--gold)">${10-own.length}</b> pets — each with its own 4D motion!`)
       :T('🏆 Bộ sưu tập 4D đã hoàn chỉnh!','🏆 Your 4D collection is complete!');
     this.paintGrid();
@@ -5199,6 +5278,300 @@ TrexGL.prototype.frame=function(dt,pet){
 TrexGL.prototype.destroy=function(){
   try{this.renderer.dispose();}catch(e){}
   this.cv.remove();this.host.style.display='';};
+/* ================= CROC GL RIG (Three.js WebGL — cá sấu con đầm lầy, từ ảnh tham chiếu) ================= */
+function CrocGL(host){
+  const cv=document.createElement('canvas');
+  cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;display:block';
+  host.parentElement.appendChild(cv);
+  host.style.display='none';
+  this.cv=cv;this.host=host;
+  const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  this.renderer=renderer;
+  const scene=this.scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x35482e);
+  scene.fog=new THREE.FogExp2(0x35482e,0.04);
+  const camera=this.camera=new THREE.PerspectiveCamera(50,1,0.1,300);
+  scene.add(new THREE.HemisphereLight(0xd8e8c0,0x2a3620,0.6));
+  const sun=new THREE.DirectionalLight(0xfff2cc,0.9);sun.position.set(6,14,4);scene.add(sun);
+  const fill=new THREE.DirectionalLight(0xc8e0b0,0.25);fill.position.set(-5,4,-6);scene.add(fill);
+
+  /* ---- CÁ SẤU BUILD — thân dẹt dài sát đất ---- */
+  const cr=this.croc=new THREE.Group();
+  const BODY=0x5f6b45,BODY_D=0x46523a,BELLY=0xb8c28c,ARMOR=0x39422c,SPIKE=0x454e36;
+  const std=(c,r)=>new THREE.MeshStandardMaterial({color:c,roughness:r||0.75});
+  /* thân dẹt dài */
+  const body=new THREE.Mesh(new THREE.SphereGeometry(0.55,26,16).scale(2.0,0.55,0.85),std(BODY));
+  body.position.set(0,0.5,0);cr.add(body);
+  const belly=new THREE.Mesh(new THREE.SphereGeometry(0.5,20,12).scale(1.9,0.4,0.75),std(BELLY));
+  belly.position.set(0,0.36,0);cr.add(belly);
+  /* vảy vuông nổi 2 hàng giữa lưng */
+  for(let i=0;i<12;i++){
+    const sx=-1.0+i*0.18;
+    const sc=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.05,0.13),std(i%2?ARMOR:BODY_D,0.55));
+    sc.position.set(sx,0.76-Math.abs(i-5.5)*0.015,(i%2?0.09:-0.09));
+    sc.rotation.y=0.4;cr.add(sc);}
+  /* đường gai lưng 2 gờ liền mạch */
+  this.spikes=[];
+  for(let i=0;i<10;i++){
+    const sx=-0.95+i*0.21;
+    const sp=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.15,5),std(SPIKE,0.5));
+    sp.position.set(sx,0.82,0);sp.rotation.z=0.08;cr.add(sp);this.spikes.push(sp);
+    if(i%2===0){const sp2=new THREE.Mesh(new THREE.ConeGeometry(0.045,0.1,5),std(ARMOR,0.5));
+      sp2.position.set(sx+0.1,0.79,0);cr.add(sp2);}}
+  /* đuôi chuỗi đốt thon nhọn + gai 2 gờ */
+  this.tail=[];
+  let parent=cr,tx=-1.05,ty=0.45;
+  [0.42,0.38,0.32,0.26,0.2,0.15,0.11].forEach((L,i)=>{
+    const g=new THREE.Group();g.position.set(i?0:tx,i?0:ty,0);
+    const seg=new THREE.Mesh(new THREE.CylinderGeometry(0.13-i*0.016,0.16-i*0.016,L,8),i%2?std(BODY_D):std(BODY));
+    seg.position.y=L/2;g.add(seg);
+    if(i<6){const sp=new THREE.Mesh(new THREE.ConeGeometry(0.045,0.11,5),std(SPIKE,0.5));
+      sp.position.set(-0.05,0.04,0);g.add(sp);
+      const sp2=new THREE.Mesh(new THREE.ConeGeometry(0.035,0.08,5),std(ARMOR,0.5));
+      sp2.position.set(-0.06,0.02,0.06);g.add(sp2);}
+    g.rotation.z=i===0?1.65:(i<3?0.22:0.35);
+    parent.add(g);parent=g;this.tail.push({g,base:g.rotation.z,i});});
+  const tip=new THREE.Mesh(new THREE.ConeGeometry(0.04,0.16,5),std(BODY_D));
+  tip.position.y=0.1;tip.rotation.z=0.4;parent.add(tip);
+  /* 4 chân ngắn — khớp gập + 5/4 ngón + móng cong */
+  this.legs=[];
+  [[0.55,0.32,5],[-0.6,0.34,4],[0.55,-0.32,5],[-0.6,-0.34,4]].forEach(([lx,lz,toes],li)=>{
+    const hip=new THREE.Group();hip.position.set(lx,0.34,lz);
+    const th=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.1,0.2,8),std(BODY));
+    th.position.set(0.02,-0.08,0);th.rotation.z=0.7;hip.add(th);
+    const sh=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.07,0.16,8),std(BODY_D));
+    sh.position.set(0.1,-0.18,0);sh.rotation.z=0.3;hip.add(sh);
+    const foot=new THREE.Mesh(new THREE.SphereGeometry(0.1,10,8).scale(1.5,0.4,1.15),std(BELLY));
+    foot.position.set(0.18,-0.26,0);hip.add(foot);
+    for(let f2=0;f2<toes;f2++){
+      const cl=new THREE.Mesh(new THREE.ConeGeometry(0.022,0.08,5),
+        new THREE.MeshStandardMaterial({color:0xe8e4d0,roughness:0.35}));
+      cl.position.set(0.3,-0.28,(f2-(toes-1)/2)*0.055);
+      cl.rotation.z=-1.3;hip.add(cl);}
+    cr.add(hip);this.legs.push({hip,phase:li%2?Math.PI:0});});
+  /* đầu TÁCH RÕ THÂN — cổ nối + nếp gấp */
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.26,0.4,10),std(BODY));
+  neck.position.set(1.0,0.5,0);neck.rotation.z=1.1;cr.add(neck);
+  const fold1=new THREE.Mesh(new THREE.TorusGeometry(0.16,0.03,6,14,2.6),std(BODY_D,0.6));
+  fold1.position.set(1.02,0.42,0);fold1.rotation.set(0,0.3,1.2);cr.add(fold1);
+  const head=this.head=new THREE.Group();
+  head.position.set(1.28,0.6,0);
+  head.add(new THREE.Mesh(new THREE.SphereGeometry(0.26,20,14).scale(1.05,0.75,0.8),std(BODY)));
+  /* gồ sọ trước mắt */
+  const browR=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.06,0.3),std(ARMOR,0.5));
+  browR.position.set(0.14,0.18,0);browR.rotation.z=-0.15;head.add(browR);
+  /* mõm V dài nhọn 2 tầng */
+  const snout=new THREE.Mesh(new THREE.SphereGeometry(0.16,18,12).scale(2.1,0.45,0.7),std(BODY));
+  snout.position.set(0.4,-0.04,0);head.add(snout);
+  const snoutTip=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,8).scale(1.6,0.5,0.6),std(BODY_D));
+  snoutTip.position.set(0.72,-0.03,0);head.add(snoutTip);
+  const snoutL=new THREE.Mesh(new THREE.SphereGeometry(0.13,14,10).scale(2.0,0.28,0.65),std(BELLY));
+  snoutL.position.set(0.38,-0.11,0);head.add(snoutL);
+  /* lỗ mũi đầu mõm */
+  [[0.78,0.02,0.07],[0.78,0.02,-0.07]].forEach(([x,y,z])=>{
+    const n=new THREE.Mesh(new THREE.SphereGeometry(0.026,8,6),std(0x232a1a,0.4));
+    n.position.set(x,y,z);head.add(n);});
+  /* mắt trên đỉnh — mí gồ chắn + vàng + đồng tử khe dọc */
+  this.eyes=[];
+  [[0.1,0.2,0.12],[0.1,0.2,-0.12]].forEach(([x,y,z])=>{
+    const ridge=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.05,0.1),std(ARMOR,0.5));
+    ridge.position.set(x+0.03,y+0.07,z);ridge.rotation.set(z>0?-0.3:0.3,0,-0.2);
+    head.add(ridge);
+    const w=new THREE.Mesh(new THREE.SphereGeometry(0.055,12,10),
+      new THREE.MeshStandardMaterial({color:0xd4b93f,roughness:0.25}));
+    w.position.set(x,y+0.03,z);head.add(w);
+    const p=new THREE.Mesh(new THREE.SphereGeometry(0.026,8,6).scale(0.5,1.5,1),
+      new THREE.MeshStandardMaterial({color:0x15150c,roughness:0.15}));
+    p.position.set(x+0.04,y+0.035,z);head.add(p);this.eyes.push(p);
+    const g=new THREE.Mesh(new THREE.SphereGeometry(0.01,6,6),
+      new THREE.MeshBasicMaterial({color:0xffffff}));
+    g.position.set(x+0.055,y+0.055,z*1.1);head.add(g);});
+  /* khe miệng dài + lưỡi + hàm dưới dẹt */
+  const mouthC=new THREE.Mesh(new THREE.SphereGeometry(0.13,14,8).scale(2.2,0.3,0.6),
+    new THREE.MeshStandardMaterial({color:0x6e4034,roughness:0.7}));
+  mouthC.position.set(0.38,-0.14,0);head.add(mouthC);
+  const tongue=new THREE.Mesh(new THREE.SphereGeometry(0.09,10,6).scale(2.0,0.25,0.5),
+    new THREE.MeshStandardMaterial({color:0xa8625e,roughness:0.6}));
+  tongue.position.set(0.4,-0.17,0);head.add(tongue);
+  /* răng trên lộ ngoài — 8 chiếc */
+  for(let i=0;i<8;i++){
+    const T=new THREE.Mesh(new THREE.ConeGeometry(0.022,0.08,5),
+      new THREE.MeshStandardMaterial({color:0xf2ecd8,roughness:0.3}));
+    T.position.set(0.12+i*0.1,-0.12,0);T.rotation.x=Math.PI;head.add(T);}
+  const jaw=this.jaw=new THREE.Group();jaw.position.set(0.1,-0.15,0);
+  const jawM=new THREE.Mesh(new THREE.SphereGeometry(0.12,14,8).scale(2.2,0.35,0.6),std(BODY_D));
+  jawM.position.set(0.28,-0.03,0);jaw.add(jawM);
+  for(let i=0;i<7;i++){
+    const T=new THREE.Mesh(new THREE.ConeGeometry(0.02,0.07,5),
+      new THREE.MeshStandardMaterial({color:0xf2ecd8,roughness:0.3}));
+    T.position.set(0.12+i*0.11,0.02,0);jaw.add(T);}
+  head.add(jaw);
+  cr.add(head);
+  cr.scale.setScalar(0.9);
+  scene.add(cr);
+
+  /* bóng đổ */
+  const shCv=document.createElement('canvas');shCv.width=shCv.height=64;
+  const sg=shCv.getContext('2d');
+  const sgr=sg.createRadialGradient(32,32,2,32,32,32);
+  sgr.addColorStop(0,'rgba(15,25,10,.5)');sgr.addColorStop(1,'rgba(15,25,10,0)');
+  sg.fillStyle=sgr;sg.fillRect(0,0,64,64);
+  const blob=this.blob=new THREE.Mesh(new THREE.PlaneGeometry(3.4,1.8),
+    new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shCv),transparent:true,depthWrite:false}));
+  blob.rotation.x=-Math.PI/2;blob.position.y=-0.03;scene.add(blob);
+
+  /* ---- ĐẦM LẦY ---- */
+  const bank=new THREE.Mesh(new THREE.CircleGeometry(80,48),std(0x6b5a3e,0.9));
+  bank.rotation.x=-Math.PI/2;bank.position.y=-0.04;scene.add(bank);
+  const water=new THREE.Mesh(new THREE.CircleGeometry(26,40),
+    new THREE.MeshStandardMaterial({color:0x4a6a52,roughness:0.15,metalness:0.4}));
+  water.rotation.x=-Math.PI/2;water.position.set(-18,-0.02,-14);scene.add(water);
+  this.water=water;
+  /* lau sậy */
+  const reedM=std(0x5a7a3a,0.7);
+  for(let i=0;i<14;i++){
+    const a=Math.random()*Math.PI,rd=8+Math.random()*10;
+    const rx=-18+Math.cos(a)*rd,rz=-14+Math.sin(a)*rd*0.7;
+    const reed=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.035,1.4+Math.random(),5),reedM);
+    reed.position.set(rx,0.7,rz);reed.rotation.z=(Math.random()-0.5)*0.2;scene.add(reed);
+    if(Math.random()<0.5){
+      const tip2=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.045,0.3,6),std(0x6b4a2a,0.8));
+      tip2.position.set(rx,1.5+Math.random()*0.5,rz);scene.add(tip2);}}
+  /* lục bình */
+  for(let i=0;i<8;i++){
+    const lf=new THREE.Mesh(new THREE.SphereGeometry(0.14,8,6).scale(1,0.25,1),std(0x4a7a3a,0.6));
+    lf.position.set(-14+Math.random()*12,0.02,-10+Math.random()*8);scene.add(lf);}
+  /* đom đóm */
+  const dtGeo=new THREE.BufferGeometry();
+  const dts=[];for(let i=0;i<50;i++)dts.push(Math.random()*24-12,Math.random()*3+0.4,Math.random()*24-12);
+  dtGeo.setAttribute('position',new THREE.Float32BufferAttribute(dts,3));
+  const spk=this.sparkles=new THREE.Points(dtGeo,
+    new THREE.PointsMaterial({color:0xd8ffb0,size:0.09,transparent:true,opacity:0.85,blending:THREE.AdditiveBlending,depthWrite:false}));
+  this.spCount=50;scene.add(spk);
+  /* chuồn chuồn */
+  this.flies=[];
+  [0x7ad8ff,0xa0e8a0].forEach((col,i)=>{
+    const b=new THREE.Group();
+    const wMat=new THREE.MeshBasicMaterial({color:col,side:THREE.DoubleSide,transparent:true,opacity:0.7});
+    const w1=new THREE.Mesh(new THREE.PlaneGeometry(0.3,0.04),wMat);w1.position.x=0.15;
+    const w2=w1.clone();w2.position.x=-0.15;
+    const wingL=new THREE.Group();wingL.add(w1);
+    const wingR=new THREE.Group();wingR.add(w2);
+    b.add(wingL);b.add(wingR);
+    b.userData={wingL,wingR,ph:i*3,r:5+i*2,h:1.2+i*0.8};
+    scene.add(b);this.flies.push(b);});
+
+  this.st={running:true,dancing:false,speed:3,px:0,vx:1,facing:0,
+    jumpT:-1,rollA:0,rollTarget:0,rollSpeed:0,runT:0,
+    azimuth:0.6,polar:1.15,radius:6.0};
+  this.t=0;
+  this.resize();
+}
+CrocGL.prototype.resize=function(){
+  const r=this.cv.parentElement?this.cv.parentElement.getBoundingClientRect():{width:320,height:260};
+  if(r.width<2)return;
+  this.renderer.setSize(r.width,r.height,false);
+  this.camera.aspect=r.width/r.height;this.camera.updateProjectionMatrix();};
+CrocGL.prototype.hearts=function(){
+  const par=this.cv.parentElement;if(!par)return;
+  const pr=par.getBoundingClientRect();
+  ['💖','💗','⭐','✨','🐊','💝'].forEach((e,i)=>{
+    const h=document.createElement('div');h.className='float-heart';h.textContent=e;
+    h.style.position='absolute';h.style.zIndex=8;
+    h.style.left=(pr.width/2+Math.random()*160-80)+'px';
+    h.style.top=(pr.height*0.35+Math.random()*60-30)+'px';
+    h.style.animationDelay=(i*0.07)+'s';
+    par.appendChild(h);setTimeout(()=>h.remove(),2200);});};
+CrocGL.prototype.poke=function(){this.hearts();this.st.snap=1;};
+CrocGL.prototype.doJump=function(){if(this.st.jumpT>=0)return;this.st.jumpT=0;this.hearts();};
+CrocGL.prototype.doRoll=function(deg,dur){const s=this.st;
+  s.rollTarget=deg*Math.PI/180;s.rollA=0;s.rollSpeed=s.rollTarget/(dur*60);this.hearts();};
+CrocGL.prototype.frame=function(dt,pet){
+  const s=this.st;s.runT+=dt;this.t+=dt;const t=this.t;
+  if(pet){
+    s.azimuth=-(pet.yaw+(pet.yawOff||0));
+    s.polar=Math.min(1.45,Math.max(0.25,0.5+pet.pitch));
+    s.radius=Math.min(10,Math.max(3,6/Math.max(0.45,pet.zoom)));
+    s.speed=Math.max(1,pet.speed*3);
+    if(pet.mode!==this._pm){
+      if(pet.mode==='jump'||pet.mode==='dance'){this.doJump();s.snap=1;}
+      this._pm=pet.mode;}
+    if(pet.act==='spin'){this.doRoll(360,1.2);pet.act=null;pet.actT=0;pet.yawOff=0;}
+    if(pet.act==='roll'){this.doRoll(720,2.1);pet.act=null;pet.actT=0;pet.yawOff=0;}
+    s.running=pet.mode==='run';
+    s.dancing=pet.mode==='dance';
+  }
+  const sp=s.speed*0.8;
+  if(s.running&&!s.dancing&&s.jumpT<0){
+    s.px+=s.vx*sp*dt;
+    if(s.px>5){s.px=5;s.vx=-1;}
+    if(s.px<-5){s.px=-5;s.vx=1;}
+    s.runT+=dt*(4+s.speed*1.8);
+  }else if(s.dancing){s.runT+=dt*9;}
+  else{s.runT+=dt*1.5;}
+  let jumpY=0,squash=1;
+  if(s.jumpT>=0){
+    s.jumpT+=dt/0.8;const k=s.jumpT;
+    if(k>=1){s.jumpT=-1;squash=0.85;}
+    else{jumpY=Math.sin(k*Math.PI)*0.9;squash=1+Math.sin(k*Math.PI*2)*0.07;}
+  }
+  squash+=(1-squash)*Math.min(1,dt*8);
+  const targetFacing=s.vx>=0?0:Math.PI;
+  s.facing+=(targetFacing-s.facing)*Math.min(1,dt*4);   /* cá sấu quay chậm */
+  if(s.rollA<s.rollTarget)s.rollA=Math.min(s.rollTarget,s.rollA+s.rollSpeed);
+  const w=s.runT;
+  const moving=s.running&&!s.dancing&&s.jumpT<0;
+  const runAmp=moving?1:0.12;
+  /* bò lục cục: thân lắc ngang, chân ngắn bước nhanh */
+  for(const L of this.legs){
+    L.hip.rotation.z=Math.sin(w*1.6+L.phase)*0.4*runAmp;}
+  this.tail.forEach(T=>{
+    T.g.rotation.z=T.base+Math.sin(w*1.1+T.i*0.8)*(moving?0.16:0.06);
+    T.g.rotation.x=Math.sin(w*0.7+T.i)*0.08;});
+  /* hàm ngậm mở chậm — snap khi poke/nhảy */
+  if(s.snap>0)s.snap=Math.max(0,s.snap-dt*2);
+  const jawBase=0.1+Math.max(0,Math.sin(t*0.9))*0.14;
+  this.jaw.rotation.z=jawBase+(s.snap>0?Math.sin(s.snap*Math.PI)*0.5:0);
+  /* mắt chớp dọc */
+  const blink=(Math.sin(t*0.7)>0.98)?0.15:1;
+  this.eyes.forEach(e=>e.scale.y+=(blink-e.scale.y)*0.5);
+  let danceRock=0,danceHop=0;
+  if(s.dancing){
+    danceRock=Math.sin(w*0.8)*0.2;
+    danceHop=Math.abs(Math.sin(w*0.8))*0.2;
+    this.head.rotation.z=Math.sin(w*0.8)*0.15;}
+  else{this.head.rotation.z*=0.9;}
+  const crawlBob=moving?Math.sin(w*2)*0.04:Math.sin(t*1.5)*0.02;
+  this.croc.position.set(s.px,crawlBob+jumpY+danceHop-0.02,0);
+  this.croc.rotation.set(s.rollA,s.facing,danceRock,'ZYX');
+  this.croc.scale.set(0.9/Math.sqrt(squash),0.9*squash,0.9/Math.sqrt(squash));
+  this.blob.position.set(s.px,-0.03,0);
+  const hScale=Math.max(0.4,1-(jumpY+danceHop)*0.4);
+  this.blob.scale.setScalar(hScale);
+  this.blob.material.opacity=0.9*hScale;
+  /* mặt nước gợn */
+  this.water.position.y=-0.02+Math.sin(t*1.2)*0.015;
+  this.camera.position.set(
+    s.px+s.radius*Math.sin(s.polar)*Math.sin(s.azimuth),
+    1.0+s.radius*Math.cos(s.polar),
+    s.radius*Math.sin(s.polar)*Math.cos(s.azimuth));
+  this.camera.lookAt(s.px,0.6,0);
+  const spp=this.sparkles.geometry.attributes.position;
+  for(let i=0;i<this.spCount;i++)spp.setY(i,spp.getY(i)+Math.sin(t*1.5+i)*dt*0.15);
+  spp.needsUpdate=true;
+  this.flies.forEach(b=>{
+    const u=b.userData;u.ph+=dt*0.9;
+    b.position.set(Math.cos(u.ph)*u.r,u.h+Math.sin(t*3+u.ph)*0.3,Math.sin(u.ph)*u.r*0.6);
+    b.rotation.y=-u.ph;
+    const flap=Math.sin(t*30)*0.5;
+    u.wingL.rotation.z=flap;u.wingR.rotation.z=-flap;});
+  this.renderer.render(this.scene,this.camera);
+};
+CrocGL.prototype.destroy=function(){
+  try{this.renderer.dispose();}catch(e){}
+  this.cv.remove();this.host.style.display='';};
 </script>
 <script>
 /* ================= TURTLE GL RIG (Three.js WebGL — rùa con bãi biển, từ rua_con_4d_real) ================= */
@@ -6269,6 +6642,7 @@ const PET3D={
  giraffe:{body:0xf3c886,mid:0xdfa958,belly:0xf8dda4,dark:0xb06a28,s:0.95,thin:1,pointEar:1},
  monkey:{body:0x8a5a3d,dark:0x6f452c,belly:0xf0d7b0,s:0.62,climb:1,treeDweller:1},
  trex:{body:0xc8ccd4,dark:0x98a0ac,belly:0xeef0f4,s:0.9,biped:1,bigHead:1,chrome:1},
+ croc:{body:0x5a6647,dark:0x424d33,belly:0xa8b47c,s:0.85,low:1,armor:1,jawSnap:1},
 };
 function buildPet(key){
   const C=PET3D[key],s=C.s,g=new THREE.Group(),P={legs:[],head:null,tail:null,earL:null,earR:null,body:null};
@@ -7455,7 +7829,7 @@ const lerpC=(a,b,f)=>new THREE.Color(a).lerp(new THREE.Color(b),f);
 /* ---------- pet logic ---------- */
 function laneOk(x,z){return Math.abs(x)<HALF&&Math.abs(z)<HALF;}
 function sideOf(x,z){const d=z-rZ(x);return d<-RW?'N':d>RW?'S':'ON';}
-const RIGMAP={dolphin:['DolphinGL','dolphin'],pig:['PigGL','pig'],fox:['FoxGL','fox'],frog:['FrogGL','frog'],koala:['KoalaGL','pig'],panda:['PandaGL','pig'],deer:['DeerGL','pig'],turtle:['TurtleGL','pig'],lion:['LionGL','pig'],elephant:['ElephantGL','pig'],giraffe:['GiraffeGL','giraffe'],monkey:['MonkeyGL','monkey'],trex:['TrexGL','trex']};
+const RIGMAP={dolphin:['DolphinGL','dolphin'],pig:['PigGL','pig'],fox:['FoxGL','fox'],frog:['FrogGL','frog'],koala:['KoalaGL','pig'],panda:['PandaGL','pig'],deer:['DeerGL','pig'],turtle:['TurtleGL','pig'],lion:['LionGL','pig'],elephant:['ElephantGL','pig'],giraffe:['GiraffeGL','giraffe'],monkey:['MonkeyGL','monkey'],trex:['TrexGL','trex'],croc:['CrocGL','croc']};
 function makeGLPet(key){
   const m=RIGMAP[key];if(!m||!window[m[0]])return null;
   let gl=null,hostEl=null;
