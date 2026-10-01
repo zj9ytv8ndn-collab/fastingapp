@@ -2169,7 +2169,7 @@ const P4={
         <div class="nm">${d.name[LANG]}</div></div>`}).join('');
     $('p4Count').textContent=`${own.length}/15 · ${T('chạm để chọn / mở khóa','tap to select / unlock')}`;
     $('p4Note').innerHTML=own.length<15
-      ?T(`💡 Thu thập 🪙 từ nhiệm vụ ngày để mở khóa <b style="color:var(--gold)">${10-own.length}</b> bé còn lại — mỗi bé đều có cử động 4D riêng!`,`💡 Earn coins from daily quests to unlock the remaining <b style="color:var(--gold)">${10-own.length}</b> pets — each with its own 4D motion!`)
+      ?T(`💡 Thu thập 🪙 từ nhiệm vụ ngày để mở khóa <b style="color:var(--gold)">${Object.keys(PET_DEFS).length-own.length}</b> bé còn lại — mỗi bé đều có cử động 4D riêng!`,`💡 Earn coins from daily quests to unlock the remaining <b style="color:var(--gold)">${Object.keys(PET_DEFS).length-own.length}</b> pets — each with its own 4D motion!`)
       :T('🏆 Bộ sưu tập 4D đã hoàn chỉnh!','🏆 Your 4D collection is complete!');
     this.paintGrid();
   },
@@ -8664,7 +8664,7 @@ function resize(){
 function refreshPets(){
   if(!ready)return;
   const leadKey=get('p4active','dolphin');
-  if(pets.length===10&&pets[0].key===leadKey)return;
+  if(pets.length===Object.keys(PET_DEFS).length&&pets[0].key===leadKey)return;
   buildRoster(true);
 }
 function refreshPets(){
