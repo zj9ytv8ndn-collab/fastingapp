@@ -170,6 +170,16 @@ body::before{content:"";position:fixed;inset:0;max-width:430px;margin:0 auto;poi
 .btn.red{background:rgba(255,93,93,.12);color:var(--red);border:1px solid rgba(255,93,93,.4)}
 .btn.ghost{background:var(--card2);color:var(--txt);border:1px solid var(--line2)}
 .btn.sm{font-size:14px;padding:12px 18px}
+/* ===== THẺ NHẮC UỐNG THUỐC — chữ to rõ · nút gọn 1 hàng ===== */
+.med-card .row{font-size:17px;font-weight:700;padding:17px 0}
+.med-card .row input{font-size:16.5px;font-weight:600}
+.med-card h3{font-size:13px}
+.med-card h3 .hint{font-size:11.5px}
+.med-rep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:4px 0 10px}
+.med-rep-grid .btn{width:100%;margin:0;padding:14px 2px;font-size:13.5px;border-radius:13px;white-space:nowrap;letter-spacing:.2px}
+.med-dow-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:4px 0 10px}
+.med-dow-grid .btn{width:100%;margin:0;padding:12px 0;font-size:12px;border-radius:11px}
+.med-note{font-size:12.5px!important;line-height:1.6!important}
 .btn:disabled{opacity:.35}
 .row{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);font-size:15.5px;gap:10px;font-weight:500}
 .row:last-child{border-bottom:0}
@@ -553,27 +563,31 @@ html{scrollbar-width:none}
     <div class="row why-row" onclick="why('🍽 Hội chứng tái ăn (Refeeding)','Sau fasting kéo dài, cơ thể thích nghi với insulin thấp và điện giải dịch chuyển. Nạp lại quá nhiều carb đột ngột có thể kích hoạt chuyển dịch dịch & điện giải. Bữa nhỏ, từ từ, đủ protein & điện giải giúp giảm rủi ro.')"><span>🍽 Refeeding syndrome</span><span class="chipsmall">›</span></div>
     <div class="row why-row" onclick="why('💓 Nhịp tim nghỉ (RHR)','RHR là nhịp tim lúc nghỉ hoàn toàn. Xu hướng RHR theo thờI gian hữu ích để theo dõi thể lực & phục hồi — so với baseline cá nhân, không phải con số tuyệt đối.')"><span>💓 RHR</span><span class="chipsmall">›</span></div>
   </div>
-  <div class="card" style="border-color:color-mix(in srgb,var(--blue) 45%,transparent)">
+  <div class="card med-card" style="border-color:color-mix(in srgb,var(--blue) 45%,transparent)">
     <h3>💊 Nhắc uống thuốc <span class="hint">alarm kêu đúng giờ — quan trọng khi fasting</span></h3>
     <div class="row"><span>💊 Tên thuốc</span><input type="text" id="medName" placeholder="Paracetamol 500mg" style="width:190px"></div>
     <div class="row"><span>🕐 Giờ uống</span><input type="time" id="medTime" value="08:00" style="width:120px"></div>
-    <div class="row"><span>🔁 Lặp lại</span><span style="display:flex;gap:5px;flex-wrap:wrap">
-      <button class="btn ghost sm sel med-rep" data-r="daily" onclick="medRep('daily')">Mỗi ngày</button>
-      <button class="btn ghost sm med-rep" data-r="weekly" onclick="medRep('weekly')">Tuần</button>
-      <button class="btn ghost sm med-rep" data-r="monthly" onclick="medRep('monthly')">Tháng</button>
-      <button class="btn ghost sm med-rep" data-r="yearly" onclick="medRep('yearly')">Năm</button>
-    </span></div>
-    <div class="row" id="medDayRow" style="display:none"><span>📅 Ngày trong tuần</span><span style="display:flex;gap:4px;flex-wrap:wrap">
-      <button class="btn ghost sm med-dow" data-d="1" onclick="medDow(1)">T2</button>
-      <button class="btn ghost sm med-dow" data-d="2" onclick="medDow(2)">T3</button>
-      <button class="btn ghost sm med-dow" data-d="3" onclick="medDow(3)">T4</button>
-      <button class="btn ghost sm med-dow" data-d="4" onclick="medDow(4)">T5</button>
-      <button class="btn ghost sm med-dow" data-d="5" onclick="medDow(5)">T6</button>
-      <button class="btn ghost sm med-dow" data-d="6" onclick="medDow(6)">T7</button>
-      <button class="btn ghost sm med-dow" data-d="0" onclick="medDow(0)">CN</button>
-    </span></div>
+    <div class="row" style="padding-bottom:4px"><span>🔁 Lặp lại</span></div>
+    <div class="med-rep-grid">
+      <button class="btn ghost sel med-rep" data-r="daily" onclick="medRep('daily')">Mỗi ngày</button>
+      <button class="btn ghost med-rep" data-r="weekly" onclick="medRep('weekly')">Tuần</button>
+      <button class="btn ghost med-rep" data-r="monthly" onclick="medRep('monthly')">Tháng</button>
+      <button class="btn ghost med-rep" data-r="yearly" onclick="medRep('yearly')">Năm</button>
+    </div>
+    <div id="medDayRow" style="display:none">
+      <div class="row" style="padding-bottom:4px"><span>📅 Ngày trong tuần</span></div>
+      <div class="med-dow-grid">
+        <button class="btn ghost med-dow" data-d="1" onclick="medDow(1)">T2</button>
+        <button class="btn ghost med-dow" data-d="2" onclick="medDow(2)">T3</button>
+        <button class="btn ghost med-dow" data-d="3" onclick="medDow(3)">T4</button>
+        <button class="btn ghost med-dow" data-d="4" onclick="medDow(4)">T5</button>
+        <button class="btn ghost med-dow" data-d="5" onclick="medDow(5)">T6</button>
+        <button class="btn ghost med-dow" data-d="6" onclick="medDow(6)">T7</button>
+        <button class="btn ghost med-dow" data-d="0" onclick="medDow(0)">CN</button>
+      </div>
+    </div>
     <button class="btn volt" onclick="addMed()">💊 THÊM THUỐC NHẮC GIỜ</button>
-    <div class="sub" style="margin-top:8px;font-size:11px">⚠️ Thuốc cần ăn kèm: khi fasting hãy hỏi bác sĩ cách điều chỉnh giờ uống. App chỉ nhắc giờ, không tư vấn thuốc.</div>
+    <div class="sub med-note" style="margin-top:8px">⚠️ Thuốc cần ăn kèm: khi fasting hãy hỏi bác sĩ cách điều chỉnh giờ uống. App chỉ nhắc giờ, không tư vấn thuốc.</div>
     <div id="medList" style="margin-top:10px"></div>
   </div>
   <button class="btn ghost" onclick="openCheckin()">📝 CHECK-IN HẰNG NGÀY</button>
@@ -1448,7 +1462,7 @@ let medRepMode='daily',medDows=[];
 function meds(){return get('meds',[])}
 function saveMeds(m){set('meds',m)}
 function medRep(r){medRepMode=r;document.querySelectorAll('.med-rep').forEach(b=>b.classList.toggle('sel',b.dataset.r===r));
-  $('medDayRow').style.display=r==='weekly'?'flex':'none'}
+  $('medDayRow').style.display=r==='weekly'?'block':'none'}
 function medDow(d){const i=medDows.indexOf(d);if(i>=0)medDows.splice(i,1);else medDows.push(d);
   document.querySelectorAll('.med-dow').forEach(b=>b.classList.toggle('sel',medDows.includes(+b.dataset.d)))}
 function addMed(){const name=$('medName').value.trim(),time=$('medTime').value;
@@ -1464,8 +1478,8 @@ function renderMeds(){const el=$('medList');if(!el)return;const m=meds();
   const rp={daily:T('Mỗi ngày','Daily'),weekly:T('Mỗi tuần','Weekly'),monthly:T('Mỗi tháng','Monthly'),yearly:T('Mỗi năm','Yearly')};
   el.innerHTML=m.length?m.map(x=>`<div class="gq-q" style="gap:10px">
     <div class="gq-chk ${x.on?'':''}" style="${x.on?'background:linear-gradient(135deg,#e6ff70,var(--volt2));border-color:transparent;color:#141a02':''}" onclick="toggleMed(${x.id})">${x.on?'✓':''}</div>
-    <div style="flex:1"><b style="font-size:14px">${x.name}</b>
-    <div class="sub" style="font-size:11px;margin-top:2px">🕐 ${x.time} · ${rp[x.rep]}${x.rep==='weekly'&&x.dows.length?' · '+x.dows.map(d=>['CN','T2','T3','T4','T5','T6','T7'][d]).join(' '):''}</div></div>
+    <div style="flex:1"><b style="font-size:16px">${x.name}</b>
+    <div class="sub" style="font-size:12.5px;margin-top:3px">🕐 ${x.time} · ${rp[x.rep]}${x.rep==='weekly'&&x.dows.length?' · '+x.dows.map(d=>['CN','T2','T3','T4','T5','T6','T7'][d]).join(' '):''}</div></div>
     <span style="cursor:pointer;font-size:16px;color:var(--red)" onclick="delMed(${x.id})">✕</span></div>`).join('')
   :`<div class="sub">${T('Chưa có thuốc nào — thêm để app tự báo đúng giờ.','No medications yet — add one to get reminded.')}</div>`}
 /* ---- ALARM: Web Audio beep-beep + rung + lặp cho tới khi bấm ---- */
@@ -9505,7 +9519,7 @@ function buildChristmas(){
     sk.position.set(mx,H*0.9,mz+Rr*0.1);
     scene.add(sk);
     XMAS.skiers.push({m:sk,x0:mx+ (R()-0.5)*Rr*0.3,z0:mz+Rr*0.12,H:H*0.86,t:R()});
-    MTN.push([mx,mz]);SAFARI_SPOTS.push([mx,mz+120]);}
+    MTN.push([mx,mz]);SAFARI_SPOTS.push([mx,mz+Rr+110]);}   /* điểm tham quan ngoài chân núi — tránh camera & pet đâm vào hình nón */
   /* VƯỜN CÂY ĂN TRÁI — táo đỏ · cam · xoài thành hàng */
   const ORC=[[-820,-640,'apple'],[-760,-700,'orange'],[-700,-640,'mango'],[860,-520,'apple'],[920,-580,'orange']];
   const FRUIT={apple:0xe02b2b,orange:0xff9426,mango:0xffd23e};
@@ -9874,7 +9888,7 @@ function pickTarget(p){
     else{/* 84%: lang thang tự do tới 1 điểm tham quan xa */
       const s=SAFARI_SPOTS[Math.floor(R()*SAFARI_SPOTS.length)];
       tx=s[0]+(R()-0.5)*90;tz=s[1]+(R()-0.5)*90;}}
-  p.tx=tx;p.tz=tz;p.tside=sideOf(tx,tz);p.state='walk';p.behav='none';
+  p.tx=Math.max(-HALF+40,Math.min(HALF-40,tx));p.tz=Math.max(-HALF+40,Math.min(HALF-40,tz));p.tside=sideOf(p.tx,p.tz);p.state='walk';p.behav='none';
 }
 function updPet(p,dt){
   const C=PET3D[p.key];
@@ -9887,6 +9901,7 @@ function updPet(p,dt){
     p.moving=false;p.phase+=dt*2;p.idleT-=dt;
     if(!p.lead&&pets[0]&&Math.hypot(p.x-pets[0].x,p.z-pets[0].z)>280&&R()<0.1){
       const a3=R()*Math.PI*2;p.tx=pets[0].x+Math.cos(a3)*(20+R()*36);p.tz=pets[0].z+Math.sin(a3)*(20+R()*36);
+      p.tx=Math.max(-HALF+40,Math.min(HALF-40,p.tx));p.tz=Math.max(-HALF+40,Math.min(HALF-40,p.tz));
       p.tside=sideOf(p.tx,p.tz);p.state='walk';p.idleT=0;}
     if(p.idleT<=0){p.behav=R()<0.3?'sniff':(R()<0.22?'sit':'none');
       if(p.behav==='sit'){p.sitT=2}else p.behav='none';
@@ -9899,6 +9914,7 @@ function updPet(p,dt){
     if(!p.lead&&!p.trick&&R()<0.015){p.state='walk';
       const s=SAFARI_SPOTS[Math.floor(R()*SAFARI_SPOTS.length)];
       p.tx=s[0]+(R()-0.5)*90;p.tz=s[1]+(R()-0.5)*90;
+      p.tx=Math.max(-HALF+40,Math.min(HALF-40,p.tx));p.tz=Math.max(-HALF+40,Math.min(HALF-40,p.tz));
       p.tside=sideOf(p.tx,p.tz);p.run=0.28+R()*0.3;p.behav='none';}
     if(p.key==='dolphin'&&p.inWater&&p.state==='idle'&&R()<0.008){
       p.trick='jump';p.trickT=0;splashAt(p.x,p.z,8);
@@ -9973,7 +9989,7 @@ function splashAt(x,z,n){
 function frame(ts){
   requestAnimationFrame(frame);
   if(!active||!ready){last=ts;return}
-  const dt=Math.min(0.05,(ts-last)/1000||0.016);last=ts;t+=dt;
+  const dt=Math.min(0.033,(ts-last)/1000||0.016);last=ts;t+=dt;
   boost=Math.max(0,boost-dt*0.8);
   /* ngày đêm */
   const f=skyF();
@@ -10135,7 +10151,7 @@ function frame(ts){
     else if(lead.state==='walk'){lead.state='idle';lead.idleT=0.4;}}
   /* camera theo bé dẫn đầu */
   const lead=pets[0];
-  if(followCam||orbitMode)camTgt.lerp(V3(lead.x,2.4+lead.y,lead.z),Math.min(1,dt*(orbitMode?7:3)));
+  if(followCam||orbitMode)camTgt.lerp(V3(lead.x,2.4+lead.y,lead.z),1-Math.exp(-(orbitMode?7:3)*dt));
   if(orbitMode){camAz+=dt*0.55;camPol+=(1.08-camPol)*Math.min(1,dt*2.5);camR+=(orbitR-camR)*Math.min(1,dt*2.5);}
   const off=V3(camR*Math.sin(camPol)*Math.sin(camAz),camR*Math.cos(camPol),camR*Math.sin(camPol)*Math.cos(camAz));
   camPos.copy(camTgt).add(off);
