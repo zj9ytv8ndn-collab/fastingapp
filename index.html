@@ -1178,7 +1178,7 @@ const PET_DEFS={
   giraffe:{name:{vi:'Hươu cao cổ',en:'Giraffe'},cost:600,hab:'savanna',dy:40},
   monkey:{name:{vi:'Khỉ con',en:'Monkey'},cost:650,hab:'tree'},
   trex:{name:{vi:'Khủng long Disco',en:'Disco T-Rex'},cost:700,hab:'disco'},
-  croc:{name:{vi:'Cá sấu con',en:'Baby Croc'},cost:750,hab:'pond'},
+  croc:{name:{vi:'Cá sấu con',en:'Baby Croc'},cost:750,hab:'pond',zx:0.72,dx:19},
 };
 const HAB_BG={ocean:['#082438','#0e3a55'],farm:['#241f14','#342b1a'],tree:['#15251a','#213a26'],pond:['#0e2b35','#16414e'],bamboo:['#1b2c17','#2a4122'],den:['#261f25','#362d34'],meadow:['#1e2c17','#2d4121'],savanna:['#2e2415','#41331e'],plains:['#27231b','#383427'],disco:['#150b26','#241242']};
 function sh(c,f){const n=parseInt(c.slice(1),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
@@ -1704,13 +1704,14 @@ croc:st=>{
   const PL=(pts,c)=>P.push({k:'p',pts,c});
   const body='#5f6b45',bodyD='#46523a',belly='#b8c28c',armor='#39422c',spike='#454e36',dark='#232a1a',eyeC='#d4b93f';
   const br=st.breath;
-  /* ===== ĐUÔI — dài bằng nửa thân, 2 gờ gai chạy dọc ===== */
+  /* ===== ĐUÔI — dài bằng nửa thân, THON VỀ MŨI NHỌN, 2 gờ gai ===== */
   const tw=Math.sin(t*1.8)*3;
-  C([-38,26,0],[-60,22+tw*0.3,0],8,body);
-  C([-60,22+tw*0.3,0],[-80,16+tw,0],5.5,bodyD);
-  C([-80,16+tw,0],[-94,10+tw*1.4,0],3,bodyD);
-  E(-97,9+tw*1.4,0,2.6,1.8,bodyD);
-  for(let i=0;i<9;i++){const gx=-38-i*6.5,gy=31-i*2.1+tw*0.25;
+  C([-38,26,0],[-58,22+tw*0.3,0],8,body);
+  C([-58,22+tw*0.3,0],[-76,17+tw,0],5.5,bodyD);
+  C([-76,17+tw,0],[-88,12+tw*1.2,0],3.2,bodyD);
+  C([-88,12+tw*1.2,0],[-95,9+tw*1.4,0],1.6,bodyD);
+  E(-96,8.6+tw*1.4,0,1.4,1,bodyD);                       /* mũi đuôi nhọn */
+  for(let i=0;i<9;i++){const gx=-38-i*6.2,gy=30.5-i*1.9+tw*0.25;
     PL([[gx-2.6,gy],[gx,gy+5.5],[gx+2.6,gy]],armor);
     PL([[gx-3.2,gy-2.6],[gx-0.6,gy+1.6],[gx+2,gy-2.6]],armor);}   /* gờ gai thứ 2 */
   /* ===== THÂN — dẹt dài, lưng gồ ghề ===== */
@@ -1737,41 +1738,43 @@ croc:st=>{
     E(-13,6.5,s*16,6.5,3.4,belly);
     for(let f2=0;f2<4;f2++)E(-8,6,s*16+(f2-1.5)*3.8,2,2.4,'#e8e4d0');
   }
-  /* ===== ĐẦU — tách rõ thân, cổ nếp gấp ===== */
-  const hx=32+st.look*1.2,hy=30+Math.sin(t*1.5)*0.8-(st.headDown||0)*9;
-  C([24,26,0],[30,27,0],7,body);                        /* cổ nối */
-  L([26,20,11],[28,25,11],1.2,'rgba(40,48,30,.6)');     /* nếp cổ 1 */
-  L([23,19,11],[26,24,11],1.2,'rgba(40,48,30,.6)');     /* nếp cổ 2 */
-  E(hx,hy,0,12,8.5,body,0,0.4);                         /* sọ đầu gồ */
-  E(hx+3,hy+5,0,8,3.5,armor);                           /* gồ sọ trước mắt */
-  /* mõm V dài nhọn — đặc trưng cá sấu */
-  E(hx+13,hy-1,0,14,5,body);                            /* xương mõm trên */
-  E(hx+12,hy+1.5,0,12,2.8,belly);                       /* đế mõm sáng */
-  E(hx+24,hy-0.5,0,3.5,2,bodyD);                        /* đầu mũi nhọn */
-  E(hx+25,hy+1,4,1.3,1.6,dark);E(hx+25,hy+1,-4,1.3,1.6,dark); /* lỗ mũi */
-  /* mắt trên đỉnh: mí gồ chắn + vàng + đồng tử dọc */
+  /* ===== ĐẦU — tách rõ thân, cổ nếp gấp, chuẩn cá sấu ===== */
+  const hx=30+st.look*1.2,hy=30+Math.sin(t*1.5)*0.8-(st.headDown||0)*9;
+  C([22,26,0],[28,27,0],7,body);                        /* cổ nối */
+  L([24,20,11],[27,25,11],1.2,'rgba(40,48,30,.6)');     /* nếp cổ 1 */
+  L([21,19,11],[24,24,11],1.2,'rgba(40,48,30,.6)');     /* nếp cổ 2 */
+  E(hx,hy,0,11,8,body,0,0.4);                           /* sọ đầu gồ */
+  E(hx+2,hy+5.5,0,7,3,armor);                           /* gồ sọ trước mắt */
+  /* mõm V DÀI HƠN — đặc trưng cá sấu sông */
+  E(hx+13,hy-1.5,0,15,4.2,body);                        /* xương mõm trên */
+  E(hx+12,hy+1,0,13,2.4,belly);                         /* đế mõm sáng */
+  E(hx+26,hy-1,0,3.2,1.9,bodyD);                        /* đầu mũi nhọn */
+  E(hx+27.5,hy-0.2,4,1.3,1.6,dark);E(hx+27.5,hy-0.2,-4,1.3,1.6,dark); /* lỗ mũi */
+  /* mắt trên đỉnh: mí gồ chắn KÉP + vàng + đồng tử dọc */
   for(const s of[1,-1]){
     const lk=(st.lookX||0)*1.2;
-    PL([[hx-6,hy+9,s*8],[hx-1,hy+12.5,s*8.5],[hx+4,hy+9,s*8]],armor);  /* mí gồ chắn */
-    E(hx-1,hy+8.5,s*7,3.6,3.2,eyeC);
-    E(hx-0.5+lk,hy+9,s*7.6,1.7,2.3,dark);               /* đồng tử khe dọc */
-    E(hx-2+lk,hy+10,s*8,0.7,0.8,'#fff',1);
+    PL([[hx-6,hy+8,s*8],[hx-1,hy+12,s*8.5],[hx+3,hy+8,s*8]],armor);    /* mí trước */
+    PL([[hx-3,hy+9.5,s*8],[hx+1,hy+13,s*8.5],[hx+5,hy+9,s*8]],spike);  /* mí sau cao hơn */
+    E(hx-0.5,hy+8,s*7,3.4,3,eyeC);
+    E(hx+0.1+lk,hy+8.6,s*7.6,1.6,2.2,dark);             /* đồng tử khe dọc */
+    E(hx-1.6+lk,hy+9.6,s*8,0.7,0.8,'#fff',1);
   }
-  /* vảy giáp má + sau mắt */
-  E(hx+6,hy+6,6,2.6,1.8,armor,1);E(hx+10,hy+5,-6,2.4,1.7,armor,1);
-  E(hx-8,hy+4,7,2.2,1.6,armor,1);
-  /* ===== MIỆNG — khe dài, răng lộ ngoài xen kẽ ===== */
+  /* vảy giáp má + sau mắt + nắp tai */
+  E(hx+6,hy+5,6,2.6,1.8,armor,1);E(hx+10,hy+4,-6,2.4,1.7,armor,1);
+  E(hx-8,hy+3,7,2.2,1.6,armor,1);
+  E(hx-9,hy+1,8,1.6,2,dark,1);                          /* nắp tai sau mắt */
+  /* ===== MIỆNG — khe dài theo mõm, răng lộ ngoài xen kẽ ===== */
   const jaw=1.2+Math.max(0,Math.sin(t*1.1))*1.8;        /* ngậm mở chậm */
-  L([hx+2,hy-4.5,10],[hx+22,hy-5,10],1.6,dark);        /* khe miệng dài */
+  L([hx+1,hy-4,10],[hx+25,hy-4.5,10],1.6,dark);        /* khe miệng dài tới mũi */
   E(hx+12,hy-4-jaw*0.4,0,12,2.2,'#6e4034');
   E(hx+12,hy-5-jaw*0.4,0,9,1.4,'#a8625e');              /* lưỡi */
-  E(hx+12,hy-7-jaw,0,14,3,bodyD);                       /* hàm dưới dẹt */
-  /* răng trên lộ ra ngoài — 8 chiếc chỉa xuống */
-  for(let i=0;i<8;i++){const tx2=hx+2+i*3.4;
-    PL([[tx2,hy-3],[tx2+1.3,hy-6.5],[tx2+2.6,hy-3]],'#f2ecd8');}
-  /* răng dưới chỉa lên xen kẽ — 7 chiếc */
-  for(let i=0;i<7;i++){const tx2=hx+3.5+i*3.6;
-    PL([[tx2,hy-4.5-jaw],[tx2+1.4,hy-1.5-jaw],[tx2+2.8,hy-4.5-jaw]],'#f2ecd8');}
+  E(hx+12,hy-7-jaw,0,14,2.8,bodyD);                     /* hàm dưới dẹt */
+  /* răng trên lộ ra ngoài — 9 chiếc chỉa xuống */
+  for(let i=0;i<9;i++){const tx2=hx+1+i*3.1;
+    PL([[tx2,hy-2.5],[tx2+1.2,hy-6],[tx2+2.4,hy-2.5]],'#f2ecd8');}
+  /* răng dưới chỉa lên xen kẽ — 8 chiếc */
+  for(let i=0;i<8;i++){const tx2=hx+2.5+i*3.2;
+    PL([[tx2,hy-4-jaw],[tx2+1.3,hy-1.2-jaw],[tx2+2.6,hy-4-jaw]],'#f2ecd8');}
   return P;
 },
 };
@@ -1789,6 +1792,8 @@ function petPose(key,t,mode,speed){
 function drawPetTo(ctx,key,cx,cy,zoom,yaw,pitch,t,st){
   const F=860,by=st.bodyY||0;
   cy+=(PET_DEFS[key].dy||0)*zoom;   /* vật thể cao (hươu cao cổ...) được nâng tâm vẽ riêng */
+  cx+=(PET_DEFS[key].dx||0)*zoom;   /* vật thể lệch tâm ngang (cá sấu đuôi dài...) dịch về giữa khung */
+  zoom*=((PET_DEFS[key]&&PET_DEFS[key].zx)||1);   /* vật thể dài ngang (cá sấu...) thu nhỏ riêng */
   const pr=(x,y,z)=>{const cy0=Math.cos(yaw),sy=Math.sin(yaw);const x1=x*cy0+z*sy,z1=-x*sy+z*cy0;
     const cp=Math.cos(pitch),sp=Math.sin(pitch);const y1=y*cp-z1*sp,z2=y*sp+z1*cp;
     const s=F/(F+z2);return[cx+x1*zoom*s,cy-y1*zoom*s,s,z2]};
@@ -5357,37 +5362,46 @@ function CrocGL(host){
   const fold1=new THREE.Mesh(new THREE.TorusGeometry(0.16,0.03,6,14,2.6),std(BODY_D,0.6));
   fold1.position.set(1.02,0.42,0);fold1.rotation.set(0,0.3,1.2);cr.add(fold1);
   const head=this.head=new THREE.Group();
-  head.position.set(1.28,0.6,0);
-  head.add(new THREE.Mesh(new THREE.SphereGeometry(0.26,20,14).scale(1.05,0.75,0.8),std(BODY)));
-  /* gồ sọ trước mắt */
-  const browR=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.06,0.3),std(ARMOR,0.5));
-  browR.position.set(0.14,0.18,0);browR.rotation.z=-0.15;head.add(browR);
-  /* mõm V dài nhọn 2 tầng */
-  const snout=new THREE.Mesh(new THREE.SphereGeometry(0.16,18,12).scale(2.1,0.45,0.7),std(BODY));
-  snout.position.set(0.4,-0.04,0);head.add(snout);
-  const snoutTip=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,8).scale(1.6,0.5,0.6),std(BODY_D));
-  snoutTip.position.set(0.72,-0.03,0);head.add(snoutTip);
-  const snoutL=new THREE.Mesh(new THREE.SphereGeometry(0.13,14,10).scale(2.0,0.28,0.65),std(BELLY));
-  snoutL.position.set(0.38,-0.11,0);head.add(snoutL);
+  head.position.set(1.26,0.58,0);
+  head.add(new THREE.Mesh(new THREE.SphereGeometry(0.24,20,14).scale(1.0,0.75,0.8),std(BODY)));
+  /* gồ sọ trước mắt + sau đầu */
+  const browR=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.06,0.28),std(ARMOR,0.5));
+  browR.position.set(0.12,0.17,0);browR.rotation.z=-0.15;head.add(browR);
+  const browB=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.05,0.2),std(SPIKE,0.5));
+  browB.position.set(-0.14,0.12,0);browB.rotation.z=0.25;head.add(browB);
+  /* mõm V dài nhọn hơn — 2 tầng */
+  const snout=new THREE.Mesh(new THREE.SphereGeometry(0.14,18,12).scale(2.6,0.42,0.62),std(BODY));
+  snout.position.set(0.42,-0.05,0);head.add(snout);
+  const snoutTip=new THREE.Mesh(new THREE.SphereGeometry(0.07,12,8).scale(1.8,0.55,0.55),std(BODY_D));
+  snoutTip.position.set(0.78,-0.04,0);head.add(snoutTip);
+  const snoutL=new THREE.Mesh(new THREE.SphereGeometry(0.11,14,10).scale(2.4,0.26,0.55),std(BELLY));
+  snoutL.position.set(0.4,-0.12,0);head.add(snoutL);
   /* lỗ mũi đầu mõm */
-  [[0.78,0.02,0.07],[0.78,0.02,-0.07]].forEach(([x,y,z])=>{
-    const n=new THREE.Mesh(new THREE.SphereGeometry(0.026,8,6),std(0x232a1a,0.4));
+  [[0.84,0.01,0.06],[0.84,0.01,-0.06]].forEach(([x,y,z])=>{
+    const n=new THREE.Mesh(new THREE.SphereGeometry(0.024,8,6),std(0x232a1a,0.4));
     n.position.set(x,y,z);head.add(n);});
-  /* mắt trên đỉnh — mí gồ chắn + vàng + đồng tử khe dọc */
+  /* nắp tai sau mắt */
+  [[-0.12,0.02,0.17],[-0.12,0.02,-0.17]].forEach(([x,y,z])=>{
+    const ear=new THREE.Mesh(new THREE.SphereGeometry(0.035,8,6).scale(0.6,1,1),std(0x232a1a,0.5));
+    ear.position.set(x,y,z);head.add(ear);});
+  /* mắt trên đỉnh — mí gồ chắn KÉP + vàng + đồng tử khe dọc */
   this.eyes=[];
-  [[0.1,0.2,0.12],[0.1,0.2,-0.12]].forEach(([x,y,z])=>{
-    const ridge=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.05,0.1),std(ARMOR,0.5));
-    ridge.position.set(x+0.03,y+0.07,z);ridge.rotation.set(z>0?-0.3:0.3,0,-0.2);
+  [[0.08,0.19,0.11],[0.08,0.19,-0.11]].forEach(([x,y,z])=>{
+    const ridge=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.05,0.09),std(ARMOR,0.5));
+    ridge.position.set(x+0.02,y+0.07,z);ridge.rotation.set(z>0?-0.3:0.3,0,-0.2);
     head.add(ridge);
-    const w=new THREE.Mesh(new THREE.SphereGeometry(0.055,12,10),
+    const ridge2=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.04,0.07),std(SPIKE,0.5));
+    ridge2.position.set(x-0.06,y+0.1,z);ridge2.rotation.set(z>0?-0.35:0.35,0,0.15);
+    head.add(ridge2);
+    const w=new THREE.Mesh(new THREE.SphereGeometry(0.052,12,10),
       new THREE.MeshStandardMaterial({color:0xd4b93f,roughness:0.25}));
     w.position.set(x,y+0.03,z);head.add(w);
-    const p=new THREE.Mesh(new THREE.SphereGeometry(0.026,8,6).scale(0.5,1.5,1),
+    const p=new THREE.Mesh(new THREE.SphereGeometry(0.024,8,6).scale(0.5,1.5,1),
       new THREE.MeshStandardMaterial({color:0x15150c,roughness:0.15}));
-    p.position.set(x+0.04,y+0.035,z);head.add(p);this.eyes.push(p);
+    p.position.set(x+0.038,y+0.035,z);head.add(p);this.eyes.push(p);
     const g=new THREE.Mesh(new THREE.SphereGeometry(0.01,6,6),
       new THREE.MeshBasicMaterial({color:0xffffff}));
-    g.position.set(x+0.055,y+0.055,z*1.1);head.add(g);});
+    g.position.set(x+0.05,y+0.05,z*1.08);head.add(g);});
   /* khe miệng dài + lưỡi + hàm dưới dẹt */
   const mouthC=new THREE.Mesh(new THREE.SphereGeometry(0.13,14,8).scale(2.2,0.3,0.6),
     new THREE.MeshStandardMaterial({color:0x6e4034,roughness:0.7}));
