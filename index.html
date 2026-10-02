@@ -927,6 +927,7 @@ function go(t,btn){
   P4.setMainActive(t==='pets');
   if(t==='pets')P4.resizeMain();
   if(t==='dash')P4.resizeComp();
+  P4.compOn=(t==='dash');   /* FIX PERF: tắt render companion khi rồi tab Tổng quan */
   if(typeof Safari!=='undefined'){Safari.setActive(t==='safari');if(t==='safari'){setTimeout(()=>Safari.resize(),60);sfMark('visit');sfTreasureLoop();}else{clearTimeout(sfTreTimer);const te=$('sfTreasure');if(te){te.dataset.on='';te.style.display='none'}}}
 }
 function openSheet(id){$(id).classList.add('on')}
@@ -2559,7 +2560,7 @@ class Pet{
   }
 }
 const P4={
-  main:null,comp:null,mainOn:false,gridT:0,_last:0,
+  main:null,comp:null,mainOn:false,compOn:true,gridT:0,_last:0,
   init(){
     this.main=new Pet($('p4Canvas'),get('p4active','dolphin'));
     this.comp=new Pet($('compCanvas'),get('p4active','dolphin'));
@@ -2573,7 +2574,7 @@ const P4={
   loop(ts){
     const dt=Math.min(0.05,(ts-this._last)/1000||0.016);this._last=ts;
     this.comp.mode=session()?'run':'idle';
-    this.comp.frame(dt);
+    if(this.compOn)this.comp.frame(dt);   /* FIX PERF: chỉ vẽ companion khi đang ở tab Tổng quan — đỡ giật khi điều khiển ở tab Safari */
     if(this.mainOn)this.main.frame(dt);
     this.gridT+=dt;
     if(this.mainOn&&this.gridT>0.12){this.gridT=0;this.paintGrid()}
@@ -9797,6 +9798,8 @@ function makeGLPet(key){
     gl=new window[m[0]](hostEl);
     gl.cv.style.cssText='position:absolute;left:0;top:0;width:2px;height:2px;display:block';
     gl.renderer.render=function(){};
+    try{gl.renderer.forceContextLoss()}catch(e){}   /* FIX PERF SAFARI: model đã nhúng vào scene Safari — giải phóng ngay context riêng của rig (Safari giới hạn ~8-16 context, hết là giật/treo) */
+    try{if(gl.stop)gl.stop()}catch(e){}             /* tắt vòng lặp rAF riêng của rig nếu có */
     const model=gl[m[1]];
     if(!model||!model.isObject3D)return null;
     const wrap=new THREE.Group(),inner=new THREE.Group();
@@ -9816,7 +9819,7 @@ function makeGLPet(key){
       actSent:false};
   }catch(e){try{gl&&gl.cv&&gl.cv.remove()}catch(_){}try{hostEl&&hostEl.remove()}catch(_){}return null}
 }
-let glBudget=3;   /* iOS giới hạn WebGL context — tối đa lead + 3 bé 3D, còn lại sprite nhẹ */
+let glBudget=1;   /* FIX PERF SAFARI: tối đa lead + 1 bé 3D — mỗi rig GL giữ 1 WebGL context */   /* iOS giới hạn WebGL context — tối đa lead + 3 bé 3D, còn lại sprite nhẹ */
 function newPet(key,lead,i){
   const G=(lead||(glAllFlag&&glBudget>0))?makeGLPet(key):null;
   if(G&&!lead)glBudget--;
@@ -9859,6 +9862,9 @@ function drawSpritePet(p,dt){
     return;
   }
   p.slowT+=dt*(p.moving?1.7:1);
+  /* FIX PERF SAFARI: pet đứng yên chỉ vẽ lại sprite tối đa ~8fps — bỏ upload texture 256px mỗi frame */
+  p._rd=(p._rd||0)+dt;
+  if(p.moving||p.trick||p._rd>0.12){p._rd=0;
   let md=p.moving?'run':'idle';
   if(p.trick==='jump'||p.trick==='dance')md=p.trick;
   const st=petPose(p.key,p.slowT,md,1);
@@ -9874,7 +9880,7 @@ function drawSpritePet(p,dt){
     P.octx.fillStyle='#c9a06b';P.octx.beginPath();P.octx.ellipse(128,142,64,48,0,0,7);P.octx.fill();
     P.octx.fillStyle='#fff';P.octx.beginPath();P.octx.arc(104,116,8,0,7);P.octx.arc(152,116,8,0,7);P.octx.fill();
     P.octx.fillStyle='#222';P.octx.beginPath();P.octx.arc(104,116,3.5,0,7);P.octx.arc(152,116,3.5,0,7);P.octx.fill();}
-  P.tex.needsUpdate=true;
+  P.tex.needsUpdate=true;}
   P.sprite.material.rotation=p.trick==='spin'?P.sprite.material.rotation+dt*9:0;
   if(p.trick&&p.trick!=='spin'){p.trickT+=dt;
     if(p.trick==='jump'&&p.trickT>0.95)p.trick=null;
@@ -10227,9 +10233,9 @@ function onUp(e){
 /* ---------- init ---------- */
 function init(){
   cv=$('sfCanvas');
-  try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});}
+  try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:innerWidth>700,powerPreference:'high-performance'});}   /* FIX PERF SAFARI: tắt antialias trên điện thoại */
   catch(e){$('sfStatus').textContent='⚠️ Thiết bị không hỗ trợ WebGL';ready=false;return}
-  renderer.setPixelRatio(Math.min(1.6,window.devicePixelRatio||1));   /* giảm tải render — cảnh giáng sinh nặng */
+  renderer.setPixelRatio(Math.min(innerWidth<700?1.05:1.4,window.devicePixelRatio||1));   /* FIX PERF SAFARI: 1.6 → 1.05 trên iPhone — fill-rate giảm ~60% */
   rayc=new THREE.Raycaster();
   buildWorld();
   /* pet đoàn */
@@ -10308,7 +10314,7 @@ function refreshPets(){
 function buildRoster(keepPos){
   const prev=(keepPos&&pets.length)?{x:pets[0].x,z:pets[0].z}:null;
   pets.forEach(p=>{if(p.gl4d){try{p.gl4d.gl.destroy()}catch(e){}try{p.gl4d.gl.cv.remove()}catch(e){}try{p.gl4d.hostEl&&p.gl4d.hostEl.remove()}catch(e){}}scene.remove(p.g)});
-  glBudget=3;   /* reset ngân sách context WebGL mỗi lần dựng lại đội pet */
+  glBudget=1;   /* FIX PERF SAFARI: reset ngân sách — tối đa 1 bé 3D kèm lead */
   const leadKey=get('p4active','dolphin');
   const order=[leadKey,...Object.keys(PET_DEFS).filter(k=>k!==leadKey)];
   pets=order.map((k,i)=>{const p=newPet(k,i===0,i);
