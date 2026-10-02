@@ -9833,6 +9833,7 @@ function newPet(key,lead,i){
   const oc=document.createElement('canvas');oc.width=oc.height=256;
   const octx=oc.getContext('2d');
   const tex=new THREE.CanvasTexture(oc);
+  tex.generateMipmaps=false;tex.minFilter=THREE.LinearFilter;   /* FIX PERF SAFARI: bỏ mipmap — upload texture 256px rẻ hơn ~70% */
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
   const _dy=(PET_DEFS[key]&&PET_DEFS[key].dy)||0;   /* pet cao (hươu cao cổ): zoom nhỏ hơn, tâm vẽ thấp hơn, sprite lớn hơn */
   const spr=_dy?{zoom:1.3,cy:240,ss:7.4}:null;
@@ -9862,9 +9863,9 @@ function drawSpritePet(p,dt){
     return;
   }
   p.slowT+=dt*(p.moving?1.7:1);
-  /* FIX PERF SAFARI: pet đứng yên chỉ vẽ lại sprite tối đa ~8fps — bỏ upload texture 256px mỗi frame */
+  /* FIX PERF SAFARI: sprite chỉ vẽ lại tối đa ~13fps kể cả khi đang di chuyển — 16 pet × upload 256px mỗi frame là thủ phạm giật chính; vị trí vẫn cập nhật mỗi frame nên chuyển động vẫn mượt */
   p._rd=(p._rd||0)+dt;
-  if(p.moving||p.trick||p._rd>0.12){p._rd=0;
+  if(p._rd>0.075){p._rd=0;
   let md=p.moving?'run':'idle';
   if(p.trick==='jump'||p.trick==='dance')md=p.trick;
   const st=petPose(p.key,p.slowT,md,1);
