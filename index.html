@@ -10002,6 +10002,16 @@ function updPet(p,dt){
     else if(p.trick==='dance'){targetY+=Math.abs(Math.sin(p.trickT*6))*1.1;
       p.g.rotation.y+=dt*6;if(p.trickT>2.2)p.trick=null;}
     else if(p.trick==='sit'){p.behav='sit';p.sitT=3;p.state='idle';p.idleT=Math.max(p.idleT,3);p.trick=null;}}
+  /* HIỆU ỨNG PRO PET RIÊNG TỪNG BÉ: bụi/ tuyết / lá / lấp lánh theo giống pet */
+  p._fxT=(p._fxT||0)-dt;
+  if(p._fxT<=0){
+    const fx=PETFX[p.key]||PETFX._def;
+    if(p.moving&&!p.inWater&&!p.inOcean){p._fxT=fx.rate;fxDust(p.x,0.35,p.z,fx.big,fx.dust);}
+    else if(p.moving&&p.inWater&&p.key!=='dolphin'&&fx.water){p._fxT=0.25;splashAt(p.x,p.z,2);}   /* pet khác cá heo lội nước cũng nước bắn */
+    else if(p.trick&&(p.trick==='jump'||p.trick==='dance'||p.trick==='spin')){p._fxT=0.14;fxSpark(p.x+(R()-.5)*1.5,targetY+1.6+R(),p.z+(R()-.5)*1.5,fx.spark);}
+    else if(!p.moving&&!p.trick&&fx.idle&&R()<0.02){p._fxT=1.2;fxSpark(p.x+(R()-.5),1.4+R(),p.z+(R()-.5),fx.spark);}   /* thỉnh thoảng tự lấp lánh khi đứng */
+    else p._fxT=0.1;
+  }
   if(!p.gl4d)g.position.set(p.x,targetY,p.z);
   if(P.shadow)P.shadow.visible=!p.inWater;
 }
@@ -10022,6 +10032,7 @@ function frame(ts){
   requestAnimationFrame(frame);
   if(!active||!ready){last=ts;return}
   const dt=Math.min(0.033,(ts-last)/1000||0.016);last=ts;t+=dt;
+  updPetFx(dt);   /* HIỆU ỨNG PRO PET theo từng bé */
   boost=Math.max(0,boost-dt*0.8);
   /* ngày đêm */
   const f=skyF();
@@ -10202,6 +10213,57 @@ function smokeTex(){if(_smokeTex)return _smokeTex;
   g2.addColorStop(0,'rgba(220,225,232,.9)');g2.addColorStop(1,'rgba(220,225,232,0)');
   x.fillStyle=g2;x.fillRect(0,0,64,64);
   _smokeTex=new THREE.CanvasTexture(c);return _smokeTex;}
+
+/* ---------- HIỆU ỨNG PRO CHO PET — bụi chạy + lấp lánh trick (giống chất cá heo) ---------- */
+let _sparkTex=null,_dustMat=null,_sparkMat=null;const petFx=[];
+function sparkTex(){if(_sparkTex)return _sparkTex;
+  const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');
+  x.translate(32,32);
+  const g=x.createRadialGradient(0,0,2,0,0,26);   /* lõi sáng */
+  g.addColorStop(0,'rgba(255,252,220,.95)');g.addColorStop(1,'rgba(255,252,220,0)');
+  x.fillStyle=g;x.fillRect(-32,-32,64,64);
+  x.fillStyle='rgba(255,244,170,.95)';            /* 4 tia sao */
+  x.beginPath();
+  for(let i=0;i<8;i++){const a=i*Math.PI/4-Math.PI/2,r=i%2?6.5:26;
+    const px=Math.cos(a)*r,py=Math.sin(a)*r;i?x.lineTo(px,py):x.moveTo(px,py);}
+  x.closePath();x.fill();
+  _sparkTex=new THREE.CanvasTexture(c);return _sparkTex;}
+function fxDust(px,py,pz,big,color){if(petFx.length>80)return;
+  if(!_dustMat)_dustMat=new THREE.SpriteMaterial({map:smokeTex(),color:0xcbb289,transparent:true,opacity:.5,depthWrite:false});
+  const mat=_dustMat.clone();if(color)mat.color.setHex(color);
+  const m=new THREE.Sprite(mat);m.position.set(px,py,pz);scene.add(m);
+  petFx.push({m,vx:(R()-.5)*1.4,vy:1.2+R()*.9,vz:(R()-.5)*1.4,l:0,ml:big?0.9:0.65,fs:big?2.2:1.5});}
+function fxSpark(px,py,pz,color){if(petFx.length>80)return;
+  if(!_sparkMat)_sparkMat=new THREE.SpriteMaterial({map:sparkTex(),color:0xfff0a0,transparent:true,opacity:.95,depthWrite:false,blending:THREE.AdditiveBlending});
+  const mat=_sparkMat.clone();if(color)mat.color.setHex(color);
+  const m=new THREE.Sprite(mat);m.position.set(px,py,pz);scene.add(m);
+  petFx.push({m,vx:(R()-.5)*1.8,vy:1.9+R()*1.5,vz:(R()-.5)*1.8,l:0,ml:0.75,fs:1.3});}
+/* HIỆU ỨNG RIÊNG TỪNG PET — dust:màu bụi chân · spark:màu lấp lánh trick · big:bụi to (voi/hươu cao cổ/khủng long) · rate:tần suất · water:lội nước nước bắn · idle:tự lấp lánh */
+const PETFX={
+  _def:   {dust:0xcbb289,spark:0xfff0a0,rate:0.24,big:false},
+  dolphin:{dust:0x7fd4ff,spark:0x9fe8ff,rate:0.3, water:true,idle:true},            /* xanh nước biển */
+  pig:    {dust:0xf2b8c6,spark:0xffc9dd,rate:0.22,idle:true},                       /* hồng phấn */
+  koala:  {dust:0xb9c2cc,spark:0xd7e6f5,rate:0.3},                                  /* xám xương mù */
+  frog:   {dust:0x9ed97a,spark:0xbfff9e,rate:0.22,water:true,idle:true},            /* xanh lá ếch */
+  turtle: {dust:0xa8c47a,spark:0xd6ec9a,rate:0.3},                                  /* xanh rùa */
+  panda:  {dust:0xe8e4da,spark:0xffffff,rate:0.26},                                 /* trắng tre */
+  fox:    {dust:0xe8a05c,spark:0xffc46e,rate:0.2, idle:true},                       /* cam cáo */
+  deer:   {dust:0xd8b47a,spark:0xffe0a0,rate:0.24},                                 /* nâu hươu */
+  lion:   {dust:0xd9a648,spark:0xffd35e,rate:0.2, big:true,idle:true},              /* vàng vương giả */
+  elephant:{dust:0xb0a8bc,spark:0xd8d0e8,rate:0.34,big:true},                       /* xám tím to */
+  giraffe:{dust:0xd8b060,spark:0xffe28a,rate:0.3, big:true},                       /* vàng đốm */
+  monkey: {dust:0xb9895c,spark:0xffd98a,rate:0.2, idle:true},                       /* nâu khỉ */
+  trex:   {dust:0x9aa06a,spark:0xd0e07a,rate:0.26,big:true},                       /* rêu khủng long */
+  croc:   {dust:0x86b06a,spark:0xb8e08a,rate:0.26,water:true},                     /* xanh đầm lầy */
+  cow:    {dust:0xe8e0d0,spark:0xfff8ea,rate:0.26},                                 /* trắng sữa */
+  rhino:  {dust:0xa8a098,spark:0xd8d0c0,rate:0.34,big:true},                       /* xám nặng to */
+  butterfly:{dust:0xe8b8ff,spark:0xffb8f0,rate:0.18,idle:true},                     /* tím hồng bướm */
+  penguin:{dust:0xd8ecf5,spark:0xbfe8ff,rate:0.26,idle:true},                       /* tuyết xanh băng */
+};
+function updPetFx(dt){for(let i=petFx.length-1;i>=0;i--){const f=petFx[i];f.l+=dt;const u=f.l/f.ml;
+  f.m.position.x+=f.vx*dt;f.m.position.y+=f.vy*dt;f.m.position.z+=f.vz*dt;
+  const sc=f.fs*(0.5+u*1.7);f.m.scale.set(sc,sc,1);f.m.material.opacity=(1-u)*(f.m.material.blending===THREE.AdditiveBlending?0.95:0.55);
+  if(u>=1){scene.remove(f.m);f.m.material.dispose();petFx.splice(i,1);}}}
 
 /* ---------- tương tác ---------- */
 let pts=new Map(),pinchD=0,moved=0,lastTap=0,pinchBase=0,camRBase=32;
