@@ -705,9 +705,12 @@ function castAll(dt){
   const lun=solar2lunar(d,mo,y);
   const yBr=(lun.year-4)%12+1;
   const hNum=(((h+1)%24)>>1)+1;
+  const mi=dt.getMinutes(), se=dt.getSeconds();
+  /* Pháp thời gian mở rộng: thượng quái theo năm+tháng+ngày (cổ điển),
+     hạ quái thêm phút, hào động thêm phút+giây — mỗi lần gieo là một quẻ mới */
   const uIdx=(((yBr+lun.month+lun.day)%8)||8)-1;
-  const lIdx=(((yBr+lun.month+lun.day+hNum)%8)||8)-1;
-  const mv=(((yBr+lun.month+lun.day+hNum)%6)||6);
+  const lIdx=(((yBr+lun.month+lun.day+hNum+mi)%8)||8)-1;
+  const mv=(((yBr+lun.month+lun.day+hNum+mi+se)%6)||6);
   const lines=TRIG[lIdx].l.concat(TRIG[uIdx].l);
   const r=analyzeLines(lines,[mv],dt,lun,hNum); r._mode="t"; return r;
 }
