@@ -149,7 +149,7 @@ details.tech[open] summary:before{content:"\25BE "}
 <header>
   <div class="yin">☯</div>
   <h1>DỊCH LÝ HUYỀN HỌC</h1>
-  <p>Mai Hoa Dịch Số · Lục Hào Na Giáp · Tiểu Lục Nhâm · <span style="color:var(--gold)">bản v1.64 — luận Tuần không có điều kiện</span></p>
+  <p>Mai Hoa Dịch Số · Lục Hào Na Giáp · Tiểu Lục Nhâm · <span style="color:var(--gold)">bản v1.79 — minh bạch quy ước chi năm Mai Hoa</span></p>
   <div class="hdr-btns">
     <button onclick="openHist()">📜 Lịch sử</button>
     <button onclick="toggleTheme()" id="themeBtn">🌓 Giao diện</button>
@@ -165,11 +165,11 @@ details.tech[open] summary:before{content:"\25BE "}
     <span class="step-tag">Bước 1 — Chọn vấn đề muốn hỏi</span>
     <div class="qgrid" id="qgrid">
       <button type="button" class="qcard" aria-pressed="false" data-q="sn" onclick="selectQuestion('sn',this)"><span class="ic">💼</span><b>Sự nghiệp – công việc</b><small>VD: Tôi nên nhận việc mới không? Khi nào thăng tiến?</small></button>
-      <button type="button" class="qcard" aria-pressed="false" data-q="tl" onclick="selectQuestion('tl',this)"><span class="ic">💰</span><b>Tài lộc – kinh doanh</b><small>VD: Đầu tư khoản này có lời không? Thu hồi nợ được không?</small></button>
+      <button type="button" class="qcard" aria-pressed="false" data-q="tl" onclick="selectQuestion('tl',this)"><span class="ic">💰</span><b>Tài lộc – kinh doanh</b><small>VD: Tôi cần cân nhắc yếu tố nào trước một quyết định tài chính?</small></button>
       <button type="button" class="qcard" aria-pressed="false" data-q="td" onclick="selectQuestion('td',this)"><span class="ic">❤️</span><b>Tình duyên – hôn nhân</b><small>VD: Người ấy có thật lòng không? Khi nào nên cưới?</small></button>
-      <button type="button" class="qcard" aria-pressed="false" data-q="sk" onclick="selectQuestion('sk',this)"><span class="ic">🌿</span><b>Sức khỏe</b><small>VD: Bệnh này có nguy hiểm không? Khi nào khỏi?</small></button>
+      <button type="button" class="qcard" aria-pressed="false" data-q="sk" onclick="selectQuestion('sk',this)"><span class="ic">🌿</span><b>Sức khỏe</b><small>VD: Tôi muốn chăm sóc sức khỏe và thói quen sinh hoạt thế nào?</small></button>
       <button type="button" class="qcard" aria-pressed="false" data-q="gd" onclick="selectQuestion('gd',this)"><span class="ic">🏠</span><b>Gia đạo – bình an</b><small>VD: Nhà có yên không? Nên mua nhà lúc này không?</small></button>
-      <button type="button" class="qcard" aria-pressed="false" data-q="kt" onclick="selectQuestion('kt',this)"><span class="ic">⚖️</span><b>Kiện tụng – tranh chấp</b><small>VD: Kiện có thắng không? Nên hòa giải hay theo đuổi?</small></button>
+      <button type="button" class="qcard" aria-pressed="false" data-q="kt" onclick="selectQuestion('kt',this)"><span class="ic">⚖️</span><b>Kiện tụng – tranh chấp</b><small>VD: Tôi cần chuẩn bị gì trước khi hỏi chuyên gia pháp lý?</small></button>
       <button type="button" class="qcard" aria-pressed="false" data-q="xh" onclick="selectQuestion('xh',this)"><span class="ic">🧭</span><b>Xuất hành – di chuyển</b><small>VD: Chuyến đi này có an toàn không?</small></button>
       <button type="button" class="qcard" aria-pressed="false" data-q="tc" onclick="selectQuestion('tc',this)"><span class="ic">📚</span><b>Học hành – thi cử</b><small>VD: Kỳ thi tới có đỗ không? Nên thi trường nào?</small></button>
       <button type="button" class="qcard" aria-pressed="false" data-q="tv" onclick="selectQuestion('tv',this)"><span class="ic">🌟</span><b>Thời vận tổng quát</b><small>VD: Vận thời gian tới của tôi thế nào?</small></button>
@@ -196,8 +196,15 @@ details.tech[open] summary:before{content:"\25BE "}
       <div style="max-width:190px"><label>Độ lệch UTC</label><select id="ftimezone" aria-label="Độ lệch UTC dùng để tính lịch âm và tiết khí" onchange="setNowForZone()"></select></div>
     </div>
     <p class="mut" style="font-size:12px;margin:-4px 0 12px">Giờ nhập được hiểu theo độ lệch UTC đang chọn. Đây là độ lệch cố định; ứng dụng chưa tự áp dụng lịch sử đổi múi giờ theo từng địa điểm.</p>
+    <label for="fdayboundary">Mốc đổi ngày khi lập quẻ</label>
+    <select id="fdayboundary" onchange="dayBoundaryChange()"><option value="midnight">00:00 — theo ngày lịch</option><option value="zi">23:00 — Tý sơ đổi ngày</option></select>
+    <p class="mut" style="font-size:12px;margin:5px 0 12px">Đoạn 《梅花易數》〈年月日時起例〉 nêu cách cộng năm–tháng–ngày–giờ nhưng không chỉ rõ mốc đổi ngày. Chọn một quy ước và giữ nhất quán để có thể tái lập kết quả.</p>
+    <label for="fyearboundary">Cách xác định chi năm — Mai Hoa theo giờ</label>
+    <select id="fyearboundary" onchange="yearBoundaryChange()"><option value="lunar">Theo năm âm lịch — mặc định</option><option value="lichun">Theo tiết Lập Xuân — đối chiếu</option></select>
+    <p class="mut" style="font-size:12px;margin:5px 0 12px">Cổ thư nói “子年一數” nhưng không xác định ranh giới đổi năm. Mặc định theo năm âm lịch; lựa chọn Lập Xuân dùng thời điểm Mặt Trời đạt 315° theo mô hình thiên văn xấp xỉ của ứng dụng. <a href="https://www.hko.gov.hk/tc/gts/time/24solarterms.htm" target="_blank" rel="noopener">HKO xác định Lập Xuân tại 315°</a> và <a href="https://www.hko.gov.hk/tc/education/astronomy-and-time/time-service/00506-what-year-is-it-today.html" target="_blank" rel="noopener">nêu rõ ranh giới năm âm lịch khác với cách một số nhà mệnh lý dùng Lập Xuân</a>. Hai cách có thể cho số chi năm khác nhau gần ranh giới; xem đây là quy ước đối chiếu, không phải khẳng định một phái duy nhất.</p>
     <label>Câu hỏi cụ thể</label>
     <input id="fques" maxlength="1000" placeholder="Nhập câu hỏi của bạn...">
+    <p class="mut" style="font-size:12px;margin:5px 0 0">Tên và câu hỏi được lưu trong lịch sử trên trình duyệt này. Link chia sẻ mặc định ẩn hai mục đó; bạn có thể xác nhận nếu muốn đưa chúng vào URL.</p>
     <div id="coinPanel" class="hidden" style="text-align:center;margin-top:18px">
       <div class="mut" id="coinRound" style="margin-bottom:10px;font-size:14px"></div>
       <div id="coinStage" style="display:flex;gap:16px;justify-content:center;margin:12px 0;min-height:60px"></div>
@@ -287,7 +294,7 @@ function validDataShape(d){
   const nums=new Set(),pairs=new Set();
   for(const h of d.hexes){if(!h||!Number.isInteger(h.n)||h.n<1||h.n>64||nums.has(h.n)||!Number.isInteger(h.u)||h.u<0||h.u>7||!Number.isInteger(h.l)||h.l<0||h.l>7)return false;nums.add(h.n);const k=h.u+":"+h.l;if(pairs.has(k))return false;pairs.add(k);}
   if(nums.size!==64||pairs.size!==64||!d.tln.every(x=>x&&typeof x.name==="string"&&Number.isFinite(Number(x.score))))return false;
-  const qkeys=new Set();for(const q of d.qtypes){if(!q||typeof q.k!=="string"||!q.k||qkeys.has(q.k)||typeof q.t!=="string")return false;qkeys.add(q.k);}
+  const qkeys=new Set();for(const q of d.qtypes){if(!q||typeof q.k!=="string"||!/^[a-z][a-z0-9_-]{0,31}$/.test(q.k)||qkeys.has(q.k)||typeof q.t!=="string")return false;qkeys.add(q.k);}
   const textSafe=v=>typeof v==="string"?!/[<>]/.test(v):Array.isArray(v)?v.every(textSafe):v&&typeof v==="object"?Object.values(v).every(textSafe):true;
   return textSafe(d);
 }
@@ -304,24 +311,72 @@ function normalizeCopyText(data){
   walk(data);return changed;
 }
 normalizeCopyText(DEFAULT_DATA);
-function loadDB(){try{const s=localStorage.getItem('dlyh_db');if(s){const d=JSON.parse(s);if(validDataShape(d)){if(normalizeCopyText(d)){try{localStorage.setItem('dlyh_db',JSON.stringify(d));}catch(e){}}return d;}}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_DATA));}
+function mergeDefaultShape(base,custom){
+  if(Array.isArray(base))return base.map((v,i)=>mergeDefaultShape(v,Array.isArray(custom)?custom[i]:undefined));
+  if(base&&typeof base==="object"){
+    const src=custom&&typeof custom==="object"&&!Array.isArray(custom)?custom:{};
+    const out={};
+    Object.keys(base).forEach(k=>{out[k]=mergeDefaultShape(base[k],src[k]);});
+    Object.keys(src).forEach(k=>{if(!Object.prototype.hasOwnProperty.call(base,k)&&k!=="__proto__"&&k!=="constructor"&&k!=="prototype")out[k]=src[k];});
+    return out;
+  }
+  if(typeof base==="string")return typeof custom==="string"&&custom.trim()?custom:base;
+  if(typeof base==="number")return Number.isFinite(custom)?custom:base;
+  if(base===null)return custom===null||typeof custom==="string"?custom:base;
+  return typeof custom===typeof base?custom:base;
+}
+function repairDataRecords(data){
+  let repaired=0;
+  const need=["tong","xu","qt","dt","advice"],topics=["sn","tl","td","sk","gd","kt","xh","tc"];
+  for(const h of data.hexes){
+    const before=JSON.stringify(h),d0=DEFAULT_DATA.hexes.find(x=>x.n===h.n)||{};
+    need.forEach(k=>{if(typeof h[k]!=="string"||!h[k].trim())h[k]=d0[k]||"";});
+    if(typeof h.name!=="string"||!h.name.trim())h.name=d0.name||("Quẻ "+h.n);
+    if(!h.a||typeof h.a!=="object"||Array.isArray(h.a))h.a={};
+    topics.forEach(k=>{if(typeof h.a[k]!=="string"||!h.a[k].trim())h.a[k]=(d0.a||{})[k]||"";});
+    ["hd","ht"].forEach(k=>{if(!Array.isArray(h[k])||h[k].length!==6||h[k].some(v=>typeof v!=="string"||!v.trim()))h[k]=(d0[k]||["","","","","",""]).slice();});
+    if(JSON.stringify(h)!==before)repaired++;
+  }
+  data.tln=data.tln.map((x,i)=>{
+    const before=JSON.stringify(x), merged=mergeDefaultShape(DEFAULT_DATA.tln[i],x);
+    if(JSON.stringify(merged)!==before)repaired++;
+    return merged;
+  });
+  ["thanSx","tpl","dungMap","linhon"].forEach(k=>{
+    const before=JSON.stringify(data[k]);data[k]=mergeDefaultShape(DEFAULT_DATA[k],data[k]);
+    if(JSON.stringify(data[k])!==before)repaired++;
+  });
+  return repaired;
+}
+function loadDB(){try{const s=localStorage.getItem('dlyh_db');if(s){const d=JSON.parse(s);if(validDataShape(d)){const repaired=repairDataRecords(d);const copyFixed=normalizeCopyText(d);if(repaired||copyFixed){try{localStorage.setItem('dlyh_db',JSON.stringify(d));}catch(e){}}return d;}}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_DATA));}
 function saveDB(){ try{localStorage.setItem('dlyh_db',JSON.stringify(DB));return true;}catch(e){return false;} }
 DB = loadDB();
 DB.hexes.forEach(h=>{const d0=DEFAULT_DATA.hexes.find(x=>x.n===h.n)||{};["tong","xu","a","hd","qt","dt","ht","advice"].forEach(f=>{if(!h[f])h[f]=d0[f]})});
-DB.thanSx=DB.thanSx||DEFAULT_DATA.thanSx;DB.tpl=Object.assign({},DEFAULT_DATA.tpl,DB.tpl||{});
-DB.dungMap=DB.dungMap||DEFAULT_DATA.dungMap;
-DB.linhon=DB.linhon||DEFAULT_DATA.linhon;
+DB.thanSx=mergeDefaultShape(DEFAULT_DATA.thanSx,DB.thanSx);DB.tpl=mergeDefaultShape(DEFAULT_DATA.tpl,DB.tpl);
+DB.dungMap=mergeDefaultShape(DEFAULT_DATA.dungMap,DB.dungMap);
+DB.linhon=mergeDefaultShape(DEFAULT_DATA.linhon,DB.linhon);
 const QUESTION_FALLBACK=[
  {k:"sn",t:"Sự nghiệp – công việc",icon:"💼",hint:"Công việc, đổi việc, thăng tiến"},
- {k:"tl",t:"Tài lộc – kinh doanh",icon:"💰",hint:"Thu chi, đầu tư, kinh doanh"},
+ {k:"tl",t:"Tài lộc – kinh doanh",icon:"💰",hint:"Chiêm nghiệm về nguồn lực và kế hoạch"},
  {k:"td",t:"Tình duyên – hôn nhân",icon:"❤️",hint:"Tình cảm, kết đôi, gia đạo"},
- {k:"sk",t:"Sức khỏe",icon:"🌿",hint:"Chỉ tham khảo; vấn đề sức khỏe cần chuyên gia y tế"},
+ {k:"sk",t:"Sức khỏe",icon:"🌿",hint:"Chỉ chiêm nghiệm văn hóa; không dùng để chẩn đoán hoặc điều trị"},
  {k:"gd",t:"Gia đạo – bình an",icon:"🏠",hint:"Gia đình, nhà cửa, bình an"},
- {k:"kt",t:"Kiện tụng – tranh chấp",icon:"⚖️",hint:"Tranh chấp, hòa giải, giấy tờ"},
+ {k:"kt",t:"Tranh chấp – pháp lý",icon:"⚖️",hint:"Chiêm nghiệm; căn cứ pháp lý cần chuyên gia"},
  {k:"xh",t:"Xuất hành – di chuyển",icon:"🧭",hint:"Đi lại, chuyến đi, di chuyển"},
  {k:"tc",t:"Học hành – thi cử",icon:"📚",hint:"Học tập, thi cử, lựa chọn ngành"},
  {k:"tv",t:"Thời vận tổng quát",icon:"🌟",hint:"Nhìn tổng quan tình thế hiện tại"}
 ];
+function allQuestionTypes(){
+  const stored=Array.isArray(DB&&DB.qtypes)?DB.qtypes.filter(q=>q&&typeof q.k==="string"&&q.k&&typeof q.t==="string"&&q.t):[];
+  const byKey=new Map(stored.map(q=>[q.k,q]));
+  const baseKeys=new Set(QUESTION_FALLBACK.map(q=>q.k));
+  const builtins=QUESTION_FALLBACK.map(base=>{
+    const q=byKey.get(base.k)||{};
+    return Object.assign({},base,q,{t:typeof q.t==="string"&&q.t.trim()?q.t:base.t,icon:q.icon||base.icon,hint:base.k==="sk"?base.hint:(q.hint||base.hint)});
+  });
+  return builtins.concat(stored.filter(q=>!baseKeys.has(q.k)));
+}
+function questionType(key){ return allQuestionTypes().find(q=>q.k===key)||QUESTION_FALLBACK.find(q=>q.k===key)||null; }
 
 /* ================= TẦNG CÔNG CỤ: BÁT QUÁI, NGŨ HÀNH ================= */
 const TRIG=[
@@ -489,7 +544,7 @@ const XUNTUAN=["Giáp Tý","Giáp Tuất","Giáp Thân","Giáp Ngọ","Giáp Th�
 const TAMHOP=[["Thân","Tý","Thìn"],["Dần","Ngọ","Tuất"],["Tỵ","Dậu","Sửu"],["Hợi","Mão","Mùi"]];
 const HANCHI={Tý:"Quý",Sửu:"Quý",Dần:"Giáp",Mão:"Ất",Thìn:"Mậu",Tỵ:"Bính",Ngọ:"Đinh",Mùi:"Kỷ",Thân:"Canh",Dậu:"Tân",Tuất:"Mậu",Hợi:"Nhâm"};
 const CAN_EL={Giáp:"Mộc",Ất:"Mộc",Bính:"Hỏa",Đinh:"Hỏa",Mậu:"Thổ",Kỷ:"Thổ",Canh:"Kim",Tân:"Kim",Nhâm:"Thủy",Quý:"Thủy"};
-const STT12=["Trường sinh","Mộc dụ","Quan đới","Lâm quan","Đế vượng","Suy","Bệnh","Tử","Mộ","Tuyệt","Thai","Dưỡng"];
+const STT12=["Trường sinh","Mộc Dục","Quan đới","Lâm quan","Đế vượng","Suy","Bệnh","Tử","Mộ","Tuyệt","Thai","Dưỡng"];
 const STT_START={Giáp:11,Ất:6,Bính:2,Đinh:9,Mậu:2,Kỷ:9,Canh:5,Tân:0,Nhâm:8,Quý:3};
 const DUONGCAN=["Giáp","Bính","Mậu","Canh","Nhâm"];
 function trangThai12(can,chi){const st=STT_START[can];if(st===undefined)return "";const i=CHI.indexOf(chi);const dir=DUONGCAN.includes(can)?1:-1;return STT12[(((i-st)*dir)%12+12)%12];}
@@ -529,6 +584,11 @@ function deepLucHao(r,qk){
       else xuat=" — cần xét động tĩnh, vượng suy và Nhật/Nguyệt sinh trợ; riêng Tuần không chưa đủ để kết luận hào vô dụng";
       ex.push({k:filledByDay?"kongFilled":"kong",s:filledByDay?"Không gặp Nhật xung":"Tuần không",t:"Hào lâm Tuần không (Không vong)"+xuat});
     }
+    if(r.mvs.includes(L.pos)){
+      const changedChi=L.pos<=3?NAP[r.bLow].i[L.pos-1]:NAP[r.bUp].o[L.pos-4];
+      if(kong.includes(changedChi))ex.push({k:"huaKong",s:"Động hóa Không",t:"Hào động hóa chi "+changedChi+" thuộc Tuần không của ngày lập quẻ. 《增删卜易》旬空章 ghi “动而化空不为空”; không tự coi hào động là vô dụng, vẫn xét hào gốc, vai trò Dụng/Kỵ và sinh khắc Nhật–Nguyệt."});
+      if(isXung(changedChi,r.mChi))ex.push({k:"huaPo",s:"Hóa chi gặp Nguyệt phá",t:"Chi hào biến "+changedChi+" bị nguyệt kiến "+r.mChi+" xung. 《增删卜易》月破章 ghi biến hào có thể tác động hào động và phá có thể đợi xuất nguyệt/thực phá; các truyền bản có cách luận khác nhau, nên đây chỉ là dấu hiệu, không tự kết luận hào biến vô lực."});
+    }
     if(isHop(L.chi,r.mChi))ex.push({k:"mhop",s:"Hợp",t:"Nguyệt hợp — tháng giữ hào, có ràng buộc"});
     for(const g of TAMHOP){
       if(!g.includes(L.chi))continue;
@@ -539,16 +599,25 @@ function deepLucHao(r,qk){
       else if(hit.length===1&&(r.dChi===hit[0]||r.mChi===hit[0]))ex.push({k:"btamhop",s:"Bán hợp",t:"Có một chi của bán tam hợp "+g.join("-")+" đến từ "+(r.dChi===hit[0]?"Nhật":"Nguyệt")+"; ghi nhận là quan hệ phụ, chưa tự định chiều cát/hung."});
     }
     const tt=trangThai12(can,L.chi);
-    if(["Trường sinh","Mộc dụ","Quan đới","Lâm quan","Đế vượng","Suy","Bệnh","Tử","Mộ","Tuyệt","Thai","Dưỡng"].includes(tt))ex.push({k:"t12",s:"Vòng 12 trạng thái",t:"Theo phép an vòng Trường Sinh bằng nhật can, hào ở trạng thái "+tt+"; đây là lớp tham khảo, không tự nó quyết định vượng suy hay cát hung."});
+    if(["Trường sinh","Mộc Dục","Quan đới","Lâm quan","Đế vượng","Suy","Bệnh","Tử","Mộ","Tuyệt","Thai","Dưỡng"].includes(tt))ex.push({k:"t12",s:"Vòng 12 trạng thái",t:"Theo phép an vòng Trường Sinh bằng nhật can, hào ở trạng thái "+tt+"; đây là lớp tham khảo, không tự nó quyết định vượng suy hay cát hung."});
     L.extra=ex;
     const marks=ex.map(e=>e.s).join(" · ");
     L.suc=L.suc?(marks?L.suc+" · "+marks:L.suc):(marks||L.suc||"·");
   });
+  if(r.selectedLineMoving){
+    const selected=r.lucHao[r.mv-1],changeNotes=(selected.extra||[]).filter(e=>e.k==="huaKong"||e.k==="huaPo"||e.k.startsWith("huaStage_"));
+    if(changeNotes.length)r.hoa.t+=" "+changeNotes.map(e=>e.t).join(" ");
+  }
   const dm=(DB.dungMap||{})[qk];
   const conditionalRelationship=qk==="td";
-  const dung={need:conditionalRelationship?"Chưa xác định — thiếu ngữ cảnh người hỏi/đối tượng":dm?dm.sp:null,delta:0,line:null,text:"",doan:"",short:""};
+  const contextualHealth=qk==="sk";
+  const dung={need:contextualHealth?"Không áp dụng — thiếu ngữ cảnh sức khỏe":conditionalRelationship?"Chưa xác định — thiếu ngữ cảnh người hỏi/đối tượng":dm?dm.sp:null,delta:0,line:null,text:"",doan:"",short:""};
   r.dung=dung;
-  if(conditionalRelationship){
+  if(contextualHealth){
+    dung.text="Ứng dụng không chọn hào Dụng thần sức khỏe và không diễn giải lục thân như dấu hiệu bệnh. Câu hỏi chưa xác định ai là người bệnh; quan trọng hơn, quẻ không thể cung cấp bằng chứng y khoa. Không chấm điểm hoặc kết luận sức khỏe từ mục này.";
+    dung.doan="không áp dụng Dụng thần hay kết luận y tế từ quẻ";
+    dung.short="Sức khỏe: không chẩn đoán hoặc dự báo bằng quẻ";
+  }else if(conditionalRelationship){
     dung.text="Chưa chọn hào Dụng thần cố định cho câu hỏi tình duyên. 《增删卜易》婚姻章 phân biệt nam gia hỏi nữ (Tài) với nữ gia hỏi nam (Quan), đồng thời bàn riêng hào Ứng và các vai trò trong từng phép hỏi. Ứng dụng chưa thu thập quan hệ/người được hỏi, nên không tự gán một hào duy nhất, không chấm điểm theo Dụng thần và không kết luận từ mục này.";
     dung.doan="chưa đủ ngữ cảnh để định Dụng thần tình duyên; không chốt cát/hung từ mục này";
     dung.short="Tình duyên: cần xác định vai trò hai bên trước khi chọn Dụng thần";
@@ -564,6 +633,7 @@ function deepLucHao(r,qk){
       const L=pool[0], dong=r.mvs.includes(L.pos);
       const kongL=L.extra.some(e=>e.k==="kong"), kongFilled=L.extra.some(e=>e.k==="kongFilled"), phaL=!kongFilled&&L.extra.some(e=>e.k==="rphap");
       const hopL=L.extra.some(e=>["tamhop","btamhop","mhop"].includes(e.k));
+      const huaKongL=L.extra.some(e=>e.k==="huaKong"),huaPoL=L.extra.some(e=>e.k==="huaPo"),huaStage=L.extra.find(e=>e.k.startsWith("huaStage_"));
       const lineTags=r.tham[L.pos-1]||[];
       const monthSupport=lineTags.some(e=>["v","v2","t"].includes(e.k));
       const monthWeak=lineTags.some(e=>["p","h","s","x"].includes(e.k));
@@ -574,6 +644,7 @@ function deepLucHao(r,qk){
       if(phaL)t+="Dụng thần hào tĩnh gặp Nhật xung khi khí tháng yếu — có dấu hiệu Nhật phá; cần cân đủ sinh trợ và hào động, không tự kết luận việc chắc hỏng. ";
       else if(kongL)t+="Dụng thần lâm Tuần không. 《增删卜易》 có phân biệt hào vượng, hào động hoặc được Nhật/nguyệt, hào động sinh trợ với trường hợp bị coi là vô dụng; ứng dụng chỉ ghi nhận Tuần không và xét thêm các điều kiện này, không mặc định phải chờ xuất không mới phát dụng. ";
       else if(kongFilled)t+="Dụng thần vốn lâm Tuần không nhưng bị Nhật thần xung; ghi nhận dấu hiệu xung không tắc thực/xuất không, không tiếp tục phạt như hào còn rỗng. ";
+      else if(dong&&(huaKongL||huaPoL||huaStage))t+="Dụng thần động có dấu hiệu "+[huaKongL?"hóa chi lâm Tuần không":"",huaPoL?"hóa chi gặp Nguyệt phá":"",huaStage?huaStage.s.toLowerCase():""].filter(Boolean).join(" và ")+"; đây là các trạng thái hào hóa cần xét cùng hào gốc, vai trò và trợ/khắc Nhật–Nguyệt, không tự định cát hung. ";
       else if(dong)t+="Dụng thần động; cần xét hào biến cùng sinh khắc Nhật–Nguyệt mới định chiều ứng. ";
       else if(monthSupport||daySupport)t+="Có dấu hiệu được "+(monthSupport?"tháng":"ngày")+" nâng; vẫn cần cân các dấu hiệu khắc, xung và hào biến. ";
       else if(monthWeak||dayHarm)t+="Có dấu hiệu khí tháng yếu hoặc bị Nhật chế; phải xét đủ nguồn sinh trợ trước khi luận thành bại. ";
@@ -621,20 +692,47 @@ function deepLucHao(r,qk){
       if(isHop(L.chi,dungHao.chi))relList.push({t:"hopDung",x:"Hào "+NM[L.pos-1]+" HỢP Dụng thần — ghi nhận quan hệ hợp; chưa tự kết luận thành/bại"});
     }
   }
-  /* Hóa mộ theo ngũ hành bản hào; không coi cả bốn kho là mộ của mọi hành. */
-  const MUBRANCH_BY_EL={Kim:"Sửu",Mộc:"Mùi",Thủy:"Thìn",Thổ:"Thìn",Hỏa:"Tuất"};
+  /* Bốn vị trí Trường Sinh/Đế Vượng/Mộ/Tuyệt theo riêng phép 《增删卜易》; không dùng vòng 12 trạng thái Nhật can thay thế. */
+  const HUA_STAGE_BY_EL={
+    Kim:{truongSinh:"Tỵ",vuong:"Dậu",mo:"Sửu",tuyet:"Dần"},
+    Mộc:{truongSinh:"Hợi",vuong:"Mão",mo:"Mùi",tuyet:"Thân"},
+    Thủy:{truongSinh:"Thân",vuong:"Tý",mo:"Thìn",tuyet:"Tỵ"},
+    Thổ:{truongSinh:"Thân",vuong:"Tý",mo:"Thìn",tuyet:"Tỵ"},
+    Hỏa:{truongSinh:"Dần",vuong:"Ngọ",mo:"Tuất",tuyet:"Hợi"}
+  };
+  const huaStageName={truongSinh:"Hóa Trường Sinh",vuong:"Hóa Đế Vượng",mo:"Hóa Mộ",tuyet:"Hóa Tuyệt"};
   const mokhot=[];
   r.mvs.forEach(m=>{
     const L=r.lucHao[m-1];
     const bc=m<=3?NAP[r.bLow].i[m-1]:NAP[r.bUp].o[m-4];
-    const tomb=MUBRANCH_BY_EL[L.el];
-    if(tomb&&bc===tomb){
+    const stage=Object.entries(HUA_STAGE_BY_EL[L.el]||{}).find(([,branch])=>branch===bc);
+    if(!stage)return;
+    const [kind]=stage, label=huaStageName[kind];
+    const note="Hào "+NM[m-1]+" ("+L.chi+" "+L.el+") hóa đến "+bc+" — dấu hiệu "+label+" theo bảng sinh/vượng/mộ/tuyệt của 《增删卜易》; cần xét vượng suy, sinh trợ, Dụng/Kỵ và tác động Nhật–Nguyệt, không tự định cát hung.";
+    L.extra.push({k:"huaStage_"+kind,s:label,t:note});
+    L.suc=(L.suc&&L.suc!=="·"?L.suc+" · ":"")+label;
+    if(kind==="mo"){
       const xungKhai=isXung(bc,r.dChi)||isXung(bc,r.mChi);
-      mokhot.push("Hào "+NM[m-1]+" ("+L.chi+" "+L.el+") hóa đến mộ "+bc+" của hành "+L.el+" — ghi nhận dấu hiệu hóa mộ; cần xét vượng suy, sinh trợ và vai trò Dụng/Kỵ"+(xungKhai?"; Nhật hoặc Nguyệt xung chi mộ, có thể là dấu hiệu xung khai nhưng chưa tự xác định hiệu lực":"; chưa thấy Nhật/Nguyệt trực tiếp xung chi mộ")+". Không tự kết luận hào bị khóa hay bất động.");
+      mokhot.push(note+(xungKhai?" Nhật hoặc Nguyệt xung chi mộ, có thể là dấu hiệu xung khai nhưng chưa tự xác định hiệu lực.":" Chưa thấy Nhật/Nguyệt trực tiếp xung chi mộ."));
     }
   });
-  /* Phản ngâm / Phục ngâm: phân biệt theo chi của từng hào biến, không suy từ việc cả sáu hào cùng động. */
+  /* Phản ngâm / Phục ngâm ở cấp quẻ, nội/ngoại và từng hào; không suy từ số hào động. */
   const phanAmNotes=[];
+  const OPP_TRIG={0:4,4:0,1:3,3:1,2:5,5:2,6:7,7:6};
+  const innerChanged=r.lIdx!==r.bLow,outerChanged=r.uIdx!==r.bUp;
+  const innerFan=innerChanged&&OPP_TRIG[r.lIdx]===r.bLow;
+  const outerFan=outerChanged&&OPP_TRIG[r.uIdx]===r.bUp;
+  if(innerFan||outerFan){
+    const scope=innerFan&&outerFan?"nội ngoại quái":"quái "+(innerFan?"nội":"ngoại");
+    phanAmNotes.push("Phản ngâm cấp quẻ — "+scope+" biến sang quái đối xung theo phép đối chiếu Bát Quái của 《卜筮正宗》; đây là cấu trúc biến quái, không tự kết luận hung hay đảo toàn bộ lời đoán.");
+  }
+  const sameBranches=(a,b)=>a.length===b.length&&a.every((x,i)=>x===b[i]);
+  const innerFu=innerChanged&&sameBranches(NAP[r.lIdx].i,NAP[r.bLow].i);
+  const outerFu=outerChanged&&sameBranches(NAP[r.uIdx].o,NAP[r.bUp].o);
+  if(innerFu||outerFu){
+    const scope=innerFu&&outerFu?"nội ngoại quái":"quái "+(innerFu?"nội":"ngoại");
+    phanAmNotes.push("Phục ngâm cấp quẻ — "+scope+" đổi hình nhưng dãy địa chi Nạp Giáp giữ nguyên theo 《卜筮正宗》; chỉ ghi nhận cấu trúc lặp, còn phải xét Dụng thần, thời lực và câu hỏi.");
+  }
   const yaoFan=r.mvs.filter(m=>{
     const L=r.lucHao[m-1],bc=m<=3?NAP[r.bLow].i[m-1]:NAP[r.bUp].o[m-4];
     return isXung(L.chi,bc);
@@ -643,8 +741,8 @@ function deepLucHao(r,qk){
     const L=r.lucHao[m-1],bc=m<=3?NAP[r.bLow].i[m-1]:NAP[r.bUp].o[m-4];
     return bc===L.chi;
   });
-  if(yaoFan.length)phanAmNotes.push("Hào "+yaoFan.map(m=>NM[m-1]).join(", ")+" hóa sang chi lục xung với bản chi — dấu hiệu hào phản ngâm theo phép đối chiếu chi hiện tại; cần xét dụng thần và sinh khắc, không tự đảo ngược toàn bộ lời đoán.");
-  if(yaoFu.length)phanAmNotes.push("Hào "+yaoFu.map(m=>NM[m-1]).join(", ")+" hóa về cùng chi bản hào — dấu hiệu hào phục ngâm theo phép đối chiếu hiện tại; thường được luận là lặp/trì trệ, không tự kết luận cát hung.");
+  if(yaoFan.length)phanAmNotes.push("Phản ngâm cấp hào — hào "+yaoFan.map(m=>NM[m-1]).join(", ")+" hóa sang chi lục xung với bản chi; xét Dụng thần và sinh khắc, không tự đảo ngược toàn bộ lời đoán.");
+  if(yaoFu.length)phanAmNotes.push("Phục ngâm cấp hào — hào "+yaoFu.map(m=>NM[m-1]).join(", ")+" hóa về cùng chi bản hào; ghi nhận dấu hiệu lặp/trì trệ, không tự kết luận cát hung.");
   const phanAm=phanAmNotes.join(" ");
   if(phanAm)applyScoreAdjustment(r,"Phản ngâm / Phục ngâm",0,phanAm+" Dấu hiệu định tính, không cộng điểm.");
   r.haoRelations={rels:relList,mokhot:mokhot,phanAm:phanAm};
@@ -652,6 +750,10 @@ function deepLucHao(r,qk){
   const target=r.dung.line?r.lucHao[r.dung.line-1]:null;
   const pnotes=[];
   if(target){
+    if((target.extra||[]).some(e=>e.k==="huaKong"))pnotes.push("Dụng thần động hóa chi lâm Tuần không; 《增删卜易》旬空章 ghi động hóa không không tự thành vô dụng, cần xét hào gốc và toàn cục.");
+    if((target.extra||[]).some(e=>e.k==="huaPo"))pnotes.push("Dụng thần động hóa chi gặp Nguyệt phá; 《增删卜易》 ghi nhận phá có thể đợi thời và truyền bản có khác biệt, nên không tự xem hào biến là vô lực.");
+    const targetStage=(target.extra||[]).find(e=>e.k.startsWith("huaStage_"));
+    if(targetStage)pnotes.push("Dụng thần động có "+targetStage.s+" theo bảng của 《增删卜易》; cần xét thêm sinh trợ và Nhật–Nguyệt, không kết luận riêng theo nhãn này.");
     if(target.chi===r.dChi)pnotes.push("Dụng thần lâm Nhật — dấu hiệu đồng chi với Nhật thần, còn cần xét sinh khắc và tổng thể.");
     else if(target.chi===r.mChi)pnotes.push("Dụng thần lâm Nguyệt — dấu hiệu đồng chi với nguyệt kiến, cần cân các tác động khác.");
     if(kong.includes(target.chi)){
@@ -734,14 +836,15 @@ function zhouYiRuleTrace(mvs,base,changed){
   if(base.n===2)return{mode:"sáu hào động — Khôn",html:"Dùng <b>Dụng Lục</b> của Khôn: <i>“用六：利永貞”</i> — lợi ở sự chính bền lâu. Đây là ngoại lệ Khôn trong 《易学启蒙》."};
   return{mode:"sáu hào động",html:"Đọc quẻ từ quẻ biến <b>"+changed.name+"</b>: <i>“"+changed.qt+"”</i>. Nguồn quy tắc: Chu Hi, 《易学啟蒙》, quy tắc sáu hào biến."};
 }
-function analyzeLines(lines,mvs,dt,lun,hNum){
+function analyzeLines(lines,mvs,dt,lun,hNum,yearBranchOverride){
   if(!(dt instanceof Date)||Number.isNaN(dt.getTime()))throw new Error("Thời điểm lập quẻ không hợp lệ");
   if(!Array.isArray(lines)||lines.length!==6||lines.some(x=>x!==0&&x!==1))throw new Error("Quẻ phải có đủ sáu hào nhị phân");
   if(!Array.isArray(mvs)||mvs.some(x=>!Number.isInteger(x)||x<1||x>6)||new Set(mvs).size!==mvs.length)throw new Error("Danh sách hào động không hợp lệ");
   mvs=mvs.slice().sort((a,b)=>a-b);
   const uIdx=findTrig(lines.slice(3,6)), lIdx=findTrig(lines.slice(0,3));
   const NM=["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"];
-  const jd0=jdFromDate(dt.getDate(),dt.getMonth()+1,dt.getFullYear());
+  const civil=effectiveCivilDate(dt,lun&&lun.dayBoundary);
+  const jd0=jdFromDate(civil.day,civil.month,civil.year);
   const dChi0=CHI[dayGanzhi(jd0).chi];
   let mv, zhuNote="";
   let isPrincipalMoving=false;
@@ -777,7 +880,8 @@ function analyzeLines(lines,mvs,dt,lun,hNum){
   const bLow=findTrig(bLines.slice(0,3)), bUp=findTrig(bLines.slice(3,6));
   const baseHex=hexFromUL(uIdx,lIdx), changedHex=hexFromUL(bUp,bLow);
   const ruleTrace=zhouYiRuleTrace(mvs,baseHex,changedHex);
-  const jd=jdFromDate(dt.getDate(),dt.getMonth()+1,dt.getFullYear());
+  /* Dùng cùng ngày hữu hiệu cho toàn bộ can chi và luận hào, kể cả khi Tý sơ đổi ngày. */
+  const jd=jd0;
   const dg=dayGanzhi(jd);
   const pal=PALMAP[lines.join("")];
   const lucHao=buildLucHao(uIdx,lIdx,pal,dg.can);
@@ -790,7 +894,7 @@ function analyzeLines(lines,mvs,dt,lun,hNum){
   const hoa=selectedLineMoving?hoaType(lucHao[mv-1].chi,lucHao[mv-1].el,bChi2,CHEL[bChi2]):{k:"tinh",t:"hào trọng tâm tĩnh — không có hào hóa",doan:"hào trọng tâm không động; không có hào hóa tại hào này",chi1:lucHao[mv-1].chi,el1:lucHao[mv-1].el,chi2:null,el2:null};
   if(selectedLineMoving){hoa.chi1=lucHao[mv-1].chi;hoa.el1=lucHao[mv-1].el;hoa.chi2=bChi2;hoa.el2=CHEL[bChi2];}
   lucHao.forEach((L,i)=>{L.suc=sucLabel(tham[i]); L.mv=mvs.includes(L.pos)});
-  const yBr=modPositive(lun.year-4,12)+1;
+  const yBr=Number.isInteger(yearBranchOverride)&&yearBranchOverride>=1&&yearBranchOverride<=12?yearBranchOverride:modPositive(lun.year-4,12)+1;
   /* Chỉ dùng Thể–Dụng trong điểm nội bộ khi một hào động cho mốc rõ; mốc đại diện ở quẻ tĩnh/nhiều hào không được cộng trừ điểm. */
   const scoreResult=computeScore(rel.key,mv,lines,isPrincipalMoving?hoa:null,isPrincipalMoving?tham[mv-1]:null,isPrincipalMoving,mvs.length===1);
   scoreResult.trace.push({label:"Phạm vi mốc Thể–Dụng",delta:0,reason:bodyUseBasis});
@@ -870,13 +974,13 @@ function finalizeCast(lines,mvs){
   const fv=document.getElementById("ftime").value;
   const dt=fv?new Date(fv):new Date();
   if(Number.isNaN(dt.getTime())||dt.getFullYear()<1800||dt.getFullYear()>2200){toast("Thời điểm không hợp lệ hoặc ngoài phạm vi 1800–2200");return;}
-  const y=dt.getFullYear(),mo=dt.getMonth()+1,d=dt.getDate(),h=dt.getHours();
-  const lun=solar2lunar(d,mo,y,getCalendarTZ());
+  const h=dt.getHours();
+  const lun=lunarAtDateTime(dt);
   const hNum=(((h+1)%24)>>1)+1;
   const r=analyzeLines(lines.slice(),mvs,dt,lun,hNum);
   const method=document.getElementById("fmode").value;
   const vals=method==="coin"&&coinState?coinState.vals.slice():method==="num"?Array.from({length:6},(_,i)=>parseInt(document.getElementById("n"+(i+1)).value,10)):null;
-  r._mode="c";r.castTrace={method,vals,faces:method==="coin"&&coinState?coinState.faces.map(x=>x.slice()):null};
+  r._mode="c";r.castTrace={method,vals,faces:method==="coin"&&coinState?coinState.faces.map(x=>x.slice()):null,dayBoundary:r.lun.dayBoundary,effectiveCivilDate:[r.lun.civilYear,r.lun.civilMonth,r.lun.civilDay].map((n,i)=>String(n).padStart(i?2:4,"0")).join("-")};
   document.getElementById("coinPanel").classList.add("hidden");
   document.getElementById("numPanel").classList.add("hidden");
   coinState=null;
@@ -899,9 +1003,10 @@ function buildFromNums(){
 }
 function finishCoin(mvs){finalizeCast(coinState.lines,mvs);}
 function castAll(dt){
-  const y=dt.getFullYear(),mo=dt.getMonth()+1,d=dt.getDate(),h=dt.getHours();
-  const lun=solar2lunar(d,mo,y,getCalendarTZ());
-  const yBr=modPositive(lun.year-4,12)+1;
+  const h=dt.getHours();
+  const lun=lunarAtDateTime(dt);
+  const yearBoundary=getYearBoundary();
+  const yBr=maiHuaYearBranch(dt,lun,yearBoundary);
   const hNum=(((h+1)%24)>>1)+1;
   /* Mai Hoa theo giờ: năm chi + tháng âm + ngày âm lập thượng quái;
      cộng giờ chi lập hạ quái; tổng năm-tháng-ngày-giờ chia 6 định hào động. */
@@ -910,8 +1015,8 @@ function castAll(dt){
   const lIdx=((((base+hNum)%8)||8)-1);
   const mv=((((base+hNum)%6)||6));
   const lines=TRIG[lIdx].l.concat(TRIG[uIdx].l);
-  const r=analyzeLines(lines,[mv],dt,lun,hNum); r._mode="t";
-  r.castTrace={method:"time",yBr,lunarMonth:lun.month,lunarDay:lun.day,leap:!!lun.leap,hNum,base,upperRemainder:base%8||8,lowerSum:base+hNum,lowerRemainder:(base+hNum)%8||8,movingRemainder:(base+hNum)%6||6};
+  const r=analyzeLines(lines,[mv],dt,lun,hNum,yBr); r._mode="t";
+  r.castTrace={method:"time",yBr,yearBoundary,lunarMonth:lun.month,lunarDay:lun.day,leap:!!lun.leap,hNum,base,upperRemainder:base%8||8,lowerSum:base+hNum,lowerRemainder:(base+hNum)%8||8,movingRemainder:(base+hNum)%6||6,dayBoundary:lun.dayBoundary,effectiveCivilDate:[lun.civilYear,lun.civilMonth,lun.civilDay].map((n,i)=>String(n).padStart(i?2:4,"0")).join("-")};
   return r;
 }
 function findTrig(l3){ for(let i=0;i<8;i++){const t=TRIG[i].l; if(t[0]===l3[0]&&t[1]===l3[1]&&t[2]===l3[2])return i;} return 0; }
@@ -979,6 +1084,7 @@ function verdictOf(s){
 }
 /* ===== CỔ PHÁP: dẫn chứng tượng – từ – hào – biến – Dụng thần, rồi mới lập lời đoán ===== */
 function buildJudgment(r,hostHex,biHex,mvName,aspectText,v,qp){
+  if(qp&&isScopedCategory(qp.k))return "Phần này chỉ là chiêm nghiệm văn hóa. Quẻ không xác định bệnh hay điều trị, không dự đoán lợi nhuận/khả năng thu hồi nợ, và không dự đoán phán quyết hay kết quả tranh chấp.";
   const theN=TRIG[r.theTrig].n,dungN=TRIG[r.dungTrig].n;
   const thandoan=DB.tpl.thandoan[r.rel.key];
   return `<b>① Dẫn chứng Quẻ Từ:</b> <i>"${hostHex.qt}"</i><br>
@@ -991,11 +1097,40 @@ function buildJudgment(r,hostHex,biHex,mvName,aspectText,v,qp){
 <b>➤ LỜI KHUYÊN CỦA THẦY:</b> ${hostHex.advice?hostHex.advice+" <span class='mut' style='font-size:12px'>(Chỉ số tham khảo nội bộ: "+r.score+"/100; không phải kết luận cát/hung)</span>":DB.tpl.adv[v.k.replace("-","")]}`;
 }
 function aspectKey(q){ return q==="tv"?"tong":(q||"tv"); }
+function isScopedCategory(key){ return key==="sk"||key==="tl"||key==="kt"; }
+function scopeReflectionText(hex,key){
+  const name=hex&&hex.name?hex.name:"quẻ này";
+  const image=hex&&hex.dt?" Hình tượng Đại Tượng để đọc: “"+hex.dt+"”.":"";
+  const intros={
+    sk:"có thể dùng như gợi ý tự quan sát nhịp sống, cảm nhận và nguồn hỗ trợ quanh mình.",
+    tl:"có thể dùng như gợi ý tự nhìn lại mục tiêu, nguồn lực và cách mình cân nhắc rủi ro.",
+    kt:"có thể dùng như gợi ý tự nhìn lại điều cần làm rõ, cách giao tiếp và những thông tin cần kiểm chứng."
+  };
+  const limits={
+    sk:"Đây không phải bằng chứng y khoa; quẻ không xác định bệnh, cơ quan, mức độ, tiên lượng, thuốc hoặc phương án điều trị.",
+    tl:"Đây không phải phân tích tài chính; quẻ không dự báo lợi nhuận, giá, khả năng thu hồi nợ, khả năng trả nợ hoặc kết quả đầu tư/kinh doanh.",
+    kt:"Đây không phải tư vấn pháp lý; quẻ không dự đoán thắng–thua, phán quyết, hòa giải, quyền/nghĩa vụ hay thời hạn pháp lý."
+  };
+  return "Chiêm nghiệm biểu tượng của "+name+" "+(intros[key]||"")+image+" "+limits[key];
+}
+function healthReflectionText(hex){return scopeReflectionText(hex,"sk");}
+function topicReading(hex,key){ return isScopedCategory(key)?scopeReflectionText(hex,key):((hex&&hex.a&&hex.a[key])||hex.tong||""); }
+const SCOPE_NOTICES={
+  sk:{title:"⚠ Lưu ý sức khỏe",text:"Nếu có triệu chứng mới, chưa rõ nguyên nhân, nặng lên, tác dụng phụ của thuốc/điều trị hoặc đang lo lắng, hãy liên hệ nhân viên y tế. Không trì hoãn chăm sóc cần thiết và không tự ngừng, bỏ liều hay đổi thuốc kê đơn khi chưa hỏi nhân viên y tế.",links:[["MedlinePlus — thông tin sức khỏe trực tuyến","https://medlineplus.gov/ency/patientinstructions/000869.htm"],["khi nào liên hệ nhân viên y tế","https://medlineplus.gov/ency/patientinstructions/000860.htm"],["FDA — an toàn khi dùng thuốc","https://www.fda.gov/consumers/consumer-updates/5-medication-safety-tips-older-adults"]]},
+  tl:{title:"⚠ Lưu ý tài chính",text:"Không dùng quẻ làm căn cứ đầu tư, vay nợ, cho vay, mua bán hoặc quyết định tài chính lớn. Hãy kiểm tra tài liệu, chi phí, thời hạn và rủi ro có thể mất vốn; cân nhắc chuyên gia tài chính phù hợp với nơi bạn sinh sống.",links:[["Investor.gov (Hoa Kỳ) — rủi ro của sản phẩm đầu tư","https://www.investor.gov/introduction-investing/investing-basics/investment-products"]]},
+  kt:{title:"⚠ Lưu ý pháp lý",text:"Không dùng quẻ để quyết định khởi kiện, bỏ kiện, hòa giải, ký thỏa thuận hoặc bỏ qua thời hạn. Luật và kết quả phụ thuộc nơi áp dụng cùng hồ sơ thực tế; hãy hỏi luật sư/chuyên gia pháp lý tại đúng khu vực liên quan.",links:[["USAGov (Hoa Kỳ) — tìm trợ giúp pháp lý","https://www.usa.gov/legal-aid"]]}
+};
+function scopeNoticeHtml(key){
+  const n=SCOPE_NOTICES[key];if(!n)return "";
+  const links=n.links.map(x=>'<a href="'+x[1]+'" target="_blank" rel="noopener">'+x[0]+'</a>').join(" · ");
+  return '<div class="read" role="note" style="border-color:#d1a93b;color:var(--gold2)"><b>'+n.title+'</b><br>'+n.text+'<br><span class="mut" style="font-size:12px">Nguồn tham khảo: '+links+'.</span></div>';
+}
+function healthNoticeHtml(){ return scopeNoticeHtml("sk"); }
 
 /* ================= TẦNG GIAO DIỆN ================= */
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(t._x);t._x=setTimeout(()=>t.style.display="none",2600)}
 function selectQuestion(key,button){
-  const questionList=(DB&&Array.isArray(DB.qtypes)?DB.qtypes:[]).concat(QUESTION_FALLBACK);
+  const questionList=allQuestionTypes();
   const q=questionList.find(x=>x&&x.k===key);
   if(!q)return;
   selType=q.k;
@@ -1003,27 +1138,60 @@ function selectQuestion(key,button){
   const active=button||document.querySelector('#qgrid .qcard[data-q="'+String(key).replace(/["\\]/g,"")+ '"]');
   document.querySelectorAll("#qgrid .qcard").forEach(x=>x.setAttribute("aria-pressed",x===active?"true":"false"));
   if(active)active.classList.add("sel");
-  const hint=document.getElementById("hint");if(hint){hint.textContent="💡 "+(q.hint||"Đã chọn chủ đề");hint.setAttribute("role","status");hint.setAttribute("aria-live","polite");}
+  const hint=document.getElementById("hint");if(hint){hint.textContent="💡 "+(q.k==="sk"?"Chỉ chiêm nghiệm văn hóa; không dùng để chẩn đoán hoặc điều trị":(q.hint||"Đã chọn chủ đề"));hint.setAttribute("role","status");hint.setAttribute("aria-live","polite");}
   const step=document.getElementById("step2");if(step)step.scrollIntoView({behavior:"smooth"});
 }
 function buildQGrid(){
   const g=document.getElementById("qgrid");if(!g)return;
-  const stored=(DB&&Array.isArray(DB.qtypes)?DB.qtypes:[]).filter(q=>q&&typeof q.k==="string"&&q.k&&typeof q.t==="string"&&q.t);
-  const questions=stored.length?stored:QUESTION_FALLBACK;
+  const questions=allQuestionTypes();
   const frag=document.createDocumentFragment();
   questions.forEach(q=>{
     const b=document.createElement("button");b.type="button";b.className="qcard";b.dataset.q=q.k;b.setAttribute("aria-pressed","false");
     const icon=document.createElement("span");icon.className="ic";icon.textContent=q.icon||"❖";
     const title=document.createElement("b");title.textContent=q.t||"Chủ đề";
-    const hint=document.createElement("small");hint.textContent=q.hint||"Chọn để tiếp tục";
+    const hint=document.createElement("small");hint.textContent=q.k==="sk"?"Chỉ chiêm nghiệm văn hóa; không dùng để chẩn đoán hoặc điều trị":(q.hint||"Chọn để tiếp tục");
     b.append(icon,title,hint);b.onclick=()=>selectQuestion(q.k,b);
     frag.appendChild(b);
   });
-  g.replaceChildren(frag);
+  while(g.firstChild)g.removeChild(g.firstChild);g.appendChild(frag);
   if(selType&&!questions.some(q=>q.k===selType))selType=null;
   if(selType){const selected=Array.from(g.querySelectorAll(".qcard")).find(b=>b.dataset.q===selType);if(selected){selected.classList.add("sel");selected.setAttribute("aria-pressed","true");}}
 }
 function getCalendarTZ(){const el=document.getElementById("ftimezone");return el?Number(el.value):7;}
+function getDayBoundary(){const el=document.getElementById("fdayboundary");return el&&el.value==="zi"?"zi":"midnight";}
+function dayBoundaryChange(){try{localStorage.setItem("dlyh_dayboundary",getDayBoundary())}catch(e){}toast("Đã đổi mốc ngày; áp dụng cho lần lập quẻ tiếp theo.");}
+function initDayBoundary(){const el=document.getElementById("fdayboundary");if(!el)return;let v="midnight";try{v=localStorage.getItem("dlyh_dayboundary")||v}catch(e){}el.value=v==="zi"?"zi":"midnight";}
+function initDayBoundaryValue(v){const value=v==="zi"?"zi":"midnight",el=document.getElementById("fdayboundary");if(el)el.value=value;try{localStorage.setItem("dlyh_dayboundary",value)}catch(e){}}
+function getYearBoundary(){const el=document.getElementById("fyearboundary");return el&&el.value==="lichun"?"lichun":"lunar";}
+function yearBoundaryChange(){try{localStorage.setItem("dlyh_yearboundary",getYearBoundary())}catch(e){}toast("Đã đổi quy ước chi năm; áp dụng cho lần lập Mai Hoa tiếp theo.");}
+function initYearBoundary(){const el=document.getElementById("fyearboundary");if(!el)return;let v="lunar";try{v=localStorage.getItem("dlyh_yearboundary")||v}catch(e){}el.value=v==="lichun"?"lichun":"lunar";}
+function initYearBoundaryValue(v){const value=v==="lichun"?"lichun":"lunar",el=document.getElementById("fyearboundary");if(el)el.value=value;try{localStorage.setItem("dlyh_yearboundary",value)}catch(e){}}
+function lichunLocalJd(year,tz){
+  let lo=jdFromDate(1,2,year),hi=jdFromDate(8,2,year);
+  for(let i=0;i<40;i++){const mid=(lo+hi)/2,lon=getSunLongitude(mid,tz)*180/Math.PI;if(lon>=315)hi=mid;else lo=mid;}
+  return hi;
+}
+function maiHuaYearBranch(dt,lun,mode){
+  const boundary=mode||getYearBoundary();
+  if(boundary!=="lichun")return modPositive(lun.year-4,12)+1;
+  const year=dt.getFullYear(),tz=getCalendarTZ();
+  const localJd=jdFromDate(dt.getDate(),dt.getMonth()+1,year)+(dt.getHours()+dt.getMinutes()/60+dt.getSeconds()/3600)/24;
+  const cyclicalYear=localJd<lichunLocalJd(year,tz)?year-1:year;
+  return modPositive(cyclicalYear-4,12)+1;
+}
+function yearBoundaryLabel(mode){return mode==="lichun"?"Lập Xuân (Mặt Trời 315°; mô hình xấp xỉ)":"năm âm lịch";}
+function effectiveCivilDate(dt,boundary){
+  let year=dt.getFullYear(),month=dt.getMonth()+1,day=dt.getDate();
+  const shifted=(boundary||getDayBoundary())==="zi"&&dt.getHours()===23;
+  if(shifted){const next=new Date(Date.UTC(year,month-1,day+1));year=next.getUTCFullYear();month=next.getUTCMonth()+1;day=next.getUTCDate();}
+  return{year,month,day,shifted};
+}
+function lunarAtDateTime(dt,boundary){
+  const mode=boundary||getDayBoundary(),civil=effectiveCivilDate(dt,mode);
+  return Object.assign({},solar2lunar(civil.day,civil.month,civil.year,getCalendarTZ()),{dayBoundary:mode,dayShifted:civil.shifted,civilYear:civil.year,civilMonth:civil.month,civilDay:civil.day});
+}
+function dayBoundaryLabel(lun){return lun&&lun.dayBoundary==="zi"?"23:00 — Tý sơ đổi ngày":"00:00 — theo ngày lịch";}
+function effectiveDateLabel(lun){return lun?[lun.civilYear,lun.civilMonth,lun.civilDay].map((n,i)=>String(n).padStart(i?2:4,"0")).join("-"):"không có";}
 function formatUtcOffset(tz){const z=Math.round(Number(tz)*60),sign=z>=0?"+":"−",abs=Math.abs(z),hh=String(Math.floor(abs/60)).padStart(2,"0"),mm=String(abs%60).padStart(2,"0");return "UTC"+sign+hh+":"+mm;}
 function initCalendarTZ(){const el=document.getElementById("ftimezone");if(!el)return;const localMinutes=Math.round(-new Date().getTimezoneOffset()),rounded=Math.max(-720,Math.min(840,Math.round(localMinutes/15)*15));el.innerHTML="";for(let z=-720;z<=840;z+=15){const o=document.createElement("option");o.value=String(z/60);o.textContent=formatUtcOffset(z/60);el.appendChild(o);}el.value=String(rounded/60);}
 function setNow(){setNowForZone()}
@@ -1053,6 +1221,12 @@ function castNow(){
 function escHtml(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));}
 function htmlToPlainText(html){return String(html==null?"":html).replace(/<br\s*\/?>/gi,"\n").replace(/<\/\s*(?:p|div|h[1-6])\s*>/gi,"\n\n").replace(/<[^>]*>/g,"").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&lt;/gi,"<").replace(/&gt;/gi,">").replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/[ \t]+\n/g,"\n").trim();}
 function tongLuanParts(r,hostHex,biHex,v,qp,ak,mvLine){
+  if(isScopedCategory(ak)){
+    const who=escHtml(((document.getElementById("fname")||{}).value||"").trim());
+    const topic=(qp&&qp.t)||({sk:"sức khỏe",tl:"tài lộc – kinh doanh",kt:"tranh chấp – pháp lý"}[ak]);
+    const prefix=who?who+" hỏi về "+topic:"Câu hỏi về "+topic;
+    return ["<b>"+prefix+" — quẻ "+hostHex.n+" "+escHtml(hostHex.name)+".</b>",escHtml(scopeReflectionText(hostHex,ak)),"<b>Giới hạn:</b> Nội dung là chiêm nghiệm văn hóa; không phải căn cứ chuyên môn hay dự báo kết quả.","<b>Lưu ý:</b> "+SCOPE_NOTICES[ak].text];
+  }
   const NM=["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"];
   const name=escHtml(((document.getElementById("fname")||{}).value||"").trim());
   const T=(DB.thanSx||{})[((mvLine.than||"")).replace(/ /g,"")]||{};
@@ -1167,33 +1341,48 @@ function castTraceHtml(r){
   if(tr.method==="time"){
     const nm=["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"];
     const ub=TRIG[r.uIdx],lb=TRIG[r.lIdx];
-    return `<div class="read"><b>Truy vết Mai Hoa theo giờ</b><br>Ngày âm dùng: ${r.lun.day}/${r.lun.month}${r.lun.leap?" nhuận":""}/${r.lun.year}; chi năm ${CHI[tr.yBr-1]}, số chi năm = ${tr.yBr}; số tháng âm = ${tr.lunarMonth}; số ngày âm = ${tr.lunarDay}; số chi giờ = ${tr.hNum} (${hourChi(r.dt.getHours())}).<br><b>Thượng quái:</b> ${tr.yBr} + ${tr.lunarMonth} + ${tr.lunarDay} = ${tr.base}; chia 8 dư ${tr.upperRemainder} → ${ub.n}.<br><b>Hạ quái:</b> ${tr.base} + ${tr.hNum} = ${tr.lowerSum}; chia 8 dư ${tr.lowerRemainder} → ${lb.n}.<br><b>Hào động:</b> ${tr.lowerSum} chia 6 dư ${tr.movingRemainder} → hào ${nm[r.mv-1]}.<br><span class="mut" style="font-size:12px">Đối chiếu: <a href="https://zh.wikisource.org/zh-hant/梅花易數/卷一" target="_blank" rel="noopener">《梅花易數》卷一〈年月日時起例〉</a> nêu phép lấy số năm–tháng–ngày, thêm giờ, chia 8 lập quái và chia 6 lấy hào. App dùng số tháng âm dạng số; trường hợp tháng nhuận được giữ cùng số thứ tự tháng và được ghi rõ ở trên, đây là quy ước triển khai cần xét theo bản/dị bản bạn chọn. Số dư 0 quy về 8 hoặc 6.</span></div>`;
+    return `<div class="read"><b>Truy vết Mai Hoa theo giờ</b><br>Ngày âm dùng: ${r.lun.day}/${r.lun.month}${r.lun.leap?" nhuận":""}/${r.lun.year}; chi năm ${CHI[tr.yBr-1]}, số chi năm = ${tr.yBr} (ranh giới: ${yearBoundaryLabel(tr.yearBoundary)}); số tháng âm = ${tr.lunarMonth}; số ngày âm = ${tr.lunarDay}; số chi giờ = ${tr.hNum} (${hourChi(r.dt.getHours())}).<br><b>Mốc đổi ngày:</b> ${dayBoundaryLabel(r.lun)}; ngày dương lịch dùng để đổi sang ngày âm/can chi: ${effectiveDateLabel(r.lun)}${r.lun.dayShifted?" (đã chuyển sang ngày kế tiếp)":""}.<br><b>Thượng quái:</b> ${tr.yBr} + ${tr.lunarMonth} + ${tr.lunarDay} = ${tr.base}; chia 8 dư ${tr.upperRemainder} → ${ub.n}.<br><b>Hạ quái:</b> ${tr.base} + ${tr.hNum} = ${tr.lowerSum}; chia 8 dư ${tr.lowerRemainder} → ${lb.n}.<br><b>Hào động:</b> ${tr.lowerSum} chia 6 dư ${tr.movingRemainder} → hào ${nm[r.mv-1]}.<br><span class="mut" style="font-size:12px">Đối chiếu: <a href="https://zh.wikisource.org/zh-hant/梅花易數/卷一" target="_blank" rel="noopener">《梅花易數》卷一〈年月日時起例〉</a> nêu phép lấy số năm–tháng–ngày, thêm giờ, chia 8 lập quái và chia 6 lấy hào; đoạn này không quy định mốc đổi ngày hoặc ranh giới đổi năm. App ghi nhận cả hai lựa chọn như quy ước triển khai, không khẳng định đó là quy tắc duy nhất của cổ thư. App dùng số tháng âm dạng số; tháng nhuận giữ cùng số thứ tự tháng như quy ước triển khai. Số dư 0 quy về 8 hoặc 6.</span></div>`;
   }
   if(tr.method!=="coin"&&tr.method!=="num")return `<div class="read" role="note"><b>Phương pháp lập quẻ chưa được nhận diện</b><br>Dữ liệu lưu có phương pháp “${escHtml(String(tr.method))}”; app không tự suy đoán cách dựng lại phép tính.</div>`;
   const source=tr.method==="coin"?"Tung 3 đồng, mỗi mặt chữ = 2 và mặt lưng = 3":"Sáu giá trị 6–9 được nhập trực tiếp";
   const labels={6:"lão âm, động",7:"thiếu dương, tĩnh",8:"thiếu âm, tĩnh",9:"lão dương, động"};
   const nm=["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"];
   const rows=(tr.vals||[]).map((v,i)=>`Hào ${nm[i]}: ${tr.faces&&tr.faces[i]?tr.faces[i].join(" + ")+" = ":""}${v} — ${labels[v]||"giá trị không hợp lệ"}`).join("<br>");
-  return `<div class="read"><b>Truy vết phép lập quẻ</b><br>${source}.<br>${rows||"Không có dữ liệu từng hào."}<br><span class="mut" style="font-size:12px">Các hào được ghi theo thứ tự từ dưới lên. 6/9 là hào động; 7/8 là hào tĩnh.</span></div>`;
+  return `<div class="read"><b>Truy vết phép lập quẻ</b><br>${source}.<br>Mốc đổi ngày dùng cho lịch âm/can chi: ${dayBoundaryLabel(r.lun)}; ngày dương lịch hữu hiệu: ${effectiveDateLabel(r.lun)}${r.lun.dayShifted?" (đã chuyển sang ngày kế tiếp)":""}.<br>${rows||"Không có dữ liệu từng hào."}<br><span class="mut" style="font-size:12px">Các hào được ghi theo thứ tự từ dưới lên. 6/9 là hào động; 7/8 là hào tĩnh. 《梅花易數》〈年月日時起例〉 không nêu mốc đổi ngày; đây là lựa chọn triển khai được lưu cùng quẻ.</span></div>`;
 }
 function castTraceText(r){
   const t=r.castTrace||{};
   if(!t.method)return "PHÉP LẬP QUẺ\nBản ghi này không lưu dữ liệu truy vết từng bước.";
   if(t.method==="time"){
     const nm=["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"];
-    return "TRUY VẾT MAI HOA THEO GIỜ — đối chiếu 《梅花易數》卷一〈年月日時起例〉\nNgày âm: "+r.lun.day+"/"+r.lun.month+(r.lun.leap?" nhuận":"")+"/"+r.lun.year+"; chi năm "+CHI[t.yBr-1]+"="+t.yBr+"; chi giờ "+hourChi(r.dt.getHours())+"="+t.hNum+".\nThượng quái: "+t.yBr+" + "+t.lunarMonth+" + "+t.lunarDay+" = "+t.base+"; chia 8 dư "+t.upperRemainder+" → "+TRIG[r.uIdx].n+".\nHạ quái: "+t.base+" + "+t.hNum+" = "+t.lowerSum+"; chia 8 dư "+t.lowerRemainder+" → "+TRIG[r.lIdx].n+".\nHào động: "+t.lowerSum+" chia 6 dư "+t.movingRemainder+" → hào "+nm[r.mv-1]+". Số dư 0 quy về 8 hoặc 6; tháng nhuận dùng số thứ tự tháng âm như hiển thị.";
+    return "TRUY VẾT MAI HOA THEO GIỜ — đối chiếu 《梅花易數》卷一〈年月日時起例〉\nNgày âm: "+r.lun.day+"/"+r.lun.month+(r.lun.leap?" nhuận":"")+"/"+r.lun.year+"; chi năm "+CHI[t.yBr-1]+"="+t.yBr+" (ranh giới: "+yearBoundaryLabel(t.yearBoundary)+"); chi giờ "+hourChi(r.dt.getHours())+"="+t.hNum+".\nMốc đổi ngày: "+dayBoundaryLabel(r.lun)+"; ngày dương lịch hữu hiệu: "+effectiveDateLabel(r.lun)+(r.lun.dayShifted?" (đã chuyển sang ngày kế tiếp)":"")+".\nThượng quái: "+t.yBr+" + "+t.lunarMonth+" + "+t.lunarDay+" = "+t.base+"; chia 8 dư "+t.upperRemainder+" → "+TRIG[r.uIdx].n+".\nHạ quái: "+t.base+" + "+t.hNum+" = "+t.lowerSum+"; chia 8 dư "+t.lowerRemainder+" → "+TRIG[r.lIdx].n+".\nHào động: "+t.lowerSum+" chia 6 dư "+t.movingRemainder+" → hào "+nm[r.mv-1]+". Số dư 0 quy về 8 hoặc 6; tháng nhuận dùng số thứ tự tháng âm như hiển thị. Cổ thư không nêu ranh giới đổi ngày hoặc năm; các mốc trên là lựa chọn triển khai được ghi nhận, không phải quy tắc duy nhất.";
   }
   if(t.method!=="coin"&&t.method!=="num")return "PHÉP LẬP QUẺ\nPhương pháp trong bản ghi chưa được nhận diện.";
   const nm=["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"],labels={6:"lão âm, động",7:"thiếu dương, tĩnh",8:"thiếu âm, tĩnh",9:"lão dương, động"};
   const method=t.method==="coin"?"Tung ba đồng xu, chữ=2 và lưng=3":"Sáu giá trị 6–9 nhập tay";
-  return "TRUY VẾT PHÉP LẬP QUẺ — "+method+"\n"+t.vals.map((v,i)=>"Hào "+nm[i]+": "+(t.faces&&t.faces[i]?t.faces[i].join(" + ")+" = ":"")+v+" — "+labels[v]).join("\n")+"\nThứ tự hào: từ dưới lên; 6/9 động, 7/8 tĩnh.";
+  return "TRUY VẾT PHÉP LẬP QUẺ — "+method+"\nMốc đổi ngày dùng cho lịch âm/can chi: "+dayBoundaryLabel(r.lun)+"; ngày dương lịch hữu hiệu: "+effectiveDateLabel(r.lun)+(r.lun.dayShifted?" (đã chuyển sang ngày kế tiếp)":"")+".\n"+t.vals.map((v,i)=>"Hào "+nm[i]+": "+(t.faces&&t.faces[i]?t.faces[i].join(" + ")+" = ":"")+v+" — "+labels[v]).join("\n")+"\nThứ tự hào: từ dưới lên; 6/9 động, 7/8 tĩnh. 《梅花易數》〈年月日時起例〉 không nêu mốc đổi ngày; đây là lựa chọn triển khai được lưu cùng quẻ.";
+}
+function renderScopedResult(r,hostHex,qp,qtext,fname,ak){
+  const lunTxt=`${r.lun.day}/${r.lun.month}${r.lun.leap?" (nhuận)":""}/${r.lun.year}`;
+  const title=fname?`${fname} — `:"";
+  const html=`<div class="card">
+    <div class="verdict v-mid"><div><div class="mut" style="font-size:12px;letter-spacing:2px">${escHtml(qp.t.toUpperCase())} · CHIÊM NGHIỆM VĂN HÓA</div><div class="big">Không có dự báo chuyên môn</div></div><div class="mut" style="flex:1;min-width:200px;font-size:14px">Quẻ số ${hostHex.n} – ${escHtml(hostHex.name)}<br>${title}${qtext}</div></div>
+    <div class="infochips"><span class="chip">📅 ${r.dt.getDate()}/${r.dt.getMonth()+1}/${r.dt.getFullYear()} ${String(r.dt.getHours()).padStart(2,"0")}:${String(r.dt.getMinutes()).padStart(2,"0")}</span><span class="chip">🌙 Âm: ${lunTxt}</span><span class="chip">Ngày: ${escHtml(r.dg.txt)}</span><span class="chip">Múi giờ: ${formatUtcOffset(getCalendarTZ())}</span></div>
+    ${calendarBoundaryWarning(r.lun)}${castTraceHtml(r)}
+    <div class="hexwrap"><div class="hexbox">${linesHTML(r.lines,r.mvs)}<div class="hexname">${escHtml(hostHex.name)}</div><div class="hexsub" style="font-style:italic;color:var(--gold2);max-width:300px;margin:4px auto 0">${escHtml(hostHex.qt)}</div><div class="hexsub">Thượng ${escHtml(TRIG[r.uIdx].n)} · Hạ ${escHtml(TRIG[r.lIdx].n)}</div></div></div>
+    <h3 class="sec">☯ ${escHtml(qp.t)} — đọc như biểu tượng văn hóa</h3><div class="read">${escHtml(scopeReflectionText(hostHex,ak))}</div>
+    ${scopeNoticeHtml(ak)}
+    <div class="res-actions"><button class="btn ghost" onclick="copyResult()">📋 Sao chép kết quả</button><button class="btn ghost" onclick="exportImage()">🖼️ Xuất ảnh quẻ</button><button class="btn ghost" onclick="shareLink()" title="Mặc định ẩn tên và câu hỏi; sẽ hỏi trước khi chia sẻ chúng">🔗 Chia sẻ qua link</button><button class="btn ghost" onclick="printTongLuan()">🖨️ In / PDF</button><button class="btn ghost" onclick="bookmarkCurrent()">⭐ Lưu quẻ này</button><button class="btn ghost" id="speakBtn" onclick="speakResult()">🔊 Đọc kết quả</button><button class="btn ghost" onclick="castNow()">🎲 Gieo lại</button><button class="btn" onclick="newQuestion()">❓ Câu hỏi mới</button></div>
+  </div>`;
+  const res=document.getElementById("result");res.innerHTML=html;res.classList.remove("hidden");res._r=r;
+  const cb=document.getElementById("castBtn");if(cb)cb.style.display="";
 }
 function renderResult(r){
   const v=verdictOf(r.score);
   const ak=aspectKey(selType);
-  const qtext=escHtml(document.getElementById("fques").value.trim()||DB.qtypes.find(x=>x.k===selType).t);
+  const qtext=escHtml(document.getElementById("fques").value.trim()||(questionType(selType)||{t:"Chủ đề đã chọn"}).t);
   const fname=escHtml(document.getElementById("fname").value.trim());
-  const qp=DB.qtypes.find(x=>x.k===selType);
+  const qp=questionType(selType)||QUESTION_FALLBACK[0];
   const mvLine=r.lucHao[r.mv-1];
   mvLine.focus=true;
   const mvT=(r.tham||[])[r.mv-1]||[];
@@ -1205,6 +1394,7 @@ function renderResult(r){
   const hoHex=hexFromUL(r.hUp,r.hLow), biHex=hexFromUL(r.bUp,r.bLow);
   const lunTxt=`${r.lun.day}/${r.lun.month}${r.lun.leap?" (nhuận)":""}/${r.lun.year}`;
   const kq=fname?`${fname} — `:"";
+  if(isScopedCategory(ak)){renderScopedResult(r,hostHex,qp,qtext,fname,ak);return;}
   let html=`
   <div class="card">
     <div class="verdict ${v.k}">
@@ -1239,6 +1429,7 @@ function renderResult(r){
     <details class="tech"><summary>🔬 Xem luận giải kỹ thuật đầy đủ — Quẻ từ · Đại tượng · Tự Quái · Thể Dụng · Lục Hào · Thẩm hào · Thần sát · Dụng thần · Tiểu Lục Nhâm</summary>
     <div class="read"><b>Quy tắc chọn lời — Chu Hi, 《易學啟蒙》卷四〈考變占〉:</b><br>${r.ruleTrace.html}<br><span class="mut" style="font-size:12px">Quy tắc chọn lời Kinh Dịch được trình bày riêng; phần Lục Hào Na Giáp vẫn xét các hào động theo hệ Lục Hào.</span></div>
     <div class="read"><b>Hồ sơ nguồn và cấp chứng cứ</b><br>
+      • <b>Bát Cung và Thế–Ứng:</b> app an cung theo trình tự biến hào của phép Kinh Phòng: tám quẻ thuần, lần lượt biến từ hào Sơ đến hào Ngũ; quẻ Du Hồn hồi biến hào Tứ; quẻ Quy Hồn phục lại nội quái bản cung. Theo 《卜筮正宗》〈安世應訣〉, Thế ở hào 6 của quẻ thuần, tiến từ hào 1 đến 5, Du Hồn ở hào 4, Quy Hồn ở hào 3; Ứng cách Thế ba hào. App hiển thị tên cung/thế và đánh dấu Thế–Ứng trong bảng để đối chiếu. <a href="https://www.shidianguji.com/zh/book/HY1439/chapter/1m70sj2412psz" target="_blank" rel="noopener">Mở nguyên văn 《安世应诀》</a>.<br>
       • <b>Chọn lời Kinh Dịch:</b> Chu Hi, 《易學啟蒙》卷四〈考變占〉. Quy tắc hai và bốn hào động được chính văn nói rõ là “經傳無文，今以例推之” (không có văn chứng trong Kinh truyện, suy theo lệ); ứng dụng đánh dấu đây là suy lệ. Với ba hào động, văn bản yêu cầu đọc hai lời quẻ và phân biệt trước/sau mười quẻ theo đồ biến; ứng dụng hiện chưa ánh xạ thứ tự này cho mọi quẻ gốc nên không tự gán bên chủ. <a href="https://www.shidianguji.com/book/SK0061/chapter/1l9qr24ok8562" target="_blank" rel="noopener">Mở nguyên văn quyển bốn</a>.<br>
       • <b>Lịch âm:</b> dùng độ lệch UTC cố định, chưa có cơ sở dữ liệu múi giờ lịch sử theo địa điểm. Hong Kong Observatory giới hạn bảng đối chiếu công khai ở 1901–2100 và lưu ý ngày sóc/tiết khí sát nửa đêm có thể lệch một ngày; thời chuẩn lịch sử cũng có thể làm đổi ngày. <a href="https://www.hko.gov.hk/en/gts/time/conversion.htm" target="_blank" rel="noopener">Bảng lịch HKO</a> · <a href="https://www.hko.gov.hk/en/Observatorys-Blog/101741/Which-day-is-the-Tuen-Ng-Festival-for-this-year-2013" target="_blank" rel="noopener">Giải thích về chuẩn giờ lịch sử</a>.<br>
       • <b>Mai Hoa theo thời:</b> đối chiếu với văn bản số hóa <i>《梅花易數》卷一〈年月日時起例〉</i>: năm–tháng–ngày định thượng quái, thêm giờ định hạ quái, tổng số định hào động. Bản số hóa nêu cách đánh số địa chi năm/giờ và tháng/ngày; cách xử lý tháng nhuận của app được đánh dấu riêng là quy ước triển khai. <a href="https://zh.wikisource.org/zh-hant/梅花易數/卷一" target="_blank" rel="noopener">Mở văn bản quyển 1</a>.<br>
@@ -1247,10 +1438,13 @@ function renderResult(r){
       • <b>Hiệu chỉnh điểm Sóc:</b> công thức ngày sóc theo Hồ Ngọc Đức dùng hệ số pha −0,009173·T² trong đối số sin; ứng dụng đã sửa hệ số bị chép thành −0,173·T². Sai khác này rất nhỏ ở thời hiện đại, nhưng hệ số cần khớp công thức nguồn để phép tính có thể kiểm chứng. <a href="https://www.xemamlich.uhm.vn/calrules.html" target="_blank" rel="noopener">Đối chiếu công thức gốc</a>.<br>
       • <b>Nguyệt kiến theo tiết khí:</b> nguyệt chi được lấy từ kinh độ Mặt Trời theo thời điểm nhập và độ lệch UTC đã chọn. Hàm kinh độ dùng JDN nguyên tại nửa đêm địa phương; phần giờ trong ngày phải cộng từ 00:00. Không áp dụng múi giờ lịch sử/DST theo địa điểm. Mốc giải thích JDN, UTC offset và cách hàm mặt trời nhận ngày có trong thuật toán Hồ Ngọc Đức. <a href="https://www.xemamlich.uhm.vn/calrules.html" target="_blank" rel="noopener">Hồ sơ thuật toán lịch</a>.<br>
       • <b>Tuần không trong Lục Hào:</b> 《增删卜易》卷一〈旬空章〉 viết “旺不为空，动不为空”，và xét cả Nhật thần/động hào sinh phù, nguyệt phá cùng thời điểm xuất không; vì vậy không thể suy mọi hào lâm không đều vô dụng hoặc chỉ khi xuất không mới có hiệu lực. Ứng dụng đã bỏ lời mặc định “lực rỗng/chờ xuất không mới thành”, chỉ báo dấu hiệu và điều kiện cần xét; chưa tự động luận ngày ứng. <a href="https://zh.wikisource.org/zh-hans/增刪卜易/26" target="_blank" rel="noopener">Mở nguyên văn</a>.<br>
+      • <b>Động hóa Không trong Lục Hào:</b> 《增删卜易》卷一〈旬空章〉 ghi “动而化空不为空”. Ứng dụng đối chiếu chi hào biến với Tuần không của ngày lập quẻ, hiển thị dấu hiệu riêng và không tự xem là hào vô dụng; phép đối chiếu này không thay việc xét hào gốc, vai trò Dụng/Kỵ, Nhật–Nguyệt và các điều kiện khác. <a href="https://zh.wikisource.org/zh-hans/增刪卜易/26" target="_blank" rel="noopener">Mở nguyên văn</a>.<br>
+      • <b>Bốn trạng thái hào hóa — Trường Sinh, Đế Vượng, Mộ, Tuyệt:</b> 《增删卜易》〈生旺墓绝章〉 chỉ xác nhận dùng bốn trạng thái này; nêu bảng Kim, Mộc, Thủy/Thổ và minh họa hào Mộc hóa Hợi là Trường Sinh, hóa Mão là Vượng, hóa Mùi là Mộ, hóa Thân là Tuyệt. Văn bản còn yêu cầu cân vượng suy và sinh trợ. App theo phép của chương này cho Thủy/Thổ (Trường Sinh Thân, Vượng Tý, Mộ Thìn, Tuyệt Tỵ); riêng Thổ có dị thuyết. Với Hỏa, chương nêu Trường Sinh tại Dần; app suy các mốc Vượng Ngọ, Mộ Tuất, Tuyệt Hợi theo vòng ngũ hành và đánh dấu đây là bước triển khai. Các nhãn không tự quyết định cát hung. <a href="https://zh.wikisource.org/wiki/增刪卜易/26又1" target="_blank" rel="noopener">Mở nguyên văn</a>.<br>
+      • <b>Hào biến gặp Nguyệt phá:</b> 《增删卜易》卷二〈月破章〉 bàn chi bị nguyệt kiến xung và nêu “变则能伤于动，目下虽破，出月则不破”; chính chương cũng ghi nhận cách luận khác trong các sách. 《卜筮正宗》〈月破论〉 nói hào động/hào biến vẫn có thể sinh khắc, đồng thời nêu điều kiện chờ xuất nguyệt, thực phá và phân biệt “真破”. Ứng dụng chỉ gắn nhãn khi chi biến bị nguyệt chi xung, không tự kết luận hào biến vô lực hay gán ngày ứng. <a href="https://zh.wikisource.org/zh-hans/增刪卜易/27" target="_blank" rel="noopener">《增删卜易》月破章</a> · <a href="https://changxianyi.com/guji/bushi/wz-20260915/chapter-072/" target="_blank" rel="noopener">《卜筮正宗》月破论</a>.<br>
       • <b>Nhật xung trong Lục Hào:</b> 《增删卜易》卷一〈日辰章〉 ghi “冲空则实”, phân biệt hào tĩnh vượng/tướng gặp Nhật xung (ám động) với hào tĩnh suy nhược gặp Nhật xung (Nhật phá). Vì kết quả còn tùy sinh trợ, ứng dụng chỉ ghi nhận phân loại sơ bộ theo khí tháng và không mặc định mọi Nhật xung đều cát hoặc hung. <a href="https://www.shidianguji.com/book/SDZJ0627/chapter/1lctz66s4vhui" target="_blank" rel="noopener">Mở văn bản điện tử</a>.<br>
       • <b>Hóa mộ:</b> 《增删卜易》卷一〈生旺墓绝章〉 nêu mộ theo ngũ hành: Kim ở Sửu, Mộc ở Mùi, Thủy/Thổ ở Thìn, Hỏa ở Tuất; ví dụ hào Mộc động hóa Mùi là hóa mộ. Văn bản cũng yêu cầu cân vượng suy và sinh trợ, nên ứng dụng chỉ ghi nhận dấu hiệu đúng mộ của hành hào, không tự kết luận bị khóa hay bất động. <a href="https://zh.wikisource.org/wiki/增刪卜易/26又1" target="_blank" rel="noopener">Mở nguyên văn</a>.<br>
       • <b>Hào hóa — tiến/thoái, hồi đầu sinh/khắc:</b> 《卜筮正宗》卷三〈变出进退神论〉 liệt kê các cặp tiến thần (Hợi→Tý, Sửu→Thìn, Dần→Mão, Thìn→Mùi, Tỵ→Ngọ, Mùi→Tuất, Thân→Dậu, Tuất→Sửu) và thoái thần (Tý→Hợi, Tuất→Mùi, Dậu→Thân, Mùi→Thìn, Ngọ→Tỵ, Thìn→Sửu, Mão→Dần, Sửu→Tuất). Quyển XIV nhấn mạnh chiều cát/hung còn tùy đó là cát thần hay Kỵ thần, đồng thời phải xét vượng suy, không/phá và thời điểm. Ứng dụng dùng danh sách cặp chi tường minh, nhưng không cộng trọng số số học. <a href="https://www.shidianguji.com/book/AMNL0060/chapter/1ma05ao3rvqqy" target="_blank" rel="noopener">《卜筮正宗》quyển 3</a> · <a href="https://www.shidianguji.com/book/HY0057/chapter/1lpdfpx73395v" target="_blank" rel="noopener">《卜筮正宗》quyển 14</a>.<br>
-      • <b>Phản ngâm / Phục ngâm:</b> 《卜筮正宗》 phân biệt phản ngâm ở cấp quẻ (quẻ biến lục xung) và cấp hào (hào biến sang chi xung); phục ngâm là quan hệ riêng, không đồng nghĩa “cả sáu hào đều động”. Ứng dụng đã bỏ phép nhận diện cũ vốn tự động gán phản ngâm cho mọi quẻ sáu hào động; hiện chỉ ghi dấu hiệu hào biến xung/cùng chi, chưa tự động phân loại phản ngâm cấp quẻ, và không cộng điểm. <a href="https://www.shidianguji.com/book/AMNL0060/chapter/1ma05ao3rvqqy" target="_blank" rel="noopener">Mở quyển 3</a>.<br>
+      • <b>Phản ngâm / Phục ngâm:</b> 《卜筮正宗》 phân biệt phản ngâm cấp quẻ (quái biến đối xung), cấp hào (chi biến lục xung), và phục ngâm cấp quẻ (dãy chi Nạp Giáp của phần quái biến giữ nguyên) với phục ngâm từng hào. App đối chiếu riêng nội/ngoại quái theo Bát Quái/Nạp Giáp, rồi xét từng hào động; không lấy “sáu hào cùng động” làm tiêu chí và không tự gán cát/hung. <a href="https://www.shidianguji.com/book/AMNL0060/chapter/1ma05ao3rvqqy" target="_blank" rel="noopener">《卜筮正宗》卷三</a> · <a href="https://www.shidianguji.com/zh/book/XYXZSBY/chapter/1lzxsnhvbu2oq" target="_blank" rel="noopener">《增删卜易》反伏章</a>.<br>
       • <b>Tiểu Lục Nhâm:</b> phép đếm tháng–ngày–giờ qua sáu cung được từ điển Bộ Giáo dục Đài Loan mô tả như cách báo thời; tài liệu đó không xác lập bản cổ duy nhất, quy ước tháng nhuận, các mốc dự báo hoặc trọng số điểm. Ứng dụng giữ cung ở lớp định tính; khoảng thời gian là ước lệ nội bộ và điểm Tiểu Lục Nhâm không cộng vào chỉ số. <a href="https://dict.revised.moe.edu.tw/dictView.jsp?ID=106732&amp;la=0&amp;powerMode=0" target="_blank" rel="noopener">Từ điển Bộ Giáo dục Đài Loan</a>.<br>
       • <b>Dụng thần tình duyên:</b> 《增删卜易》婚姻章 phân biệt nam gia hỏi nữ dùng Tài với nữ gia hỏi nam dùng Quan, và xét thêm hào Ứng theo từng dạng hỏi; 《卜筮正宗》 cũng cảnh báo không áp một lối dùng cho mọi quan hệ. Vì ứng dụng chưa hỏi ai hỏi về ai, mục tình duyên hiện để Dụng thần ở trạng thái chưa xác định, không cộng điểm và không suy kết luận từ hào đó. <a href="https://www.shidianguji.com/book/XYXZSBY/chapter/1lzxsp71cv2ue" target="_blank" rel="noopener">《增删卜易》婚姻章</a> · <a href="https://www.shidianguji.com/book/HY1439/chapter/1m70sjdkeqscv" target="_blank" rel="noopener">《卜筮正宗》婚姻章</a>.<br>
       • <b>Giới hạn các lớp Lục Hào:</b> Khi có nhiều hào cùng nhóm Dụng thần, hào đại diện được chọn theo ưu tiên nội bộ (động, Tuần không), chưa xác minh theo mọi truyền bản. Dụng thần, phục thần và vòng 12 trạng thái chỉ là dấu hiệu hỗ trợ định tính; chưa dùng riêng để chốt cát/hung hay cộng điểm. Nguồn, dị bản và quy tắc chi tiết khác của Na Giáp/Tiểu Lục Nhâm vẫn cần kiểm chứng theo ấn bản.<br>
@@ -1264,7 +1458,7 @@ function renderResult(r){
         <div class="read">${hostHex.tong}</div>
         <div class="read"><b>《序卦傳》:</b> <i>${hostHex.xu||""}</i></div>
         <h3 class="sec">${qp.icon} Luận giải chuyên sâu — ${qp.t}</h3>
-        <div class="read">${hostHex.a[ak]||hostHex.tong}</div>
+        <div class="read">${topicReading(hostHex,ak)}</div>
         <h3 class="sec mh-sec">🌸 Mai Hoa Dịch Số — Thể Dụng</h3>
         <div class="read mh-sec"><b>Thể:</b> quẻ ${theN} (hành ${TRIG[r.theTrig].el}) · <b>Dụng:</b> quẻ ${dungN} (hành ${TRIG[r.dungTrig].el})<br><span class="mut" style="font-size:12px">${r.bodyUseBasis}</span><br>
         ${r.rel.txt}<br><b>Loại quan hệ ngũ hành:</b> ${r.rel.god} (nhãn diễn giải nội bộ, không phải Dụng thần Na Giáp).</div>
@@ -1294,12 +1488,12 @@ function renderResult(r){
     <h3 class="sec">☯ Tiểu Lục Nhâm — cung ${r.tln.name}</h3>
     <div class="read"><b>《小六壬歌訣》:</b> <i>${r.tln.ge}</i><br><b>Tính cung:</b> ${r.tln.tinh}<br><b>Điềm lành:</b> ${r.tln.lanh}<br><b>Điềm dữ:</b> ${r.tln.du}<br><b>Ứng vào việc đang hỏi:</b> ${(r.tln.hanh||{})[ak]||r.tln.lanh}<br><span class="mut">Khung thời gian ứng dụng gợi ý (ước lệ, chưa kiểm chứng ứng kỳ): ${r.tln.time}. Cung và câu đoán chỉ là lớp dân gian tham khảo; không cộng điểm.</span></div>
     <h3 class="sec">🧭 Lời đoán của thầy — lập theo cổ pháp (tượng · từ · hào · biến · Dụng thần)</h3>
-    <div class="advice">${buildJudgment(r,hostHex,biHex,["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"][r.mv-1],(hostHex.a[ak]||hostHex.tong)+" ",v,qp)}<br><br><span class="mut" style="font-size:12px">Khung thời gian ứng dụng gợi ý: ${r.tln.time} (ước lệ, chưa kiểm chứng ứng kỳ). Quan hệ Thể–Dụng được app gán nhãn <b>${r.rel.god}</b> — ${r.rel.key==="dungKhacThe"?"cần tránh xung đột trực diện, nên mượn lực trung gian":"có thể tự tin tiến hành, đừng bỏ lỡ thời cơ"}; đây không phải Dụng thần Lục Hào.</span></div>
+    <div class="advice">${buildJudgment(r,hostHex,biHex,["Sơ","Nhị","Tam","Tứ","Ngũ","Thượng"][r.mv-1],topicReading(hostHex,ak)+" ",v,qp)}<br><br><span class="mut" style="font-size:12px">Khung thời gian ứng dụng gợi ý: ${r.tln.time} (ước lệ, chưa kiểm chứng ứng kỳ). Quan hệ Thể–Dụng được app gán nhãn <b>${r.rel.god}</b> — ${r.rel.key==="dungKhacThe"?"cần tránh xung đột trực diện, nên mượn lực trung gian":"có thể tự tin tiến hành, đừng bỏ lỡ thời cơ"}; đây không phải Dụng thần Lục Hào.</span></div>
         </details>
     <div class="res-actions">
       <button class="btn ghost" onclick="copyResult()">📋 Sao chép kết quả</button>
       <button class="btn ghost" onclick="exportImage()">🖼️ Xuất ảnh quẻ</button>
-      <button class="btn ghost" onclick="shareLink()">🔗 Chia sẻ qua link</button>
+      <button class="btn ghost" onclick="shareLink()" title="Mặc định ẩn tên và câu hỏi; sẽ hỏi trước khi chia sẻ chúng">🔗 Chia sẻ qua link</button>
       <button class="btn ghost" onclick="printTongLuan()">🖨️ In / PDF</button>
       <button class="btn ghost" onclick="bookmarkCurrent()">⭐ Lưu quẻ này</button>
       <button class="btn ghost" id="speakBtn" onclick="speakResult()">🔊 Đọc kết quả</button>
@@ -1314,8 +1508,8 @@ function renderResult(r){
 function newQuestion(){document.getElementById("result").classList.add("hidden");document.getElementById("fques").value="";window.scrollTo({top:0,behavior:"smooth"})}
 function copyResult(){
   const r=document.getElementById("result")._r; if(!r)return;
-  const v=verdictOf(r.score), host=hexFromUL(r.uIdx,r.lIdx), biHex=hexFromUL(r.bUp,r.bLow), qp=DB.qtypes.find(x=>x.k===selType), ak=aspectKey(selType), mvLine=r.lucHao[r.mv-1];
-  const hdr="DỊCH LÝ HUYỀN HỌC — LỜI TỔNG LUẬN\nQuẻ "+host.n+" — "+host.name+" | Chỉ số: "+v.t+" ("+r.score+"/100)\n"+"Người hỏi: "+(document.getElementById("fname").value||"—")+" | Việc hỏi: "+(document.getElementById("fques").value||qp.t)+"\nThời điểm: "+r.dt.toLocaleString("vi-VN")+" (âm "+r.lun.day+"/"+r.lun.month+"/"+r.lun.year+")\n"+"─────────────────────\n\n";
+  const v=verdictOf(r.score), host=hexFromUL(r.uIdx,r.lIdx), biHex=hexFromUL(r.bUp,r.bLow), qp=questionType(selType)||QUESTION_FALLBACK[0], ak=aspectKey(selType), mvLine=r.lucHao[r.mv-1];
+  const hdr="DỊCH LÝ HUYỀN HỌC — LỜI TỔNG LUẬN\nQuẻ "+host.n+" — "+host.name+(isScopedCategory(ak)?" | Chiêm nghiệm văn hóa":" | Chỉ số: "+v.t+" ("+r.score+"/100)")+"\n"+"Người hỏi: "+(document.getElementById("fname").value||"—")+" | Việc hỏi: "+(document.getElementById("fques").value||qp.t)+"\nThời điểm: "+r.dt.toLocaleString("vi-VN")+" (âm "+r.lun.day+"/"+r.lun.month+"/"+r.lun.year+")\n"+"─────────────────────\n\n";
   const txt=hdr+htmlToPlainText(buildTongLuanText(r,host,biHex,v,qp,ak,mvLine))+"\n\n"+castTraceText(r);
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast("Đã sao chép lời tổng luận")).catch(()=>{prompt("Sao chép:",txt);});}
   else{prompt("Sao chép:",txt);}
@@ -1324,7 +1518,7 @@ function copyResult(){
 /* ===== IN / PDF — lời tổng luận kèm phép lập quẻ ===== */
 function printTongLuan(){
   const r=document.getElementById("result")._r; if(!r){toast("Chưa có kết quả để in");return;}
-  const v=verdictOf(r.score), host=hexFromUL(r.uIdx,r.lIdx), biHex=hexFromUL(r.bUp,r.bLow), qp=DB.qtypes.find(x=>x.k===selType), ak=aspectKey(selType), mvLine=r.lucHao[r.mv-1];
+  const v=verdictOf(r.score), host=hexFromUL(r.uIdx,r.lIdx), biHex=hexFromUL(r.bUp,r.bLow), qp=questionType(selType)||QUESTION_FALLBACK[0], ak=aspectKey(selType), mvLine=r.lucHao[r.mv-1];
   const name=escHtml(((document.getElementById("fname")||{}).value||"").trim());
   const q=escHtml(((document.getElementById("fques")||{}).value||"").trim());
   let w=null;
@@ -1333,7 +1527,7 @@ function printTongLuan(){
   w.document.write("<!DOCTYPE html><html><head><meta charset='utf-8'><title>Lời tổng luận — "+host.name+"</title><style>");
   w.document.write("body{font-family:'Times New Roman',serif;max-width:720px;margin:40px auto;padding:0 20px;color:#111;line-height:1.85;font-size:15px}h3{color:#8a6d0e;border-bottom:2px solid #8a6d0e;padding-bottom:6px;font-size:18px}i{color:#444}b{color:#000}.head{text-align:center;margin-bottom:22px}.head h1{font-size:22px;margin:0 0 4px;color:#8a6d0e}.head .sub{color:#666;font-size:13px}.verdict{display:inline-block;border:2px solid #8a6d0e;padding:6px 18px;border-radius:8px;font-weight:700;margin-top:12px;font-size:16px}.meta{color:#666;font-size:13px;margin-bottom:14px}.trace pre{white-space:pre-wrap;font:13px/1.65 'Courier New',monospace;background:#f5f1e7;border:1px solid #d8c78d;border-radius:8px;padding:12px;overflow-wrap:anywhere}@media print{body{margin:0;max-width:none}.trace{break-inside:avoid}}");
   w.document.write("</style></head><body>");
-  w.document.write("<div class='head'><h1>DỊCH LÝ HUYỀN HỌC</h1><div class='sub'>Mai Hoa Dịch Số · Lục Hào Na Giáp · Tiểu Lục Nhâm</div><div class='verdict'>"+v.t+" — chỉ số "+r.score+" điểm · Quẻ "+host.n+" — "+host.name+"</div></div>");
+  w.document.write("<div class='head'><h1>DỊCH LÝ HUYỀN HỌC</h1><div class='sub'>Mai Hoa Dịch Số · Lục Hào Na Giáp · Tiểu Lục Nhâm</div><div class='verdict'>"+(isScopedCategory(ak)?"Chiêm nghiệm văn hóa":""+v.t+" — chỉ số "+r.score+" điểm")+" · Quẻ "+host.n+" — "+host.name+"</div></div>");
   w.document.write("<div class='meta'>"+(name?("Người hỏi: "+name+" · "):"")+(q?("Việc hỏi: "+q+" · "):"")+"Lập lúc "+r.dt.toLocaleString("vi-VN")+" (âm "+r.lun.day+"/"+r.lun.month+"/"+r.lun.year+") · Ngày "+r.dg.txt+"</div>");
   const body=buildTongLuan(r,host,biHex,v,qp,ak,mvLine).replace(/ class="[^"]*"/g,"");
   w.document.write(body);
@@ -1345,12 +1539,18 @@ function printTongLuan(){
 function shareLink(){
   const r=document.getElementById("result")._r; if(!r){toast("Chưa có kết quả để chia sẻ");return;}
   const q=document.getElementById("fques").value.trim(), n=document.getElementById("fname").value.trim();
-  const o={d:localDateTimeText(r.dt),z:getCalendarTZ(),qt:selType,q:q,n:n,m:r._mode||"c",ct:copyCastTrace(r)};
+  let includeDetails=false;
+  if(q||n){
+    includeDetails=window.confirm("Link mặc định sẽ ẩn tên và câu hỏi. Bạn có muốn đưa cả tên/câu hỏi vào URL không? Nội dung này được mã hóa Base64, không được mã hóa bảo mật và có thể đọc từ link/lịch sử trình duyệt. Chọn OK để chia sẻ đầy đủ; Cancel để giữ ẩn danh.");
+  }
+  const o={d:localDateTimeText(r.dt),z:getCalendarTZ(),db:r.lun.dayBoundary||"midnight",yb:r.castTrace&&r.castTrace.yearBoundary||getYearBoundary(),qt:selType,m:r._mode||"c",ct:copyCastTrace(r)};
+  if(includeDetails){if(q)o.q=q;if(n)o.n=n;}
   if(o.m!=="t"){o.l=r.lines.slice(); o.v=r.mvs.slice();}
   const s=btoa(unescape(encodeURIComponent(JSON.stringify(o))));
   const url=location.href.split("#")[0]+"#q="+s;
+  const success=includeDetails?"Đã sao chép link có tên/câu hỏi":"Đã sao chép link ẩn tên/câu hỏi";
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(()=>toast("Đã sao chép link quẻ — gửi cho người khác mở xem")).catch(()=>{prompt("Sao chép link quẻ:",url);});
+    navigator.clipboard.writeText(url).then(()=>toast(success)).catch(()=>{prompt("Sao chép link quẻ:",url);});
   }else{prompt("Sao chép link quẻ:",url);}
 }
 
@@ -1360,8 +1560,8 @@ function speakResult(){
   const btn=document.getElementById("speakBtn");
   if(_speaking){speechSynthesis.cancel();_speaking=false;if(btn)btn.textContent="🔊 Đọc kết quả";return;}
   const r=document.getElementById("result")._r; if(!r){toast("Chưa có kết quả");return;}
-  const v=verdictOf(r.score), host=hexFromUL(r.uIdx,r.lIdx), biHex=hexFromUL(r.bUp,r.bLow), qp=DB.qtypes.find(q=>q.k===selType), ak=aspectKey(selType), mvLine=r.lucHao[r.mv-1];
-  const txt=htmlToPlainText(buildTongLuanText(r,host,biHex,v,qp,ak,mvLine))+"\n\nKhung thời gian ứng dụng gợi ý (ước lệ, chưa kiểm chứng ứng kỳ): "+r.tln.time+".";
+  const v=verdictOf(r.score), host=hexFromUL(r.uIdx,r.lIdx), biHex=hexFromUL(r.bUp,r.bLow), qp=questionType(selType)||QUESTION_FALLBACK[0], ak=aspectKey(selType), mvLine=r.lucHao[r.mv-1];
+  const txt=htmlToPlainText(buildTongLuanText(r,host,biHex,v,qp,ak,mvLine))+(isScopedCategory(ak)?"":"\n\nKhung thời gian ứng dụng gợi ý (ước lệ, chưa kiểm chứng ứng kỳ): "+r.tln.time+".");
   const u=new SpeechSynthesisUtterance(txt);
   u.lang="vi-VN"; u.rate=0.95;
   const vs=speechSynthesis.getVoices();
@@ -1374,32 +1574,54 @@ function speakResult(){
 
 function applyShared(o){
   try{
-    
     if(!o||typeof o!=="object"||Array.isArray(o))throw new Error("Dữ liệu chia sẻ không hợp lệ");
+    if(o.db!==undefined&&o.db!=="midnight"&&o.db!=="zi")throw new Error("Mốc đổi ngày chia sẻ không hợp lệ");
+    if(o.yb!==undefined&&o.yb!=="lunar"&&o.yb!=="lichun")throw new Error("Quy ước chi năm trong link không hợp lệ");
     if(o.q!==undefined&&(typeof o.q!=="string"||o.q.length>1000))throw new Error("Câu hỏi chia sẻ quá dài hoặc sai định dạng");
     if(o.n!==undefined&&(typeof o.n!=="string"||o.n.length>120))throw new Error("Tên chia sẻ quá dài hoặc sai định dạng");
-    if(o.qt!==undefined&&!DB.qtypes.some(x=>x.k===o.qt))throw new Error("Loại câu hỏi chia sẻ không hợp lệ");
-    if(o.z!==undefined&&document.getElementById("ftimezone")){const z=Number(o.z),zm=z*60;if(Number.isFinite(z)&&z>=-12&&z<=14&&Math.abs(zm-Math.round(zm))<1e-8&&Math.round(zm)%15===0)document.getElementById("ftimezone").value=String(z);}
-    if(o.qt){selType=o.qt;document.querySelectorAll(".qcard").forEach((x,idx)=>{if(DB.qtypes[idx]&&DB.qtypes[idx].k===o.qt)x.classList.add("sel")});}
-    if(o.q!==undefined)document.getElementById("fques").value=o.q;
-    if(o.n!==undefined)document.getElementById("fname").value=o.n;
+    if(o.qt!==undefined&&!questionType(o.qt))throw new Error("Loại câu hỏi chia sẻ không hợp lệ");
+    let tz=getCalendarTZ();
+    if(o.z!==undefined){
+      if(typeof o.z!=="number"||!Number.isFinite(o.z)||o.z< -12||o.z>14||Math.abs(o.z*60-Math.round(o.z*60))>1e-8||Math.round(o.z*60)%15!==0)throw new Error("Múi giờ trong dữ liệu quẻ không hợp lệ");
+      tz=o.z;
+    }
+    const method=o.m||(Array.isArray(o.l)&&Array.isArray(o.v)?"c":null);
+    if(method!=="t"&&method!=="c")throw new Error("Thiếu hoặc sai phương pháp lập quẻ trong link");
     let dt=new Date();
-    if(o.d){if(typeof o.d!=="string"||o.d.length>25||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(o.d))throw new Error("Thời điểm chia sẻ sai định dạng");document.getElementById("ftime").value=o.d.slice(0,16);dt=new Date(o.d);}
-    if(Number.isNaN(dt.getTime())||dt.getFullYear()<1800||dt.getFullYear()>2200){toast("Thời điểm trong link không hợp lệ hoặc ngoài phạm vi 1800–2200");return;}
-    let r=null;
-    if(o.m==="t"){r=castAll(dt);}
-    else if(o.l&&o.v){
-      const lun=solar2lunar(dt.getDate(),dt.getMonth()+1,dt.getFullYear(),getCalendarTZ());
-      const hNum=(((dt.getHours()+1)%24)>>1)+1;
-      r=analyzeLines(o.l,o.v,dt,lun,hNum);
-      r._mode="c";r.castTrace=restoreCastTrace(o.ct,r);
+    if(o.d!==undefined){
+      if(typeof o.d!=="string"||o.d.length>25||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/.test(o.d))throw new Error("Thời điểm chia sẻ sai định dạng");
+      dt=new Date(o.d);
+      if(Number.isNaN(dt.getTime())||localDateTimeText(dt)!==o.d)throw new Error("Ngày hoặc giờ chia sẻ không tồn tại trên lịch");
     }
-    if(r){
-      const method=r.castTrace&&r.castTrace.method;
-      if(method&&document.getElementById("fmode")){document.getElementById("fmode").value=method;modeChange();}
-      renderResult(r);setTimeout(()=>document.getElementById("result").scrollIntoView({behavior:"smooth"}),300);
+    if(Number.isNaN(dt.getTime())||dt.getFullYear()<1800||dt.getFullYear()>2200)throw new Error("Thời điểm chia sẻ ngoài phạm vi 1800–2200");
+    if(method==="c"){
+      if(!Array.isArray(o.l)||o.l.length!==6||o.l.some(x=>x!==0&&x!==1))throw new Error("Quẻ chia sẻ phải có đủ sáu hào hợp lệ");
+      if(!Array.isArray(o.v)||o.v.some(x=>!Number.isInteger(x)||x<1||x>6)||new Set(o.v).size!==o.v.length)throw new Error("Danh sách hào động trong link không hợp lệ");
     }
-  }catch(e){}
+    /* Chỉ cập nhật biểu mẫu sau khi toàn bộ dữ liệu đầu vào đã qua kiểm tra. */
+    if(document.getElementById("ftimezone"))document.getElementById("ftimezone").value=String(tz);
+    initDayBoundaryValue(o.db||"midnight");
+    initYearBoundaryValue(o.yb||"lunar");
+    selType=o.qt||null;
+    document.querySelectorAll(".qcard").forEach(x=>{
+      const selected=!!o.qt&&x.dataset.q===o.qt;
+      x.classList.toggle("sel",selected);
+      x.setAttribute("aria-pressed",selected?"true":"false");
+    });
+    document.getElementById("fques").value=o.q||"";
+    document.getElementById("fname").value=o.n||"";
+    if(o.d)document.getElementById("ftime").value=o.d.slice(0,16);
+    const lun=lunarAtDateTime(dt);
+    const hNum=(((dt.getHours()+1)%24)>>1)+1;
+    let r;
+    if(method==="t")r=castAll(dt);
+    else{r=analyzeLines(o.l,o.v,dt,lun,hNum);r._mode="c";r.castTrace=restoreCastTrace(o.ct,r);}
+    if(method==="t"&&o.ct&&typeof o.ct==="object")r.castTrace=restoreCastTrace(o.ct,r)||r.castTrace;
+    const traceMethod=r.castTrace&&r.castTrace.method;
+    if(traceMethod&&document.getElementById("fmode")){document.getElementById("fmode").value=traceMethod;modeChange();}
+    renderResult(r);setTimeout(()=>document.getElementById("result").scrollIntoView({behavior:"smooth"}),300);
+    return true;
+  }catch(e){toast(e&&e.message?e.message:"Không thể mở dữ liệu quẻ");return false;}
 }
 function openShared(){
   try{
@@ -1407,7 +1629,7 @@ function openShared(){
     if(h.indexOf("#q=")!==0)return;
     if(h.length>20000){toast("Link chia sẻ vượt quá giới hạn cho phép");return;}
     applyShared(JSON.parse(decodeURIComponent(escape(atob(h.slice(3))))));
-  }catch(e){}
+  }catch(e){toast("Link chia sẻ bị hỏng hoặc không đúng định dạng");}
 }
 /* ===== BỘ SƯU TẬP QUẺ ===== */
 function getBM(){try{const a=JSON.parse(localStorage.getItem("dlyh_bm")||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x==="object"&&!Array.isArray(x)).slice(0,100):[]}catch(e){return[]}}
@@ -1415,7 +1637,7 @@ function saveBMA(a){try{localStorage.setItem("dlyh_bm",JSON.stringify(a.slice(0,
 function bookmarkCurrent(){
   const r=document.getElementById("result")._r;if(!r){toast("Chưa có kết quả để lưu");return;}
   const q=document.getElementById("fques").value.trim(),n=document.getElementById("fname").value.trim();
-  const o={d:localDateTimeText(r.dt),z:getCalendarTZ(),qt:selType,q:q,n:n,m:r._mode||"c",ct:copyCastTrace(r)};
+  const o={d:localDateTimeText(r.dt),z:getCalendarTZ(),db:r.lun.dayBoundary||"midnight",yb:r.castTrace&&r.castTrace.yearBoundary||getYearBoundary(),qt:selType,q:q,n:n,m:r._mode||"c",ct:copyCastTrace(r)};
   if(o.m!=="t"){o.l=r.lines;o.v=r.mvs;}
   const a=getBM();
   a.unshift({t:Date.now(),v:verdictOf(r.score).t,s:r.score,hex:r.hex.name,qt:selType,q:q,note:"",o:o});
@@ -1423,7 +1645,7 @@ function bookmarkCurrent(){
 }
 function openBMList(){
   const a=getBM();const el=document.getElementById("bmList");
-  el.innerHTML=a.length?a.map((b,i)=>`<div class="hist-item"><b>${escHtml(b.hex)}</b> — ${escHtml(b.v)} (${Number(b.s)||0} điểm)<br><span class="mut" style="font-size:13px">${new Date(b.t).toLocaleString("vi-VN")} · ${escHtml(b.q||(DB.qtypes.find(x=>x.k===b.qt)||{}).t||"")}${b.note?" · "+escHtml(b.note):""}</span><div class="mbtns" style="margin:6px 0 0"><button onclick="openBookmark(${i})">Mở quẻ</button><button onclick="editNote(${i})">Ghi chú</button><button onclick="delBM(${i})">Xoá</button></div></div>`).join(""):'<p class="mut">Chưa lưu quẻ nào — gieo quẻ rồi bấm "⭐ Lưu quẻ này".</p>';
+  el.innerHTML=a.length?a.map((b,i)=>`<div class="hist-item"><b>${escHtml(b.hex)}</b> — ${isScopedCategory(b.qt)?"Chiêm nghiệm văn hóa":escHtml(b.v)+" ("+(Number(b.s)||0)+" điểm)"}<br><span class="mut" style="font-size:13px">${new Date(b.t).toLocaleString("vi-VN")} · ${escHtml(b.q||(questionType(b.qt)||{}).t||"")}${b.note?" · "+escHtml(b.note):""}</span><div class="mbtns" style="margin:6px 0 0"><button onclick="openBookmark(${i})">Mở quẻ</button><button onclick="editNote(${i})">Ghi chú</button><button onclick="delBM(${i})">Xoá</button></div></div>`).join(""):'<p class="mut">Chưa lưu quẻ nào — gieo quẻ rồi bấm "⭐ Lưu quẻ này".</p>';
   document.getElementById("modalBM").classList.add("open");
 }
 function closeBM(){document.getElementById("modalBM").classList.remove("open")}
@@ -1450,7 +1672,7 @@ function showHex(n){
     <div style="flex:1;min-width:240px"><div class="hexname" style="text-align:left">${h.n}. ${h.name}</div>
     <div class="mut">Thượng ${up.n} · Hạ ${lo.n}</div>
     <div class="read" style="margin-top:8px"><b>Quẻ từ:</b> <i>"${h.qt}"</i><br><b>Đại tượng:</b> <i>"${h.dt}"</i><br>${h.tong}</div>
-    <label>Xem theo lĩnh vực</label><select onchange="document.getElementById('bdAspTxt').textContent=DB.hexes.find(x=>x.n===${h.n}).a[this.value]">${DB.qtypes.filter(q=>q.k!=="tv").map(q=>`<option value="${q.k}">${q.t}</option>`).join("")}</select>
+    <label>Xem theo lĩnh vực</label><select onchange="document.getElementById('bdAspTxt').textContent=topicReading(DB.hexes.find(x=>x.n===${h.n}),this.value)">${allQuestionTypes().filter(q=>q.k!=="tv").map(q=>`<option value="${escHtml(q.k)}">${escHtml(q.t)}</option>`).join("")}</select>
     <div class="read" id="bdAspTxt">${h.a.sn}</div>
     <label>Xem từng hào (hào từ gốc + luận)</label><select onchange="const hh=DB.hexes.find(x=>x.n===${h.n});const i2=+this.value-1;document.getElementById('bdLnTxt').innerHTML='<b>Hào từ:</b> <i>\'"'+hh.ht[i2]+'\'"</i><br>'+hh.hd[i2]">${[1,2,3,4,5,6].map(i2=>`<option value="${i2}">Hào ${NM[i2-1]}</option>`).join("")}</select>
     <div class="read" id="bdLnTxt"><b>Hào từ:</b> <i>"${h.ht[0]}"</i><br>${h.hd[0]}</div>
@@ -1459,7 +1681,7 @@ function showHex(n){
 /* ===== XUẤT ẢNH QUẺ — Canvas thuần, offline 100% ===== */
 function exportImage(){
   const r=document.getElementById("result")._r; if(!r){toast("Chưa có kết quả để xuất");return;}
-  const v=verdictOf(r.score), host=r.hex, qp=DB.qtypes.find(q=>q.k===selType), ak=aspectKey(selType);
+  const v=verdictOf(r.score), host=r.hex, qp=questionType(selType)||QUESTION_FALLBACK[0], ak=aspectKey(selType);
   const biHex=hexFromUL(r.bUp,r.bLow), mvLine=r.lucHao[r.mv-1];
   const qtext=document.getElementById("fques").value.trim()||qp.t;
   const fname=document.getElementById("fname").value.trim();
@@ -1517,7 +1739,7 @@ function exportImage(){
   const vc={"v-daicat":["#3d2f07","#f0d879"],"v-cat":["#0b2e1f","#3fce8e"],"v-mid":["#33270a","#f0b429"],"v-bad":["#3a180b","#f2753c"],"v-worst":["#3d0f0f","#e0483e"]}[v.k];
   panel(W-330,556,240,66,vc[0]);
   x.fillStyle=vc[1]; x.font="700 30px 'Playfair Display',serif"; x.textAlign="center";
-  x.fillText(v.t+" — chỉ số "+r.score+" điểm",W-210,598);
+  x.fillText(isScopedCategory(ak)?"Chiêm nghiệm văn hóa":v.t+" — chỉ số "+r.score+" điểm",W-210,598);
   x.textAlign="left";
   /* ===== LỜI TỔNG LUẬN — toàn văn ===== */
   let ty=700;
@@ -1559,13 +1781,13 @@ function exportImage(){
 function getHist(){try{const a=JSON.parse(localStorage.getItem("dlyh_hist")||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x==="object"&&!Array.isArray(x)).slice(0,50):[]}catch(e){return[]}}
 function saveHistory(r){
   const a=getHist();const host=hexFromUL(r.uIdx,r.lIdx);
-  const o={d:localDateTimeText(r.dt),z:getCalendarTZ(),qt:selType,q:document.getElementById("fques").value.trim(),n:document.getElementById("fname").value.trim(),m:r._mode||"c",ct:copyCastTrace(r)};
+  const o={d:localDateTimeText(r.dt),z:getCalendarTZ(),db:r.lun.dayBoundary||"midnight",yb:r.castTrace&&r.castTrace.yearBoundary||getYearBoundary(),qt:selType,q:document.getElementById("fques").value.trim(),n:document.getElementById("fname").value.trim(),m:r._mode||"c",ct:copyCastTrace(r)};
   if(o.m!=="t"){o.l=r.lines.slice();o.v=r.mvs.slice()}
-  a.unshift({t:Date.now(),q:o.q||DB.qtypes.find(x=>x.k===selType).t,qt:selType,hex:host.name,v:verdictOf(r.score).t,s:r.score,o:o});
+  a.unshift({t:Date.now(),q:o.q||(questionType(selType)||QUESTION_FALLBACK[0]).t,qt:selType,hex:host.name,v:verdictOf(r.score).t,s:r.score,o:o});
   try{localStorage.setItem("dlyh_hist",JSON.stringify(a.slice(0,50)));}catch(e){toast("Không lưu được lịch sử trên thiết bị này; kết quả vẫn đang hiển thị.");}
 }
 function openHist(){const l=document.getElementById("histlist");const a=getHist();
-  l.innerHTML=a.length?a.map((h,i)=>`<div class="hist-item"><b>${escHtml(h.hex)}</b> — ${escHtml(h.v)} (${Number(h.s)||0} điểm)<br><span class="mut" style="font-size:13px">${new Date(h.t).toLocaleString("vi-VN")} · ${escHtml(h.q)}</span>${h.o?` <button style="background:#121829;border:1px solid var(--line);color:var(--gold2);padding:3px 10px;border-radius:8px;font-size:12px;cursor:pointer" onclick="openHistItem(${i})">Mở quẻ</button>`:""}</div>`).join(""):'<p class="mut">Chưa có lần gieo nào.</p>';
+  l.innerHTML=a.length?a.map((h,i)=>`<div class="hist-item"><b>${escHtml(h.hex)}</b> — ${isScopedCategory(h.qt)?"Chiêm nghiệm văn hóa":escHtml(h.v)+" ("+(Number(h.s)||0)+" điểm)"}<br><span class="mut" style="font-size:13px">${new Date(h.t).toLocaleString("vi-VN")} · ${escHtml(h.q)}</span>${h.o?` <button style="background:#121829;border:1px solid var(--line);color:var(--gold2);padding:3px 10px;border-radius:8px;font-size:12px;cursor:pointer" onclick="openHistItem(${i})">Mở quẻ</button>`:""}</div>`).join(""):'<p class="mut">Chưa có lần gieo nào.</p>';
   document.getElementById("modalHist").classList.add("open")}
 function closeHist(){document.getElementById("modalHist").classList.remove("open")}
 function openHistItem(i){const h=getHist()[i];if(!h||!h.o)return;applyShared(JSON.parse(JSON.stringify(h.o)));closeHist();}
@@ -1625,23 +1847,10 @@ function applyImport(t){
   const d=JSON.parse(t);
   if(!validDataShape(d))throw new Error("Cấu trúc dữ liệu không hợp lệ: cần đủ 64 quẻ duy nhất, cặp quái hợp lệ và sáu cung Tiểu Lục Nhâm.");
   normalizeCopyText(d);
-  if(!d.thanSx)d.thanSx=DEFAULT_DATA.thanSx;
-  if(!d.tpl)d.tpl=DEFAULT_DATA.tpl;
-  if(!d.dungMap)d.dungMap=DEFAULT_DATA.dungMap;
-  const NEED=["tong","xu","qt","dt","advice"], NEEDA=["sn","tl","td","sk","gd","kt","xh","tc"];
-  let fixed=0;
-  for(const h of d.hexes){
-    const d0=DEFAULT_DATA.hexes.find(x=>x.n===h.n)||{};
-    NEED.forEach(f=>{if(!h[f]){h[f]=d0[f];fixed++}});
-    ["hd","ht"].forEach(f=>{if(!Array.isArray(h[f])||h[f].length!==6||h[f].some(x=>!x||!String(x).trim())){h[f]=d0[f];fixed++}});
-    if(!h.a||typeof h.a!=="object"){h.a=d0.a;fixed++}
-    else NEEDA.forEach(k=>{if(!h.a[k]||!String(h.a[k]).trim()){h.a[k]=d0.a[k];fixed++}});
-    if(!h.name)h.name=d0.name;
-    if(typeof h.u!=="number"||typeof h.l!=="number"){h.u=d0.u;h.l=d0.l;fixed++}
-  }
+  const fixed=repairDataRecords(d);
   DB=d;const saved=saveDB();HEXBYKEY={};DB.hexes.forEach(h=>HEXBYKEY[h.u*10+h.l]=h);
   buildQGrid();closeData();
-  toast(saved?(fixed?("Đã nạp và lưu — tự động vá "+fixed+" trường bị thiếu/lỗi từ bản mặc định"):"Đã nạp và lưu dữ liệu mới — 64 quẻ hợp lệ"):"Đã nạp trong phiên này nhưng chưa lưu được trên thiết bị; hãy xuất JSON để giữ bản dữ liệu.");
+  toast(saved?(fixed?("Đã nạp và lưu — phục hồi/chuẩn hóa "+fixed+" nhóm dữ liệu thiếu hoặc sai kiểu"):"Đã nạp và lưu dữ liệu mới — 64 quẻ hợp lệ"):"Đã nạp trong phiên này nhưng chưa lưu được trên thiết bị; hãy xuất JSON để giữ bản dữ liệu.");
 }
 function resetData(){try{localStorage.removeItem("dlyh_db")}catch(e){toast("Không xoá được dữ liệu tùy chỉnh trên thiết bị này.");return}DB=loadDB();HEXBYKEY={};DB.hexes.forEach(h=>HEXBYKEY[h.u*10+h.l]=h);buildQGrid();closeData();toast("Đã xoá dữ liệu tùy chỉnh, về bản mặc định")}
 function showDefaultJSON(){document.getElementById("impjson").value=JSON.stringify({hexes:DEFAULT_DATA.hexes.slice(0,2),tln:DEFAULT_DATA.tln,qtypes:DEFAULT_DATA.qtypes},null,2);toast("Cấu trúc mẫu (2 quẻ đầu) — nạp bản đủ 64 quẻ mới hợp lệ")}
@@ -1649,7 +1858,7 @@ function showDefaultJSON(){document.getElementById("impjson").value=JSON.stringi
 function toggleTheme(){const b=document.body;b.classList.toggle("light");try{localStorage.setItem("dlyh_theme",b.classList.contains("light")?"light":"dark")}catch(e){}}
 try{if(localStorage.getItem("dlyh_theme")==="light")document.body.classList.add("light")}catch(e){}
 (function(){try{var man={name:"Dịch Lý Huyền Học",short_name:"Dịch Lý",start_url:location.pathname,display:"standalone",background_color:"#0a0e1a",theme_color:"#0a0e1a",icons:[]};var blob=new Blob([JSON.stringify(man)],{type:"application/json"});var l=document.getElementById("pwa-manifest");if(l)l.href=URL.createObjectURL(blob);}catch(e){}})();
-buildQGrid();initCalendarTZ();setNow();
+buildQGrid();initCalendarTZ();initDayBoundary();initYearBoundary();setNow();
 /* ===== TRƯỜNG PHÁI LUẬN GIẢI ===== */
 function schoolChange(){
   const v=(document.getElementById("fschool")||{value:"mix"}).value;
